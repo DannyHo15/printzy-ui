@@ -1,15 +1,12 @@
-import React from "react";
-import Image from "next/image";
-import { NumericFormat } from "react-number-format";
-import { motion } from "framer-motion";
-import Router from "next/router";
-// import { useDispatch } from "react-redux";
-// import { addToWishlist } from "../slices/wishlistSlice";
+import React from 'react';
+import Image from 'next/image';
+import { NumericFormat } from 'react-number-format';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useWishlistStore } from '@/store/useWishList';
 
 function ProductCard({ item }: any) {
-  const { size, image } = item.prop[0];
-  //   const dispatch = useDispatch();
-
+  const { addWishList } = useWishlistStore();
   return (
     <div className="rounded-xl cursor-pointer">
       <div className="overflow-hidden cursor-default rounded-xl relative group">
@@ -24,13 +21,13 @@ function ProductCard({ item }: any) {
             fill
             sizes="25vw"
             className="absolute object-cover rounded-2xl"
-            src={image[0]}
+            src={item?.upload?.path}
           />
         </motion.div>
-        <div className="hidden absolute rounded-xl h-full w-full bg-gray-500 backdrop-filter backdrop-blur-sm bg-opacity-30 top-0 group group-hover:flex justify-center place-items-center z-10">
+        <div className="hidden absolute rounded-2xl h-full w-full bg-gray-500 backdrop-filter backdrop-blur-sm bg-opacity-30 top-0 group group-hover:flex justify-center place-items-center z-10">
           <div className="flex overflow-hidden cursor-pointer">
             <button
-              //   onClick={() => dispatch(addToWishlist(item))}
+              onClick={() => addWishList(item.id)}
               className="p-2 bg-white hover:bg-gray-100 active:bg-gray-200 rounded-lg"
             >
               <svg
@@ -51,24 +48,28 @@ function ProductCard({ item }: any) {
           </div>
         </div>
       </div>
-      <div
-        onClick={() => Router.push("/product/" + item.slug)}
+      <Link
+        href={'/' + item.slug + '-' + item.sku}
+        key={item._id}
         className="px-2 py-2"
       >
-        <p className="text-sm line-clamp-1">{item.name}</p>
-        <p className="text-xs my-2 text-gray-400">{item.color}</p>
+        <p className="text-sm line-clamp-1 text-primary font-semibold">
+          {item.name}
+        </p>
         {/* <p className="text-sm font-semibold">Rp {price}</p> */}
         <NumericFormat
           value={item.price}
           className="text-sm font-semibold text-cusblack"
-          displayType={"text"}
+          displayType={'text'}
           thousandSeparator={true}
-          prefix={"Rp"}
+          prefix={'$'}
           renderText={(value) => (
-            <p className="text-sm font-semibold text-cusblack">{value}</p>
+            <p className="text-base font-bold text-primary-price uppercase ">
+              {value}
+            </p>
           )}
         />
-      </div>
+      </Link>
     </div>
   );
 }

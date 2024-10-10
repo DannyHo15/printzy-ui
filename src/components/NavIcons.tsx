@@ -1,13 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-// import { useWixClient } from "@/hooks/useWixClient";
-import Cookies from "js-cookie";
-// import { useCartStore } from "@/hooks/useCartStore";
-import CartModal from "./CartModal";
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import CartModal from './CartModal';
+import { useWishlistStore } from '@/store/useWishList';
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -15,13 +12,11 @@ const NavIcons = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  const pathName = usePathname();
-
-  const isLoggedIn = Cookies.get("printzy_ac_token");
+  const isLoggedIn = Cookies.get('printzy_ac_token');
 
   const handleProfile = () => {
     if (!isLoggedIn) {
-      router.push("/login");
+      router.push('/login');
     } else {
       setIsProfileOpen((prev) => !prev);
     }
@@ -29,56 +24,189 @@ const NavIcons = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    Cookies.remove("printzy_ac_token");
-    Cookies.remove("printzy_refresh_token");
-    // const { logoutUrl } = await wixClient.auth.logout(window.location.href);
+    Cookies.remove('printzy_ac_token');
+    Cookies.remove('printzy_refresh_token');
     setIsLoading(false);
     setIsProfileOpen(false);
-    // router.push(logoutUrl);
   };
 
-  // const { cart, counter, getCart } = useCartStore();
+  const { wishlist, getWishList } = useWishlistStore();
 
-  // useEffect(() => {
-  //   getCart(wixClient);
-  // }, [wixClient, getCart]);
+  useEffect(() => {
+    getWishList();
+  }, [getWishList]);
 
   return (
     <div className="flex items-center gap-4 xl:gap-6 relative">
-      <Image
-        src="/profile.png"
-        alt=""
-        width={22}
-        height={22}
-        className="cursor-pointer"
-        // onClick={login}
-        onClick={handleProfile}
-      />
+      {/* Shop Icon */}
+      <Link href="/shop">
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200">
+            <svg
+              className="w-7 h-7 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </div>
+          <span className="text-xs text-gray-600 font-semibold">Shop</span>
+        </div>
+      </Link>
+
+      {/* Wishlist Icon */}
+      <Link href="/wishlist">
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200 relative">
+            <svg
+              className="w-7 h-7 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            {wishlist.length > 0 && (
+              <div className="absolute text-xs font-light justify-center text-white text-center w-4 h-4 bg-lama rounded-full bottom-0 right-0">
+                {wishlist.length}
+              </div>
+            )}
+          </div>
+          <span className="text-xs text-gray-600 font-semibold">Wishlist</span>
+        </div>
+      </Link>
+
+      {/* Cart Icon */}
+      <div
+        onClick={() => setIsCartOpen((prev) => !prev)}
+        className="flex flex-col items-center"
+      >
+        <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200 relative">
+          <svg
+            className="w-7 h-7 text-primary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            />
+          </svg>
+          {isCartOpen && <CartModal />}
+        </div>
+        <span className="text-xs text-gray-600 font-semibold">Cart</span>
+      </div>
+
+      {/* Profile Icon */}
+      <button onClick={handleProfile} className="flex flex-col items-center">
+        <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200">
+          <svg
+            className="w-7 h-7 text-primary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
+        <span className="text-xs text-gray-600 font-semibold">Profile</span>
+      </button>
+
+      {/* Profile Dropdown */}
       {isProfileOpen && (
-        <div className="absolute p-4 rounded-md top-12 left-0 bg-white text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20">
-          <Link href="/profile">Profile</Link>
-          <div className="mt-2 cursor-pointer" onClick={handleLogout}>
-            {isLoading ? "Logging out" : "Logout"}
+        <div className="absolute p-4 rounded-md top-12 left-20 bg-white text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20 flex flex-col gap-3 w-fit">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              <svg
+                className="w-6 h-6 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+            <Link href="/profile" className="text-primary">
+              Profile
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              <svg
+                className="w-6 h-6 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                />
+              </svg>
+            </div>
+            <Link href="/my-order" className="whitespace-nowrap text-primary">
+              My Order
+            </Link>
+          </div>
+
+          <div className="cursor-pointer" onClick={handleLogout}>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                <svg
+                  className="w-6 h-6 text-primary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              </div>
+              <span className="text-primary">
+                {isLoading ? 'Logging out' : 'Logout'}
+              </span>
+            </div>
           </div>
         </div>
       )}
-      <Image
-        src="/notification.png"
-        alt=""
-        width={22}
-        height={22}
-        className="cursor-pointer"
-      />
-      <div
-        className="relative cursor-pointer"
-        onClick={() => setIsCartOpen((prev) => !prev)}
-      >
-        <Image src="/cart.png" alt="" width={22} height={22} />
-        <div className="absolute -top-4 -right-4 w-6 h-6 bg-lama rounded-full text-white text-sm flex items-center justify-center">
-          {/* {counter} */}
-        </div>
-      </div>
-      {isCartOpen && <CartModal />}
     </div>
   );
 };
