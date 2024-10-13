@@ -33,3 +33,54 @@ body {
 .scrollbar-hide {
   scrollbar-width: none;
 }
+
+@keyframes moveWave {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-25px); /* Halfway to create a fluid motion */
+  }
+  100% {
+    transform: translateX(0); /* Return smoothly */
+  }
+}
+
+.wave {
+  animation: moveWave 10s ease-in-out infinite; /* Adjusted duration for smoothness */
+}
+
+.wave-1 {
+  animation-duration: 10s; /* Sync duration for smoother effect */
+}
+
+.wave-2 {
+  animation-duration: 12s; /* Slight delay for staggered animation */
+  animation-delay: -3s; /* Add delay for staggered effect */
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+:root {
+  --swiper-navigation-color: #0b5179;
+}

@@ -1,15 +1,24 @@
 import React, { useState } from "react";
 
-import ShopCarousel from "./ShopCarousel";
-import SideCategory from "./SideCategory";
-import TopCategory from "./TopCategory";
+import SideCategory from "./Category/SideCategory";
+import TopCategory from "./Category/TopCategory";
 
-function Card({ children, categories, types, setSort }: any) {
+function Card({ children, categories, setSort }: any) {
   const [open, setOpen] = useState(false);
   const [grid, setGrid] = useState(4);
   const [sortOpen, setSortOpen] = useState(false);
+
+  const collections = categories.flatMap(
+    (item: { collections: any }) => item.collections
+  );
+
+  const uniqueCollections = collections.filter(
+    (collection: { id: any }, index: any, self: any[]) =>
+      index === self.findIndex((c) => c.id === collection.id)
+  );
+
   return (
-    <div className="w-full min-h-screen bg-cusgray pb-10">
+    <div className="w-full min-h-screen pb-10">
       <button
         onClick={() => setOpen(!open)}
         className="w-12 h-12 rounded-full bg-white fixed z-30 drop-shadow-2xl lg:hidden flex justify-center place-items-center bottom-0 left-0 m-5"
@@ -29,20 +38,20 @@ function Card({ children, categories, types, setSort }: any) {
           />
         </svg>
       </button>
-      <div className="max-w-6xl mx-auto pt-14 md:px-0">
-        <TopCategory categories={categories} />
+      <div className="max-w-8xl px-4 mx-auto pt-10 md:px-20">
         <div className="grid grid-cols-4 gap-x-6">
           <div
             onClick={() => setOpen(!open)}
             className={`${
               open ? `fixed` : `hidden`
-            } lg:static lg:inline bg-gray-400 lg:bg-cusgray h-screen bg-opacity-30 z-20 flex w-full justify-center place-items-center top-0 lg:p-4`}
+            } lg:static lg:inline bg-gray-400  h-screen bg-opacity-30 z-20 flex w-full justify-center place-items-center top-0 lg:p-4`}
           >
-            <SideCategory typesData={types} />
+            <SideCategory categories={categories} />
           </div>
           <div className="col-span-4 md:col-span-4 lg:col-span-3 flex flex-col py-4 mx-2 md:mx-0">
-            <ShopCarousel />
-            <div className="rounded-2xl overflow-hidden shadow-lg w-full bg-white mt-6 px-5 py-4">
+            {/* <ShopCarousel /> */}
+            <TopCategory collections={uniqueCollections} />
+            <div className="rounded-2xl overflow-hidden w-full bg-white mt-6 px-5 py-4">
               <div className="mb-3">
                 <div className="flex justify-between place-items-center text-gray-600 text-sm relative">
                   <div className="flex">

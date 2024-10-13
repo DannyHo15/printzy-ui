@@ -1,89 +1,101 @@
 "use client";
 
-import { products } from "@wix/stores";
 import { useEffect, useState } from "react";
-import Add from "./Add";
+import useProductVariants from "@/hooks/useVariants";
+import Add from "../Add";
 
 const CustomizeProducts = ({
   productId,
-  variants,
-  productOptions,
+  options,
+  setVariant,
 }: {
   productId: string;
-  variants: products.Variant[];
-  productOptions: products.ProductOption[];
+  options: any[];
+  setVariant: (variant: any) => void;
 }) => {
+  const [selectedVariant, setSelectedVariant] = useState<any>();
+
+  const variants = useProductVariants(productId);
+
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
   }>({});
-  const [selectedVariant, setSelectedVariant] = useState<products.Variant>();
-
   useEffect(() => {
     const variant = variants.find((v) => {
-      const variantChoices = v.choices;
+      const variantChoices = v?.variantOptionValues;
+
       if (!variantChoices) return false;
-      return Object.entries(selectedOptions).every(
-        ([key, value]) => variantChoices[key] === value
-      );
+      const isMatching = variantChoices.every((choice: any) => {
+        const valueToCheck = choice.optionValueId;
+        return Object.values(selectedOptions).includes(valueToCheck);
+      });
+
+      return isMatching;
     });
+
+    setVariant(variant);
     setSelectedVariant(variant);
-  }, [selectedOptions, variants]);
+  }, [selectedOptions]);
+
+  useEffect(() => {
+    if (variants && variants.length > 0) {
+      setSelectedOptions(
+        Object.fromEntries(
+          variants?.[0]?.variantOptionValues?.map(
+            ({ id, optionValueId }: any) => [id, optionValueId]
+          )
+        )
+      );
+    }
+  }, [variants]);
 
   const handleOptionSelect = (optionType: string, choice: string) => {
     setSelectedOptions((prev) => ({ ...prev, [optionType]: choice }));
   };
 
-  const isVariantInStock = (choices: { [key: string]: string }) => {
-    return variants.some((variant) => {
-      const variantChoices = variant.choices;
-      if (!variantChoices) return false;
-
-      return (
-        Object.entries(choices).every(
-          ([key, value]) => variantChoices[key] === value
-        ) &&
-        variant.stock?.inStock &&
-        variant.stock?.quantity &&
-        variant.stock?.quantity > 0
-      );
-    });
-  };
-
   return (
-    <div className="flex flex-col gap-6">
-      {productOptions.map((option) => (
+    <div className="flex flex-col gap-4">
+      {options?.map((option: any) => (
         <div className="flex flex-col gap-4" key={option.name}>
           <h4 className="font-medium">Choose a {option.name}</h4>
           <ul className="flex items-center gap-3">
-            {option.choices?.map((choice) => {
-              const disabled = !isVariantInStock({
-                ...selectedOptions,
-                [option.name!]: choice.description!,
-              });
+            {option.optionValues?.map((optionValue: any) => {
+              // const disabled = !isVariantInStock({
+              //   ...selectedOptions,
+              //   [option.name!]: choice.description!,
+              // });
+              const disabled = false;
 
-              const selected =
-                selectedOptions[option.name!] === choice.description;
+              const selected = selectedOptions[option.id!] === optionValue.id;
 
               const clickHandler = disabled
                 ? undefined
-                : () => handleOptionSelect(option.name!, choice.description!);
+                : () => handleOptionSelect(option.id!, optionValue.id!);
 
               return option.name === "Color" ? (
                 <li
-                  className="w-8 h-8 rounded-full ring-1 ring-gray-300 relative"
-                  style={{
-                    backgroundColor: choice.value,
-                    cursor: disabled ? "not-allowed" : "pointer",
-                  }}
-                  onClick={clickHandler}
-                  key={choice.description}
+                  className="relative inline-block group"
+                  key={optionValue.value}
                 >
-                  {selected && (
-                    <div className="absolute w-10 h-10 rounded-full ring-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  )}
-                  {disabled && (
-                    <div className="absolute w-10 h-[2px] bg-red-400 rotate-45 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  )}
+                  <div
+                    className="w-8 h-8 rounded-full ring-1 ring-gray-300 relative"
+                    style={{
+                      backgroundColor: optionValue.value,
+                      cursor: disabled ? "not-allowed" : "pointer",
+                    }}
+                    onClick={clickHandler}
+                  >
+                    {selected && (
+                      <div className="absolute w-10 h-10 rounded-full ring-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    )}
+                    {disabled && (
+                      <div className="absolute w-10 h-[2px] bg-red-400 rotate-45 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    )}
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-auto p-1 text-sm text-white bg-black rounded opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
+                    {optionValue?.value}
+                  </div>
                 </li>
               ) : (
                 <li
@@ -98,10 +110,10 @@ const CustomizeProducts = ({
                     color: selected || disabled ? "white" : "#f35c7a",
                     boxShadow: disabled ? "none" : "",
                   }}
-                  key={choice.description}
+                  key={optionValue.value}
                   onClick={clickHandler}
                 >
-                  {choice.description}
+                  {optionValue.value}
                 </li>
               );
             })}

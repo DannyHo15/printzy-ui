@@ -1,10 +1,10 @@
-'use client';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import CartModal from './CartModal';
-import { useWishlistStore } from '@/store/useWishList';
+"use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import CartModal from "./CartModal";
+import { useWishlistStore } from "@/store/useWishList";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -12,11 +12,11 @@ const NavIcons = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  const isLoggedIn = Cookies.get('printzy_ac_token');
+  const isLoggedIn = Cookies.get("printzy_ac_token");
 
   const handleProfile = () => {
     if (!isLoggedIn) {
-      router.push('/login');
+      router.push("/login");
     } else {
       setIsProfileOpen((prev) => !prev);
     }
@@ -24,8 +24,8 @@ const NavIcons = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    Cookies.remove('printzy_ac_token');
-    Cookies.remove('printzy_refresh_token');
+    Cookies.remove("printzy_ac_token");
+    Cookies.remove("printzy_refresh_token");
     setIsLoading(false);
     setIsProfileOpen(false);
   };
@@ -201,7 +201,7 @@ const NavIcons = () => {
                 </svg>
               </div>
               <span className="text-primary">
-                {isLoading ? 'Logging out' : 'Logout'}
+                {isLoading ? "Logging out" : "Logout"}
               </span>
             </div>
           </div>

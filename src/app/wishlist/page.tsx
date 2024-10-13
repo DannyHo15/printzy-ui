@@ -1,15 +1,14 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 // import { useSelector } from "react-redux";
 // import Header from "../components/header";
 // import WishProduct from "../components/wishproduct";
 // import { selectWishItems } from "../slices/wishlistSlice";
-import Head from 'next/head';
-import { useWishlistStore } from '@/store/useWishList';
-import WishlistProduct from '@/components/WishlistProduct';
+import Head from "next/head";
+import { useWishlistStore } from "@/store/useWishList";
+import WishlistProduct from "@/components/WishlistProduct";
 function WishList() {
   const { wishlist } = useWishlistStore();
-  console.log(wishlist);
   return (
     <>
       <Head>
