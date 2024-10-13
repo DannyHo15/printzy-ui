@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import ProductCard from "@/components/Product/ProductCard";
 import useProducts from "@/hooks/useProducts";
@@ -8,18 +8,23 @@ import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [sort, setSort] = useState(0);
+  const [filter, setFilter] = useState<any>({});
   const searchParams = useSearchParams();
 
-  const collection = searchParams.get("collection");
-  const category = searchParams.get("category");
+  const name = searchParams.get("name");
+  const collectionId = searchParams.get("collection");
+  const categoryId = searchParams.get("category");
   const price = searchParams.get("price");
-  console.log(collection, category);
+
+  useEffect(() => {
+    setFilter({ ...filter, name, collectionId, categoryId, price });
+  }, [name, collectionId, categoryId, price]);
 
   const categories = useCategories();
 
   const [loading, setLoading] = useState(false);
 
-  const products = useProducts({});
+  const products = useProducts(filter);
 
   return (
     <>

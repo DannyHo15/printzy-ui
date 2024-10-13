@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import PopularProducts from "../Product/PopularProduct";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -12,9 +11,9 @@ const SearchBar = () => {
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
 
-    if (name) {
-      router.push(`/list?name=${name}`);
-    }
+    const params = new URLSearchParams(window.location.search);
+    params.set("name", name);
+    router.push(`/shop?${params.toString()}`);
   };
 
   const [placeholderIndex, setPlaceholderIndex] = useState(0);

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 function SideCategory({ typesData, categories }: any) {
   const router = useRouter();
+  const categoryRef = useRef<HTMLInputElement[]>([]);
+  const priceRef = useRef<HTMLInputElement[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<any>();
 
   const handleSearchParams = (filterType: string, fileValue: string) => {
     const params = new URLSearchParams(window.location.search);
@@ -29,54 +32,56 @@ function SideCategory({ typesData, categories }: any) {
   const isSectionExpanded = (section: string) =>
     expandedSections.includes(section);
 
+  const clearAllFilters = () => {
+    setFilter({});
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete("category");
+    params.delete("price");
+    router.push(`?${params.toString()}`);
+
+    // Clear the selected radio inputs
+    categoryRef.current.forEach((input) => {
+      if (input) input.checked = false;
+    });
+    priceRef.current.forEach((input) => {
+      if (input) input.checked = false;
+    });
+  };
+
   return (
     <div className="bg-white rounded-3xl px-5 py-6 shadow-lg w-2/3 md:w-1/2 lg:w-auto overflow-y-auto">
-      <form>
+      <div>
         <div className="breadcrumb-link">
           <a
-            href="https://printblur.com/group"
+            href="http://localhost:3000/shop"
             className="text-blue-500 text-sm"
           >
             All Categories
           </a>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="10"
-            height="10"
-            fill="currentColor"
-            className="bi bi-chevron-right inline-block mx-1"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-            ></path>
-          </svg>
-          <a
-            href="https://printblur.com/group/clothing"
-            className="text-blue-500 text-sm"
-          >
-            Clothing
-          </a>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="10"
-            height="10"
-            fill="currentColor"
-            className="bi bi-chevron-right inline-block mx-1"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
-            ></path>
-          </svg>
-          <a
-            href="https://printblur.com/shop/t-shirts"
-            className="text-blue-500 text-sm"
-          >
-            T-Shirts
-          </a>
+          {selectedCategory && (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="10"
+                height="10"
+                fill="currentColor"
+                className="bi bi-chevron-right inline-block mx-1"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+                ></path>
+              </svg>
+              <a
+                href={`http://localhost:3000/shop?category=${selectedCategory.id}`}
+                className="text-blue-500 text-sm"
+              >
+                {selectedCategory?.name}
+              </a>
+            </>
+          )}
         </div>
         <div className="category-item-rating flex items-center">
           <span className="rating-star">⭐</span>
@@ -125,7 +130,7 @@ function SideCategory({ typesData, categories }: any) {
           {isSectionExpanded("category") && (
             <div className="pt-6" id="filter-section-1">
               <div className="space-y-4">
-                {categories?.map((category: any) => (
+                {categories?.map((category: any, index: any) => (
                   <div
                     className="flex items-center"
                     key={`category-box-${category.id}`}
@@ -135,8 +140,12 @@ function SideCategory({ typesData, categories }: any) {
                       name="category[]"
                       value={category.id}
                       type="radio"
-                      onChange={() => toggleFilter("category", category.id)}
+                      onChange={() => {
+                        toggleFilter("category", category.id);
+                        setSelectedCategory(category);
+                      }}
                       className="h-4 w-4 rounded border-gray-300 text-primary"
+                      ref={(el) => (categoryRef.current[index] = el!)}
                     />
                     <label
                       htmlFor={`filter-category-${category.id}`}
@@ -191,7 +200,7 @@ function SideCategory({ typesData, categories }: any) {
                   { label: "From $18.00 - $27.00", value: "18-27" },
                   { label: "From $27.00 - $36.00", value: "27-36" },
                   { label: "From $36.00 - $45.00", value: "36-45" },
-                ].map((price) => (
+                ].map((price, index: any) => (
                   <div className="flex items-center" key={price.value}>
                     <input
                       id={`filter-price-${price.value}`}
@@ -200,6 +209,7 @@ function SideCategory({ typesData, categories }: any) {
                       type="radio"
                       onChange={() => toggleFilter("price", price.value)}
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      ref={(el) => (priceRef.current[index] = el!)}
                     />
                     <label
                       htmlFor={`filter-price-${price.value}`}
@@ -213,7 +223,12 @@ function SideCategory({ typesData, categories }: any) {
             </div>
           )}
         </div>
-      </form>
+        <div className="w-full flex justify-end mt-4">
+          <button className="text-sm underline" onClick={clearAllFilters}>
+            Clear all
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

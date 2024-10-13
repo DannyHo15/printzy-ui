@@ -1,58 +1,58 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { useState } from 'react';
-import { login, register } from '@/api/auth';
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import { login, register } from "@/api/auth";
 
 enum MODE {
-  LOGIN = 'LOGIN',
-  REGISTER = 'REGISTER',
-  RESET_PASSWORD = 'RESET_PASSWORD',
-  EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
+  LOGIN = "LOGIN",
+  REGISTER = "REGISTER",
+  RESET_PASSWORD = "RESET_PASSWORD",
+  EMAIL_VERIFICATION = "EMAIL_VERIFICATION",
 }
 
 const LoginPage = () => {
   const router = useRouter();
 
-  const isLoggedIn = Cookies.get('printzy_ac_token');
+  const isLoggedIn = Cookies.get("printzy_ac_token");
 
   if (isLoggedIn) {
-    router.push('/');
+    router.push("/");
   }
 
   const [mode, setMode] = useState(MODE.LOGIN);
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailCode, setEmailCode] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailCode, setEmailCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const formTitle =
     mode === MODE.LOGIN
-      ? 'Log in'
+      ? "Log in"
       : mode === MODE.REGISTER
-      ? 'Register'
+      ? "Register"
       : mode === MODE.RESET_PASSWORD
-      ? 'Reset Your Password'
-      : 'Verify Your Email';
+      ? "Reset Your Password"
+      : "Verify Your Email";
 
   const buttonTitle =
     mode === MODE.LOGIN
-      ? 'Login'
+      ? "Login"
       : mode === MODE.REGISTER
-      ? 'Register'
+      ? "Register"
       : mode === MODE.RESET_PASSWORD
-      ? 'Reset'
-      : 'Verify';
+      ? "Reset"
+      : "Verify";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       let response;
@@ -89,17 +89,17 @@ const LoginPage = () => {
 
       switch (response?.status) {
         case 201:
-          setMessage('Successful! You are being redirected.');
+          setMessage("Successful! You are being redirected.");
 
           Cookies.set(
-            'printzy_refresh_token',
+            "printzy_refresh_token",
             response.data.payload.refreshToken
           );
-          Cookies.set('printzy_ac_token', response.data.payload.refreshToken);
-          router.push('/');
+          Cookies.set("printzy_ac_token", response.data.payload.refreshToken);
+          router.push("/");
           break;
         case 400:
-          setError(response?.data.message || 'Invalid email or password');
+          setError(response?.data.message || "Invalid email or password");
 
         // case LoginState.EMAIL_VERIFICATION_REQUIRED:
         //   setMode(MODE.EMAIL_VERIFICATION);
@@ -110,7 +110,7 @@ const LoginPage = () => {
       }
     } catch (err) {
       console.log(err);
-      setError('Something went wrong!');
+      setError("Something went wrong!");
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +118,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-[calc(100vh-80px)] px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 flex items-center justify-center">
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-8 w-1/2" onSubmit={handleSubmit}>
         <h1 className="text-2xl font-semibold">{formTitle}</h1>
         {mode === MODE.REGISTER ? (
           <div className="flex flex-col gap-2">
@@ -179,7 +179,7 @@ const LoginPage = () => {
           className="bg-lama text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? 'Loading...' : buttonTitle}
+          {isLoading ? "Loading..." : buttonTitle}
         </button>
         {error && <div className="text-red-600">{error}</div>}
         {mode === MODE.LOGIN && (

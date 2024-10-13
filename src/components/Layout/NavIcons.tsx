@@ -33,8 +33,8 @@ const NavIcons = () => {
   const { wishlist, getWishList } = useWishlistStore();
 
   useEffect(() => {
-    getWishList();
-  }, [getWishList]);
+    if (Cookies.get("printzy_ac_token")) getWishList();
+  }, []);
 
   return (
     <div className="flex items-center gap-4 xl:gap-6 relative">
@@ -117,22 +117,43 @@ const NavIcons = () => {
       {/* Profile Icon */}
       <button onClick={handleProfile} className="flex flex-col items-center">
         <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200">
-          <svg
-            className="w-7 h-7 text-primary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
+          {!Cookies.get("printzy_ac_token") ? (
+            <svg
+              className="w-6 h-6 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+          ) : (
+            <>
+              <svg
+                className="w-7 h-7 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </>
+          )}
         </div>
-        <span className="text-xs text-gray-600 font-semibold">Profile</span>
+        <span className="text-xs text-gray-600 font-semibold">
+          {!Cookies.get("printzy_ac_token") ? "SignIn" : "Account"}
+        </span>
       </button>
 
       {/* Profile Dropdown */}
