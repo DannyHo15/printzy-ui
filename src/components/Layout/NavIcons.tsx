@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -34,6 +33,15 @@ const NavIcons = () => {
 
   useEffect(() => {
     if (Cookies.get("printzy_ac_token")) getWishList();
+  }, []);
+
+  const [session, setSession] = useState("");
+
+  // `setCookie` and `deleteCookie` code here
+
+  useEffect(() => {
+    const current = Cookies.get("printzy_ac_token");
+    if (current) setSession(current);
   }, []);
 
   return (
@@ -117,7 +125,7 @@ const NavIcons = () => {
       {/* Profile Icon */}
       <button onClick={handleProfile} className="flex flex-col items-center">
         <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200">
-          {!Cookies.get("printzy_ac_token") ? (
+          {!session ? (
             <svg
               className="w-6 h-6 text-primary"
               fill="none"
@@ -133,26 +141,24 @@ const NavIcons = () => {
               />
             </svg>
           ) : (
-            <>
-              <svg
-                className="w-7 h-7 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </>
+            <svg
+              className="w-7 h-7 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
           )}
         </div>
         <span className="text-xs text-gray-600 font-semibold">
-          {!Cookies.get("printzy_ac_token") ? "SignIn" : "Account"}
+          {!session ? "SignIn" : "Account"}
         </span>
       </button>
 

@@ -1,7 +1,9 @@
 "use client";
+
 import CategoryList from "@/components/Category/CategoryList";
 import PerfectFitGuarantee from "@/components/PerfectFitGuarantee";
 import ProductList from "@/components/Product/ProductList";
+import ReviewProductList from "@/components/Product/ReviewProductList";
 import Skeleton from "@/components/Skeleton";
 import Slider from "@/components/Slider";
 import { Suspense } from "react";
@@ -48,9 +50,9 @@ export default function Home() {
           </div>
         </h1>
         <Suspense fallback={<Skeleton />}>
-          <ProductList
+          <ReviewProductList
             categoryId={process.env.FEATURED_PRODUCTS_NEW_CATEGORY_ID!}
-            limit={4}
+            limit={5}
           />
         </Suspense>
       </div>

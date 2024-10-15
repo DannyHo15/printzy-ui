@@ -10,6 +10,7 @@ import useOptions from "@/hooks/useOptions";
 import useProducts from "@/hooks/useProducts";
 
 import { Suspense, useState } from "react";
+import useProductReviews from "@/hooks/useProductReviews";
 
 const SinglePage = ({ params }: { params: { slug: string } }) => {
   const product = useDetailProduct(params?.slug);
@@ -56,7 +57,7 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
           <div className="mt-10">
             <h1 className="text-2xl text-primary">Reviews</h1>
             <Suspense fallback="Loading...">
-              <DetailProductReviews />
+              <DetailProductReviews productId={product?.id} />
             </Suspense>
           </div>
           <div className="mt-10">

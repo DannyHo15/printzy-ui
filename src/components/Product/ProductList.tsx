@@ -1,3 +1,4 @@
+import Skeleton from "../Skeleton";
 import ProductCard from "./ProductCard";
 import useProducts from "@/hooks/useProducts";
 
@@ -15,11 +16,17 @@ const ProductList = ({
   const products = useProducts({ limit: limit || 0, skip: 0 });
   return (
     <div className="mt-12 grid gap-x-8 gap-y-16 justify-between grid-cols-5">
-      {products.map((product: any) => (
-        <div key={product.id}>
-          <ProductCard item={product} key={product.id} />
-        </div>
-      ))}
+      {products ? (
+        <>
+          {products.map((product: any) => (
+            <div key={product.id}>
+              <ProductCard item={product} key={product.id} />
+            </div>
+          ))}
+        </>
+      ) : (
+        <Skeleton />
+      )}
     </div>
   );
 };
