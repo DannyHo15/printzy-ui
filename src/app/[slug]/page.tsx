@@ -6,54 +6,39 @@ import DetailProductReviews from "@/components/DetailProduct/DetailProductReview
 import ProductSlide from "@/components/Product/ProductSlide";
 import ProductImages from "@/components/Product/ProductImages";
 import useDetailProduct from "@/hooks/useDetailProduct";
-import useOptions from "@/hooks/useOptions";
 import useProducts from "@/hooks/useProducts";
 
 import { Suspense, useState } from "react";
-import useProductReviews from "@/hooks/useProductReviews";
+import Breadcrumb from "@/components/BreadCrumb";
 
 const SinglePage = ({ params }: { params: { slug: string } }) => {
   const product = useDetailProduct(params?.slug);
-  const products = useProducts({ limit: 5, skip: 0 });
-  const options = useOptions(product?.id);
 
-  const [selectedVariant, setSelectedVariant] = useState({});
+  const products = useProducts({ limit: 5, skip: 0 });
+
+  const [selectedVariant, setSelectedVariant] = useState<any>({});
 
   const categories = [
-    { name: "Clothing", href: "https://printblur.com/group/clothing" },
-    { name: "T-Shirts", href: "https://printblur.com/shop/t-shirts" },
     {
-      name: "Custom T-Shirts",
-      href: "https://printblur.com/shop/custom-t-shirts",
-    },
-  ];
-  const reviewsData = [
-    {
-      title: "Great Product!",
-      comment: "I loved using this product.",
-      rating: 5,
-      progress: 80,
+      name: product?.category?.name,
+      href: `/shop?category=${product?.category?.id}`,
     },
     {
-      title: "Decent",
-      comment: "It was okay, but could be better.",
-      rating: 3,
-      progress: 60,
-    },
-    {
-      title: "Not worth it",
-      comment: "I had high expectations, but it didn’t meet them.",
-      rating: 1,
-      progress: 20,
+      name: product?.collection?.name,
+      href: `/shop?category=${product?.category?.id}&collection=${product?.collection?.id}`,
     },
   ];
 
   return (
     <div className="px-4 md:px-8 lg:px-10 xl:px-20 2xl:px-32 mt-10">
       {/* IMG */}
+      <Breadcrumb categories={categories} />
       <div className="flex flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-7/12 lg:sticky top-20 h-max">
-          <ProductImages items={product?.photos} />
+          <ProductImages
+            items={product?.photos}
+            primaryUpload={selectedVariant?.upload}
+          />
           <div className="mt-10">
             <h1 className="text-2xl text-primary">Reviews</h1>
             <Suspense fallback="Loading...">
@@ -92,14 +77,13 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
           <div className="h-[2px] bg-gray-100" />
           <CustomizeProducts
             productId={product?.id}
-            options={options}
+            productOptions={product?.productOptions}
             setVariant={(variant) => setSelectedVariant(variant)}
           />
           <div className="h-[2px] bg-gray-100" />
           <div>
             <DescriptionProduct
               product={product}
-              options={options}
               categories={categories}
               variant={selectedVariant}
             />

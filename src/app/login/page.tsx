@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { login, register } from "@/api/auth";
@@ -13,12 +13,10 @@ enum MODE {
 }
 
 const LoginPage = () => {
-  const router = useRouter();
-
   const isLoggedIn = Cookies.get("printzy_ac_token");
 
   if (isLoggedIn) {
-    router.push("/");
+    redirect("/");
   }
 
   const [mode, setMode] = useState(MODE.LOGIN);
@@ -66,9 +64,9 @@ const LoginPage = () => {
           break;
         case MODE.REGISTER:
           response = await register({
+            name: username,
             email,
             password,
-            userId: 0,
           });
           break;
         // case MODE.RESET_PASSWORD:
@@ -90,14 +88,31 @@ const LoginPage = () => {
       switch (response?.status) {
         case 201:
           setMessage("Successful! You are being redirected.");
+          if (
+            !response?.data?.payload?.refreshToken ||
+            !response?.data?.payload?.refreshToken
+          ) {
+            const loginResponse = await login({
+              email: response?.data?.email,
+              password: response?.data?.password,
+            });
+            Cookies.set(
+              "printzy_refresh_token",
+              loginResponse.data.payload.refreshToken
+            );
+            Cookies.set(
+              "printzy_ac_token",
+              loginResponse.data.payload.refreshToken
+            );
+            redirect("/");
+          }
 
           Cookies.set(
             "printzy_refresh_token",
             response.data.payload.refreshToken
           );
           Cookies.set("printzy_ac_token", response.data.payload.refreshToken);
-          router.push("/");
-          break;
+          redirect("/");
         case 400:
           setError(response?.data.message || "Invalid email or password");
 
@@ -108,9 +123,8 @@ const LoginPage = () => {
         default:
           break;
       }
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong!");
+    } catch (err: any) {
+      setError(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }

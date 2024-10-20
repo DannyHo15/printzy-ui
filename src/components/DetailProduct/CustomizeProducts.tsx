@@ -6,11 +6,11 @@ import Add from "../Add";
 
 const CustomizeProducts = ({
   productId,
-  options,
+  productOptions,
   setVariant,
 }: {
   productId: string;
-  options: any[];
+  productOptions: any[];
   setVariant: (variant: any) => void;
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<any>();
@@ -41,9 +41,10 @@ const CustomizeProducts = ({
     if (variants && variants.length > 0) {
       setSelectedOptions(
         Object.fromEntries(
-          variants?.[0]?.variantOptionValues?.map(
-            ({ id, optionValueId }: any) => [id, optionValueId]
-          )
+          productOptions?.map(({ option, productOptionValues }: any) => [
+            option.id,
+            productOptionValues[0].optionValue.id,
+          ])
         )
       );
     }
@@ -55,32 +56,39 @@ const CustomizeProducts = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {options?.map((option: any) => (
-        <div className="flex flex-col gap-4" key={option.name}>
-          <h4 className="font-medium">Choose a {option.name}</h4>
+      {productOptions?.map((option: any) => (
+        <div className="flex flex-col gap-4" key={option.option.name}>
+          <h4 className="font-medium">Choose a {option.option.name}</h4>
           <ul className="flex items-center gap-3">
-            {option.optionValues?.map((optionValue: any) => {
+            {option.productOptionValues?.map((optionValue: any) => {
               // const disabled = !isVariantInStock({
               //   ...selectedOptions,
               //   [option.name!]: choice.description!,
               // });
+
               const disabled = false;
 
-              const selected = selectedOptions[option.id!] === optionValue.id;
+              const selected =
+                selectedOptions[optionValue.optionValue.optionId] ===
+                optionValue.optionValue.id;
 
               const clickHandler = disabled
                 ? undefined
-                : () => handleOptionSelect(option.id!, optionValue.id!);
+                : () =>
+                    handleOptionSelect(
+                      optionValue.optionValue.optionId,
+                      optionValue.optionValue.id
+                    );
 
-              return option.name === "Color" ? (
+              return option.option.name === "Color" ? (
                 <li
                   className="relative inline-block group"
-                  key={optionValue.value}
+                  key={optionValue.optionValue.value}
                 >
                   <div
                     className="w-8 h-8 rounded-full ring-1 ring-gray-300 relative"
                     style={{
-                      backgroundColor: optionValue.value,
+                      backgroundColor: optionValue.optionValue.value,
                       cursor: disabled ? "not-allowed" : "pointer",
                     }}
                     onClick={clickHandler}
@@ -94,7 +102,7 @@ const CustomizeProducts = ({
                   </div>
                   {/* Tooltip */}
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-auto p-1 text-sm text-white bg-black rounded opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
-                    {optionValue?.value}
+                    {optionValue.optionValue?.value}
                   </div>
                 </li>
               ) : (
@@ -110,10 +118,10 @@ const CustomizeProducts = ({
                     color: selected || disabled ? "white" : "#f35c7a",
                     boxShadow: disabled ? "none" : "",
                   }}
-                  key={optionValue.value}
+                  key={optionValue.optionValue.value}
                   onClick={clickHandler}
                 >
-                  {optionValue.value}
+                  {optionValue.optionValue.value}
                 </li>
               );
             })}

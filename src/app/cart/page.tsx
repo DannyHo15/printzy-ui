@@ -1,66 +1,32 @@
 "use client";
-// import Link from "next/link";
-import React, { useState } from "react";
-// import NumberFormat from "react-number-format";
-// import { useSelector } from "react-redux";
-// import BasketProduct from "../components/basketproduct";
-// import Header from "../components/header";
-// import { selectItems } from "../slices/basketSlice";
-// import nookies from "nookies";
+
+import React, { useEffect } from "react";
 import Head from "next/head";
-// import { loadStripe } from "@stripe/stripe-js";
-// import axios from "axios";
-import { useRouter } from "next/dist/client/router";
-// const stripePromise = loadStripe(process.env.publishableKey);
 
-function Basket() {
-  //   const router = useRouter();
-  //   const items = useSelector(selectItems);
-  const [loading, setLoading] = useState(false);
-  const [cookie, setCookie] = useState({});
+import Link from "next/link";
+import useCartStore from "@/store/useCartStore";
+import CartProduct from "@/components/Product/CartProduct";
+import { NumericFormat } from "react-number-format";
 
-  //   useEffect(() => {
-  //     const dataCookie = nookies.get();
-  //     try {
-  //       setCookie(JSON.parse(dataCookie.user));
-  //     } catch (err) {
-  //       setCookie(dataCookie.user);
-  //     }
-  //     setTimeout(() => setLoading(false), 500);
-  //   }, []);
+function Cart() {
+  const { cart, getCart, isLoading } = useCartStore();
 
-  //   const createCheckoutSession = async () => {
-  //     setLoading(true);
-  //     if (!cookie) {
-  //       router.push("/login");
-  //       return;
-  //     }
-  //     const stripe = await stripePromise;
-  //     const checkoutSession = await axios.post("/api/checkoutsession", {
-  //       items: items,
-  //       email: cookie.email,
-  //     });
-
-  //     const result = await stripe.redirectToCheckout({
-  //       sessionId: checkoutSession.data.id,
-  //     });
-  //     setLoading(false);
-
-  //     if (result.error) alert(result.error.message);
-  //   };
+  useEffect(() => {
+    getCart();
+  }, []);
 
   return (
     <>
       <Head>
         <title>wefootwear | Basket</title>
       </Head>
-      <div className="w-full min-h-screen relative bg-cusgray pb-10">
+      <div className="w-full min-h-screen relative pb-10">
         {/* <Header /> */}
         <div className="max-w-6xl mx-auto pt-20 px-5">
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-x-4">
             <div className="md:col-span-2 md:mr-5">
               <div className="">
-                <div className="shadow-lg rounded-xl bg-cusblack text-white px-5 py-3">
+                <div className="shadow-lg rounded-xl bg-primary text-white px-5 py-3">
                   <h1 className="font-semibold text-lg md:text-xl mb-1">
                     GET FREE SHIPPING WITH MEMBER+ ON EVERY ORDER
                   </h1>
@@ -69,20 +35,23 @@ function Basket() {
                     or more
                   </p>
                 </div>
-                {/* <div className="rounded-xl bg-white px-5 pt-5 mt-5 shadow-lg overflow-hidden">
-                  <p>Your Basket ({items.length})</p>
+                <div className="rounded-xl bg-white px-5 pt-5 mt-5 shadow-lg overflow-hidden">
+                  <p>Your Cart ({cart?.cartItems?.length})</p>
                   <div className="pt-5 pb-2">
-                    {items.length > 0 &&
-                      items.map((item, idx) => (
-                        <BasketProduct idx={idx} key={item.slug} item={item} />
+                    {cart?.cartItems?.length > 0 &&
+                      cart?.cartItems?.map((item: any, idx: number) => (
+                        <CartProduct
+                          idx={idx}
+                          key={item?.variant?.sku}
+                          item={item}
+                        />
                       ))}
-                    {items.length === 0 && (
+                    {cart?.cartItems?.length === 0 && (
                       <div className="text-gray-400 text-sm mb-10">
                         <img
-                          className="md:w-1/3 object-cover w-full"
+                          className="md:w-1/3 object-cover w-full mx-auto"
                           src="https://i.ibb.co/hWZhd6F/empty-cart-4a7779da-Convert-Image.png"
                           alt=""
-                          className="mx-auto"
                         />
                         <p className="text-center">
                           Your basket is empty,
@@ -95,14 +64,14 @@ function Basket() {
                       </div>
                     )}
                   </div>
-                </div> */}
+                </div>
               </div>
             </div>
 
             <div className="mt-10 md:mt-0 col-span-1">
               <div className="rounded-xl bg-white shadow-lg py-6 px-5">
                 <h1 className="text-cusblack font-bold text-md">SUMMARY</h1>
-                <div className="px-4 py-3 text-xs font-medium flex place-items-center text-gray-400 border border-gray-200 rounded-md my-4">
+                {/* <div className="px-4 py-3 text-xs font-medium flex place-items-center text-gray-400 border border-gray-200 rounded-md my-4">
                   <svg
                     className="w-5 h-5 mr-3"
                     fill="none"
@@ -118,20 +87,25 @@ function Basket() {
                     />
                   </svg>
                   DO YOU HAVE PROMO CODE?
-                </div>
+                </div> */}
 
                 <div className="text-sm pt-1 font-semibold pb-2 border-b border-cusblack flex justify-between place-items-center">
                   <p className="">SUBTOTAL</p>
-                  {/* <NumberFormat
-                    value={items.reduce(
-                      (val, item) => val + item.price * item.quantity,
+                  <NumericFormat
+                    value={cart?.cartItems?.reduce(
+                      (total: number, item: any) =>
+                        total + item.variant.price * item.quantity,
                       0
                     )}
                     displayType={"text"}
                     thousandSeparator={true}
-                    prefix={"Rp"}
-                    renderText={(value, props) => <p {...props}>{value}</p>}
-                  /> */}
+                    prefix={"$"}
+                    renderText={(value) => (
+                      <p className="text-lg font-bold text-primary-price uppercase">
+                        {value}
+                      </p>
+                    )}
+                  />
                 </div>
 
                 <div className="my-3 border-b border-cusblack pb-2">
@@ -151,31 +125,36 @@ function Basket() {
                     </div>
                   ))} */}
                   <div className="flex justify-between place-items-center text-sm mb-1">
-                    <p>TAX</p>
+                    <p>Shipping fee</p>
                     <p>FREE</p>
                   </div>
                 </div>
 
                 <div className="flex justify-between place-items-center font-semibold">
                   <p>TOTAL</p>
-                  {/* <NumberFormat
-                    value={items.reduce(
-                      (val, item) => val + item.price * item.quantity,
+                  <NumericFormat
+                    value={cart?.cartItems?.reduce(
+                      (total: number, item: any) =>
+                        total + item.variant.price * item.quantity,
                       0
                     )}
                     displayType={"text"}
                     thousandSeparator={true}
-                    prefix={"Rp"}
-                    renderText={(value, props) => <p {...props}>{value}</p>}
-                  /> */}
+                    prefix={"$"}
+                    renderText={(value) => (
+                      <p className="text-lg font-bold text-primary-price uppercase">
+                        {value}
+                      </p>
+                    )}
+                  />
                 </div>
 
-                {/* <button
-                  disabled={!items.length}
-                  onClick={createCheckoutSession}
-                  className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-cusblack "
+                <button
+                  disabled={!cart?.cartItems?.length}
+                  // onClick={createCheckoutSession}
+                  className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-secondary "
                 >
-                  {!loading ? (
+                  {!isLoading ? (
                     <span className="flex justify-center place-items-center">
                       CHECKOUT
                       <svg
@@ -200,7 +179,7 @@ function Basket() {
                       alt=""
                     />
                   )}
-                </button> */}
+                </button>
               </div>
             </div>
           </div>
@@ -210,4 +189,4 @@ function Basket() {
   );
 }
 
-export default Basket;
+export default Cart;

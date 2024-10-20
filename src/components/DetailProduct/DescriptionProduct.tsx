@@ -3,12 +3,10 @@ import ProductPropertiesTable from "./ProductPropertiesTable";
 
 const DescriptionProduct = ({
   product,
-  options,
   categories,
   variant,
 }: {
   product: any;
-  options: any[];
   variant: any;
   categories: any;
 }) => {
@@ -30,7 +28,7 @@ const DescriptionProduct = ({
         }`}
       >
         <ProductPropertiesTable
-          options={options}
+          options={product?.productOptions}
           categories={categories}
           product={product}
           variant={variant}

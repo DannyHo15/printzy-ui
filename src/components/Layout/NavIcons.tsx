@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import CartModal from "./CartModal";
 import { useWishlistStore } from "@/store/useWishList";
+import useCartStore from "@/store/useCartStore";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -11,6 +12,7 @@ const NavIcons = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const isLoggedIn = Cookies.get("printzy_ac_token");
 
   const handleProfile = () => {
@@ -27,22 +29,27 @@ const NavIcons = () => {
     Cookies.remove("printzy_refresh_token");
     setIsLoading(false);
     setIsProfileOpen(false);
+    setSession("");
+    router.push("/login");
   };
 
   const { wishlist, getWishList } = useWishlistStore();
+  const { cart, getCart } = useCartStore();
 
   useEffect(() => {
-    if (Cookies.get("printzy_ac_token")) getWishList();
+    if (Cookies.get("printzy_ac_token")) {
+      getWishList();
+      getCart();
+    }
   }, []);
 
   const [session, setSession] = useState("");
 
-  // `setCookie` and `deleteCookie` code here
-
   useEffect(() => {
     const current = Cookies.get("printzy_ac_token");
+
     if (current) setSession(current);
-  }, []);
+  }, [pathname]);
 
   return (
     <div className="flex items-center gap-4 xl:gap-6 relative">
@@ -98,29 +105,36 @@ const NavIcons = () => {
       </Link>
 
       {/* Cart Icon */}
-      <div
-        onClick={() => setIsCartOpen((prev) => !prev)}
-        className="flex flex-col items-center"
-      >
-        <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200 relative">
-          <svg
-            className="w-7 h-7 text-primary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            />
-          </svg>
-          {isCartOpen && <CartModal />}
+      <Link href="/cart">
+        <div
+          onClick={() => setIsCartOpen((prev) => !prev)}
+          className="flex flex-col items-center"
+        >
+          <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200 relative">
+            <svg
+              className="w-7 h-7 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              />
+            </svg>
+            {cart?.cartItems?.length > 0 && (
+              <div className="absolute text-xs font-light justify-center text-white text-center w-4 h-4 bg-lama rounded-full bottom-0 right-0">
+                {cart?.cartItems?.length}
+              </div>
+            )}
+            {isCartOpen && <CartModal />}
+          </div>
+          <span className="text-xs text-gray-600 font-semibold">Cart</span>
         </div>
-        <span className="text-xs text-gray-600 font-semibold">Cart</span>
-      </div>
+      </Link>
 
       {/* Profile Icon */}
       <button onClick={handleProfile} className="flex flex-col items-center">

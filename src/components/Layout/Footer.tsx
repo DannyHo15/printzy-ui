@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -25,10 +25,10 @@ const Footer = () => {
               <div className="text-2xl tracking-wide">PRINTZY</div>
             </Link>
             <p>
-              3252 Winding Way, Central Plaza, Willowbrook, CA 90210, United
-              States
+              1 Vo Van Ngan Street, Linh Chieu Ward, Thu Duc City, Ho Chi Minh
+              City, Vietnam
             </p>
-            <span className="font-semibold">hello@printzy.dev</span>
+            <span className="font-semibold">support@printzy.business</span>
             <span className="font-semibold">+1 234 567 890</span>
             <div className="flex gap-6">
               <Image src="/facebook.png" alt="" width={16} height={16} />

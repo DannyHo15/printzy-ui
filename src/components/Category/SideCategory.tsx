@@ -1,11 +1,13 @@
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import useOptions from "@/hooks/useOptions";
 
 function SideCategory({ typesData, categories }: any) {
   const router = useRouter();
   const categoryRef = useRef<HTMLInputElement[]>([]);
   const priceRef = useRef<HTMLInputElement[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>();
+  const options = useOptions();
 
   const handleSearchParams = (filterType: string, fileValue: string) => {
     const params = new URLSearchParams(window.location.search);
@@ -103,7 +105,7 @@ function SideCategory({ typesData, categories }: any) {
               aria-expanded={isSectionExpanded("category")}
               onClick={() => toggleSection("category")}
             >
-              <span className="font-medium text-cusblack text-lg">
+              <span className="font-medium text-cusblack text-base">
                 Category
               </span>
               <span className="ml-6 flex items-center">
@@ -169,7 +171,7 @@ function SideCategory({ typesData, categories }: any) {
               aria-expanded={isSectionExpanded("price")}
               onClick={() => toggleSection("price")}
             >
-              <span className="font-medium text-cusblack text-lg">Price</span>
+              <span className="font-medium text-cusblack text-base">Price</span>
               <span className="ml-6 flex items-center">
                 {isSectionExpanded("price") ? (
                   <svg
@@ -223,6 +225,69 @@ function SideCategory({ typesData, categories }: any) {
             </div>
           )}
         </div>
+        {options?.map((option: any, index: any) => (
+          <div className="border-b border-slate-400 py-6">
+            <h3 className="-my-3 flow-root">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+                aria-controls="filter-section-0"
+                aria-expanded={isSectionExpanded(option.name)}
+                onClick={() => toggleSection(option.name)}
+              >
+                <span className="font-medium text-cusblack text-base">
+                  {option.name}
+                </span>
+                <span className="ml-6 flex items-center">
+                  {isSectionExpanded(option.name) ? (
+                    <svg
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentprice"
+                    >
+                      <path d="M5.23 12.79a.75.75 0 0 0 1.06 0L10 9.06l3.71 3.73a.75.75 0 0 0 1.06-1.06l-4.24-4.25a.75.75 0 0 0-1.06 0L5.23 11.73a.75.75 0 0 0 0 1.06Z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentprice"
+                    >
+                      <path d="M5.23 7.21a.75.75 0 0 1 1.06 0L10 10.94l3.71-3.73a.75.75 0 0 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.23 8.27a.75.75 0 0 1 0-1.06Z" />
+                    </svg>
+                  )}
+                </span>
+              </button>
+            </h3>
+            {isSectionExpanded(option.name) && (
+              <div className="pt-6" id="filter-section-0">
+                <div className="space-y-4">
+                  {option?.optionValues.map((optionValue: any, index: any) => (
+                    <div className="flex items-center" key={optionValue.value}>
+                      <input
+                        id={`filter-${optionValue.value}`}
+                        name="price[]"
+                        value={optionValue.id}
+                        type="checkbox"
+                        onChange={() =>
+                          toggleFilter(option.name, optionValue.id)
+                        }
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        ref={(el) => (priceRef.current[index] = el!)}
+                      />
+                      <label
+                        htmlFor={`filter-${optionValue.value}`}
+                        className="ml-3 text-sm text-gray-600 text-primary hover:text-secondary hover:underline"
+                      >
+                        {optionValue.value}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
         <div className="w-full flex justify-end mt-4">
           <button className="text-sm underline" onClick={clearAllFilters}>
             Clear all

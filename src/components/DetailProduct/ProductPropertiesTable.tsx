@@ -1,4 +1,3 @@
-import useOptions from "@/hooks/useOptions";
 import Link from "next/link";
 
 const ProductPropertiesTable = ({
@@ -37,10 +36,14 @@ const ProductPropertiesTable = ({
           </td>
         </tr>
         {options?.map((option: any, index: any) => (
-          <tr key={option.id}>
-            <td className="font-bold p-2 border border-gray">{option.name}</td>
+          <tr key={option.option.id}>
+            <td className="font-bold p-2 border border-gray">
+              {option.option.name}
+            </td>
             <td className="p-2 border border-gray">
-              {option.optionValues.map((item: any) => item.value).join(", ")}
+              {option.productOptionValues
+                .map((item: any) => item.optionValue.value)
+                .join(", ")}
             </td>
           </tr>
         ))}

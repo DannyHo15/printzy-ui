@@ -107,7 +107,7 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
                 <div className="space-y-0.5">
                   <div className="flex justify-between">
                     <p className="text-base font-semibold text-gray-900 ">
-                      {review?.user?.email}
+                      {review?.user?.name}
                     </p>
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: review?.rating || 0 }, (_, i) => (
@@ -128,8 +128,11 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-2 min-w-0 flex-1 space-y-4">
-                <p className="text-sm font-normal text-gray-400">
+              <div className="mt-2 min-w-0 flex-1 space-y-1">
+                <p className="text-base italic text-gray-400 text-primary">
+                  {review?.title}
+                </p>
+                <p className="text-sm font-normal text-gray-400 line-clamp-1">
                   {review?.review}
                 </p>
               </div>

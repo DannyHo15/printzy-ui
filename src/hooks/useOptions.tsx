@@ -1,7 +1,7 @@
 import optionsService from "@/api/options";
 import { useState, useEffect } from "react";
 
-const useOptions = (id?: string) => {
+const useOptions = () => {
   const [options, setOption] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -10,13 +10,7 @@ const useOptions = (id?: string) => {
     const fetchOption = async () => {
       try {
         setLoading(true);
-        let result: any;
-        if (id) {
-          result = await optionsService.getListByProductId(id);
-        } else {
-          result = await optionsService.getList();
-        }
-
+        const result = await optionsService.getList();
         setOption(result?.data);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -25,7 +19,7 @@ const useOptions = (id?: string) => {
       }
     };
     fetchOption();
-  }, [id]);
+  }, []);
 
   return options;
 };

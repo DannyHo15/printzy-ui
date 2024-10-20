@@ -2,6 +2,7 @@
 
 import CategoryList from "@/components/Category/CategoryList";
 import PerfectFitGuarantee from "@/components/PerfectFitGuarantee";
+import CollectionTabs from "@/components/Product/CollectionTab";
 import ProductList from "@/components/Product/ProductList";
 import ReviewProductList from "@/components/Product/ReviewProductList";
 import Skeleton from "@/components/Skeleton";
@@ -16,6 +17,11 @@ export default function Home() {
         <Suspense fallback={<Skeleton />}>
           <CategoryList />
         </Suspense>
+      </div>
+      <div className="mt-24 px-4 md:px-32">
+        <div>
+          <CollectionTabs />
+        </div>
       </div>
       <div className="mt-24 px-4 md:px-32">
         <h1 className="text-xl text-primary font-semibold border-l-8 border-secondary">
