@@ -2,9 +2,14 @@ import { Suspense, useState } from "react";
 import Skeleton from "../Skeleton";
 import ProductList from "./ProductList";
 import Link from "next/link";
+import useCollections from "@/hooks/useCollections";
 
 export default function CollectionTabs() {
+  const collections = useCollections();
   const [activeTab, setActiveTab] = useState("event-tab-5");
+  const [selectedCollectionId, setSelectedCollectionI] = useState<
+    number | null
+  >(null);
 
   const openTabEvent = (tabId: any) => {
     setActiveTab(tabId);
@@ -13,66 +18,28 @@ export default function CollectionTabs() {
   return (
     <div className="w-full">
       <div className="flex flex-wrap gap-4 mb-4 overflow-hidden rounded-lg">
-        <button
-          type="button"
-          className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
-            activeTab === "event-tab-1"
-              ? "bg-secondary text-white"
-              : "bg-slate-100"
-          }`}
-          onClick={() => openTabEvent("event-tab-1")}
-        >
-          Trending T-Shirts
-        </button>
-        <button
-          type="button"
-          className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
-            activeTab === "event-tab-2"
-              ? "bg-secondary text-white"
-              : "bg-slate-100"
-          }`}
-          onClick={() => openTabEvent("event-tab-2")}
-        >
-          Hawaiians
-        </button>
-        <button
-          type="button"
-          className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
-            activeTab === "event-tab-3"
-              ? "bg-secondary text-white"
-              : "bg-slate-100"
-          }`}
-          onClick={() => openTabEvent("event-tab-3")}
-        >
-          Clogs
-        </button>
-        <button
-          type="button"
-          className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
-            activeTab === "event-tab-4"
-              ? "bg-secondary text-white"
-              : "bg-slate-100"
-          }`}
-          onClick={() => openTabEvent("event-tab-4")}
-        >
-          Baseball Jersey
-        </button>
-        <button
-          type="button"
-          className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
-            activeTab === "event-tab-5"
-              ? "bg-secondary text-white"
-              : "bg-slate-100"
-          }`}
-          onClick={() => openTabEvent("event-tab-5")}
-        >
-          Leather Bags
-        </button>
+        {collections?.slice(0, 4)?.map((collection, index: number) => (
+          <button
+            type="button"
+            className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
+              activeTab === `event-tab-${index}`
+                ? "bg-secondary text-white"
+                : "bg-slate-100"
+            }`}
+            onClick={() => {
+              openTabEvent(`event-tab-${index}`);
+              setSelectedCollectionI(collection.id);
+            }}
+          >
+            {collection.name}
+          </button>
+        ))}
       </div>
       <Suspense fallback={<Skeleton />}>
         <ProductList
           categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
           limit={10}
+          searchParams={{ collectionId: selectedCollectionId }}
         />
       </Suspense>
       <div className="flex justify-center w-full">

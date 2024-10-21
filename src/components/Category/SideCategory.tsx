@@ -4,22 +4,61 @@ import useOptions from "@/hooks/useOptions";
 
 function SideCategory({ typesData, categories }: any) {
   const router = useRouter();
-  const categoryRef = useRef<HTMLInputElement[]>([]);
-  const priceRef = useRef<HTMLInputElement[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<any>();
   const options = useOptions();
 
-  const handleSearchParams = (filterType: string, fileValue: string) => {
+  const categoryRef = useRef<HTMLInputElement[]>([]);
+  const priceRef = useRef<HTMLInputElement[]>([]);
+  const [filter, setFilter] = useState<any>({});
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const [checkedFilters, setCheckedFilters] = useState<{
+    [key: string]: Set<string>;
+  }>({});
+
+  const [selectedCategory, setSelectedCategory] = useState<any>();
+
+  const handleSearchParams = (type: string, value: string) => {
+    if (!type || !value) return;
+
+    const lowercaseType = type.toLowerCase();
     const params = new URLSearchParams(window.location.search);
-    params.set(filterType, fileValue);
+
+    const currentValues = params.get(lowercaseType);
+
+    if (currentValues && type !== "category" && type !== "price") {
+      const valuesArray = currentValues.split(",");
+
+      if (valuesArray.includes(value.toString())) {
+        const newValues = valuesArray.filter((v) => v != value);
+        if (newValues.length > 0) {
+          params.set(lowercaseType, newValues.join(","));
+        } else {
+          params.delete(lowercaseType);
+        }
+      } else {
+        valuesArray.push(value);
+        params.set(lowercaseType, valuesArray.join(","));
+      }
+    } else {
+      params.set(lowercaseType, value);
+    }
+
     router.push(`?${params.toString()}`);
   };
 
-  const [filter, setFilter] = useState<any>({});
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
-
   const toggleFilter = (filterType: string, value: string) => {
     setFilter({ ...filter, [filterType]: value });
+    handleSearchParams(filterType, value);
+  };
+  const toggleFilterDynamic = (filterType: string, value: string) => {
+    setCheckedFilters((prev) => {
+      const newSet = new Set(prev[filterType] || []);
+      if (newSet.has(value)) {
+        newSet.delete(value);
+      } else {
+        newSet.add(value);
+      }
+      return { ...prev, [filterType]: newSet };
+    });
     handleSearchParams(filterType, value);
   };
 
@@ -35,14 +74,13 @@ function SideCategory({ typesData, categories }: any) {
     expandedSections.includes(section);
 
   const clearAllFilters = () => {
+    setCheckedFilters({});
     setFilter({});
 
-    const params = new URLSearchParams(window.location.search);
-    params.delete("category");
-    params.delete("price");
+    const params = new URLSearchParams();
+
     router.push(`?${params.toString()}`);
 
-    // Clear the selected radio inputs
     categoryRef.current.forEach((input) => {
       if (input) input.checked = false;
     });
@@ -52,7 +90,7 @@ function SideCategory({ typesData, categories }: any) {
   };
 
   return (
-    <div className="bg-white rounded-3xl px-5 py-6 shadow-lg w-2/3 md:w-1/2 lg:w-auto overflow-y-auto">
+    <div className="bg-white rounded-3xl px-5 py-6 shadow-lg w-2/3 md:w-1/2 lg:w-auto overflow-y-auto max-h-full">
       <div>
         <div className="breadcrumb-link">
           <a
@@ -147,7 +185,7 @@ function SideCategory({ typesData, categories }: any) {
                         setSelectedCategory(category);
                       }}
                       className="h-4 w-4 rounded border-gray-300 text-primary"
-                      ref={(el) => (categoryRef.current[index] = el!)}
+                      ref={(el: any) => (categoryRef.current[index] = el!)}
                     />
                     <label
                       htmlFor={`filter-category-${category.id}`}
@@ -211,7 +249,7 @@ function SideCategory({ typesData, categories }: any) {
                       type="radio"
                       onChange={() => toggleFilter("price", price.value)}
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                      ref={(el) => (priceRef.current[index] = el!)}
+                      ref={(el: any) => (priceRef.current[index] = el!)}
                     />
                     <label
                       htmlFor={`filter-price-${price.value}`}
@@ -266,14 +304,17 @@ function SideCategory({ typesData, categories }: any) {
                     <div className="flex items-center" key={optionValue.value}>
                       <input
                         id={`filter-${optionValue.value}`}
-                        name="price[]"
+                        name={`${option.name}'[]'`}
                         value={optionValue.id}
                         type="checkbox"
                         onChange={() =>
-                          toggleFilter(option.name, optionValue.id)
+                          toggleFilterDynamic(option.name, optionValue.id)
                         }
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        ref={(el) => (priceRef.current[index] = el!)}
+                        checked={
+                          checkedFilters[option.name]?.has(optionValue.id) ||
+                          false
+                        }
                       />
                       <label
                         htmlFor={`filter-${optionValue.value}`}

@@ -7,7 +7,19 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useWishlistStore } from "@/store/useWishList";
 import WishlistProduct from "@/components/WishlistProduct";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
 function WishList() {
+  const router = useRouter();
+
+  const isLoggedIn = Cookies.get("printzy_ac_token");
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
+  }, []);
   const { wishlist } = useWishlistStore();
   return (
     <>

@@ -7,11 +7,19 @@ import Link from "next/link";
 import useCartStore from "@/store/useCartStore";
 import CartProduct from "@/components/Product/CartProduct";
 import { NumericFormat } from "react-number-format";
+import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
 
 function Cart() {
   const { cart, getCart, isLoading } = useCartStore();
+  const router = useRouter();
+
+  const isLoggedIn = Cookies.get("printzy_ac_token");
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
     getCart();
   }, []);
 

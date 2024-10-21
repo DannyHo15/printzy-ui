@@ -1,5 +1,8 @@
 import React from "react";
 import Image from "next/image";
+
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { NumericFormat } from "react-number-format";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -7,6 +10,17 @@ import { useWishlistStore } from "@/store/useWishList";
 
 function ProductCard({ item }: any) {
   const { addWishList } = useWishlistStore();
+  const router = useRouter();
+
+  const handleAddWishList = (id: string) => {
+    const isLoggedIn = Cookies.get("printzy_ac_token");
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      addWishList(item.id);
+    }
+  };
+
   return (
     <div className="rounded-xl cursor-pointer">
       <div className="overflow-hidden cursor-default rounded-xl relative group">
@@ -29,7 +43,7 @@ function ProductCard({ item }: any) {
         <div className="absolute w-full bg-gray-500 top-0 flex justify-between place-items-start z-10 mt-2">
           <div className="flex cursor-pointer ml-2">
             <button
-              onClick={() => addWishList(item.id)}
+              onClick={() => handleAddWishList(item.id)}
               className="p-2 bg-white hover:bg-gray-100 active:bg-gray-200 rounded-full "
             >
               <svg
@@ -58,7 +72,7 @@ function ProductCard({ item }: any) {
           </div>
         </div>
       </div>
-      <Link href={"/" + item.slug} key={item._id} className="px-2 py-2">
+      <Link href={"/" + item.slug} key={item._id} className="mt-0.5">
         <p className="text-sm line-clamp-1 text-primary font-semibold">
           {item.name}
         </p>

@@ -13,7 +13,7 @@ const ProductList = ({
   limit?: number;
   searchParams?: any;
 }) => {
-  const products = useProducts({ limit: limit || 0, skip: 0 });
+  const products = useProducts({ limit: limit || 0, skip: 0, ...searchParams });
   return (
     <div className="mt-12 grid gap-x-8 gap-y-16 justify-between grid-cols-5">
       {products ? (
