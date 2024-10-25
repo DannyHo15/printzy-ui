@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import useCartStore from "@/store/useCartStore";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import CheckoutProduct from "@/components/Product/CheckoutProduct";
+import useCartStore from '@/store/useCartStore';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import CheckoutProduct from '@/components/Product/CheckoutProduct';
 
 const CheckoutPage = () => {
   const { cart, getCart } = useCartStore();
@@ -13,11 +13,11 @@ const CheckoutPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const router = useRouter();
 
-  const isLoggedIn = Cookies.get("printzy_ac_token");
+  const isLoggedIn = Cookies.get('printzy_ac_token');
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push("/login");
+      router.push('/login');
     }
     getCart();
   }, []);
@@ -26,8 +26,6 @@ const CheckoutPage = () => {
     let cal = 0;
     setProductCheckout(cart);
     cart?.cartItems?.map((item: any) => {
-      console.log(item);
-
       cal = cal + item.variant.price * item.quantity;
     });
     setSubTotal(cal);
@@ -36,8 +34,8 @@ const CheckoutPage = () => {
   return (
     <section className="bg-white py-8 antialiased md:py-16">
       <form action="#" className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 sm:text-base">
-          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+        <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium sm:text-base">
+          <li className="after:border-1 flex items-center text-secondary after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
             <span className="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] sm:after:hidden">
               <svg
                 className="me-2 h-4 w-4 sm:h-5 sm:w-5"
@@ -60,7 +58,7 @@ const CheckoutPage = () => {
             </span>
           </li>
 
-          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+          <li className="after:border-1 flex items-center text-secondary after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
             <span className="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] sm:after:hidden">
               <svg
                 className="me-2 h-4 w-4 sm:h-5 sm:w-5"
@@ -118,8 +116,8 @@ const CheckoutPage = () => {
                     htmlFor="your_name"
                     className="mb-2 block text-sm font-medium text-gray-900"
                   >
-                    {" "}
-                    Your name{" "}
+                    {' '}
+                    Your name{' '}
                   </label>
                   <input
                     type="text"
@@ -135,8 +133,8 @@ const CheckoutPage = () => {
                     htmlFor="your_email"
                     className="mb-2 block text-sm font-medium text-gray-900"
                   >
-                    {" "}
-                    Your email*{" "}
+                    {' '}
+                    Your email*{' '}
                   </label>
                   <input
                     type="email"
@@ -153,8 +151,8 @@ const CheckoutPage = () => {
                       htmlFor="select-country-input-3"
                       className="block text-sm font-medium text-gray-900"
                     >
-                      {" "}
-                      Country*{" "}
+                      {' '}
+                      Country*{' '}
                     </label>
                   </div>
                   <select
@@ -175,8 +173,8 @@ const CheckoutPage = () => {
                       htmlFor="select-city-input-3"
                       className="block text-sm font-medium text-gray-900"
                     >
-                      {" "}
-                      City*{" "}
+                      {' '}
+                      City*{' '}
                     </label>
                   </div>
                   <select
@@ -196,8 +194,8 @@ const CheckoutPage = () => {
                     htmlFor="phone-input-3"
                     className="mb-2 block text-sm font-medium text-gray-900"
                   >
-                    {" "}
-                    Phone Number*{" "}
+                    {' '}
+                    Phone Number*{' '}
                   </label>
                   <div className="flex items-center">
                     <button
@@ -787,8 +785,8 @@ const CheckoutPage = () => {
                     htmlFor="email"
                     className="mb-2 block text-sm font-medium text-gray-900"
                   >
-                    {" "}
-                    Email{" "}
+                    {' '}
+                    Email{' '}
                   </label>
                   <input
                     type="email"
@@ -850,8 +848,8 @@ const CheckoutPage = () => {
                         htmlFor="credit-card"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        Credit Card{" "}
+                        {' '}
+                        Credit Card{' '}
                       </label>
                       <p
                         id="credit-card-text"
@@ -899,8 +897,8 @@ const CheckoutPage = () => {
                         htmlFor="pay-on-delivery"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        Payment on delivery{" "}
+                        {' '}
+                        Payment on delivery{' '}
                       </label>
                       <p
                         id="pay-on-delivery-text"
@@ -948,8 +946,8 @@ const CheckoutPage = () => {
                         htmlFor="paypal-2"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        Paypal account{" "}
+                        {' '}
+                        Paypal account{' '}
                       </label>
                       <p
                         id="paypal-text"
@@ -1006,8 +1004,8 @@ const CheckoutPage = () => {
                         htmlFor="dhl"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        $15 - DHL Fast Delivery{" "}
+                        {' '}
+                        $15 - DHL Fast Delivery{' '}
                       </label>
                       <p
                         id="dhl-text"
@@ -1037,8 +1035,8 @@ const CheckoutPage = () => {
                         htmlFor="fedex"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        Free Delivery - FedEx{" "}
+                        {' '}
+                        Free Delivery - FedEx{' '}
                       </label>
                       <p
                         id="fedex-text"
@@ -1068,8 +1066,8 @@ const CheckoutPage = () => {
                         htmlFor="express"
                         className="font-medium leading-none text-gray-900"
                       >
-                        {" "}
-                        $49 - Express Delivery{" "}
+                        {' '}
+                        $49 - Express Delivery{' '}
                       </label>
                       <p
                         id="express-text"
@@ -1088,8 +1086,8 @@ const CheckoutPage = () => {
                 htmlFor="voucher"
                 className="mb-2 block text-sm font-medium text-gray-900"
               >
-                {" "}
-                Enter a gift card, voucher or promotional code{" "}
+                {' '}
+                Enter a gift card, voucher or promotional code{' '}
               </label>
               <div className="flex max-w-md items-center gap-4">
                 <input
@@ -1131,7 +1129,7 @@ const CheckoutPage = () => {
                     <p className="text-center">
                       Your basket is empty,
                       <br />
-                      to start shopping click{" "}
+                      to start shopping click{' '}
                       <span className="underline">
                         <Link href="/shop">here</Link>
                       </span>
@@ -1161,7 +1159,7 @@ const CheckoutPage = () => {
                 <dl className="flex items-center justify-between gap-4 py-3">
                   <dt className="text-base font-bold text-gray-900">Total</dt>
                   <dd className="text-base font-bold text-gray-900">
-                    $8,392.00
+                    ${subTotal}
                   </dd>
                 </dl>
               </div>
