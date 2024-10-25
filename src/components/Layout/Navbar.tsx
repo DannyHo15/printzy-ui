@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import Menu from "./Menu";
 import NavIcons from "./NavIcons";
 import useCategories from "@/hooks/useCategories";
+import ThemeToggle from "./themeToggle/theme-toggle";
 
 interface Collection {
   id: string;
@@ -62,9 +63,10 @@ const Navbar = () => {
           </Link>
         </div>
         {/* CENTER (SearchBar and Dropdown) */}
-        <div className="w-1/2 xl:w-9/12 flex items-center justify-center mt-8">
+        <div className="w-1/2 xl:w-9/12 flex items-center justify-center h-full">
           <div className="w-full">
             <SearchBar />
+
             {/* Dropdowns for each category */}
             <div className="flex gap-4 justify-center mt-2">
               {categories.map((category) => (

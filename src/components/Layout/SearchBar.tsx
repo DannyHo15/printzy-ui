@@ -33,7 +33,7 @@ const SearchBar = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex(
-        (prevIndex) => (prevIndex + 1) % trendingSearches.length
+        (prevIndex) => (prevIndex + 1) % trendingSearches.length,
       );
     }, 5000); // Change every 5 seconds
     return () => clearInterval(interval);
@@ -45,17 +45,11 @@ const SearchBar = () => {
         className="relative flex items-center justify-between gap-4 border-secondary border-2 p-2 rounded-full flex-1 w-full"
         onSubmit={handleSearch}
       >
-        {!inputFocused && (
-          <div className="absolute inset-0 flex items-center px-4 pointer-events-none">
-            <p className="carousel-placeholder text-gray-400">
-              {trendingSearches[placeholderIndex]}
-            </p>
-          </div>
-        )}
         <input
           type="text"
           name="name"
           className="flex-1 bg-transparent outline-none px-4 z-10"
+          placeholder={trendingSearches[placeholderIndex]}
           onFocus={() => setInputFocused(true)}
           onBlur={() => setInputFocused(false)}
         />
