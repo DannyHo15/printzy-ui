@@ -6,6 +6,7 @@ import CartModal from "./CartModal";
 import { useWishlistStore } from "@/store/useWishList";
 import { useUserStore } from "@/store/user/user.store";
 import { createSelectors } from "@/lib/auto-genarate-selector";
+import useCartStore from "@/store/useCartStore";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);

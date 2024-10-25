@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import Cookies from "js-cookie";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import { login, register } from "@/api/auth";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useUserStore } from "@/store/user/user.store";
 
 enum MODE {
   LOGIN = "LOGIN",
@@ -15,8 +13,11 @@ enum MODE {
 }
 
 const LoginPage = () => {
-  const router = useRouter();
   const isLoggedIn = Cookies.get("printzy_ac_token");
+
+  if (isLoggedIn) {
+    redirect("/");
+  }
 
   const [mode, setMode] = useState(MODE.LOGIN);
 
@@ -28,34 +29,23 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  //STORE
-  const userStore = createSelectors(useUserStore);
-  const user = userStore.use.user();
-  const setUserAction = userStore.use.setUser();
-
-  useLayoutEffect(() => {
-    if (isLoggedIn) {
-      router.push("/");
-    }
-  }, [isLoggedIn]);
-
   const formTitle =
     mode === MODE.LOGIN
       ? "Log in"
       : mode === MODE.REGISTER
-        ? "Register"
-        : mode === MODE.RESET_PASSWORD
-          ? "Reset Your Password"
-          : "Verify Your Email";
+      ? "Register"
+      : mode === MODE.RESET_PASSWORD
+      ? "Reset Your Password"
+      : "Verify Your Email";
 
   const buttonTitle =
     mode === MODE.LOGIN
       ? "Login"
       : mode === MODE.REGISTER
-        ? "Register"
-        : mode === MODE.RESET_PASSWORD
-          ? "Reset"
-          : "Verify";
+      ? "Register"
+      : mode === MODE.RESET_PASSWORD
+      ? "Reset"
+      : "Verify";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,11 +64,9 @@ const LoginPage = () => {
           break;
         case MODE.REGISTER:
           response = await register({
-            email,
-            firstName: username,
             name: username,
+            email,
             password,
-            userId: 0,
           });
           break;
         // case MODE.RESET_PASSWORD:
@@ -100,20 +88,31 @@ const LoginPage = () => {
       switch (response?.status) {
         case 201:
           setMessage("Successful! You are being redirected.");
-          localStorage.setItem("userId", response.data?.user?.id ?? "");
-          setUserAction(response.data?.user);
+          if (
+            !response?.data?.payload?.refreshToken ||
+            !response?.data?.payload?.refreshToken
+          ) {
+            const loginResponse = await login({
+              email: response?.data?.email,
+              password: response?.data?.password,
+            });
+            Cookies.set(
+              "printzy_refresh_token",
+              loginResponse.data.payload.refreshToken
+            );
+            Cookies.set(
+              "printzy_ac_token",
+              loginResponse.data.payload.refreshToken
+            );
+            redirect("/");
+          }
+
           Cookies.set(
             "printzy_refresh_token",
-            response.data.payload.refreshToken,
-            {
-              path: "/",
-            },
+            response.data.payload.refreshToken
           );
-          Cookies.set("printzy_ac_token", response.data.payload.refreshToken, {
-            path: "/",
-          });
-          router.push("/");
-          break;
+          Cookies.set("printzy_ac_token", response.data.payload.refreshToken);
+          redirect("/");
         case 400:
           setError(response?.data.message || "Invalid email or password");
 
@@ -124,9 +123,8 @@ const LoginPage = () => {
         default:
           break;
       }
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong!");
+    } catch (err: any) {
+      setError(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }
@@ -134,7 +132,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-[calc(100vh-80px)] px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 flex items-center justify-center">
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-8 w-1/2" onSubmit={handleSubmit}>
         <h1 className="text-2xl font-semibold">{formTitle}</h1>
         {mode === MODE.REGISTER ? (
           <div className="flex flex-col gap-2">
