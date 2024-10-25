@@ -1,14 +1,14 @@
-import { SCHEMA } from '@/constant/schema';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { SCHEMA } from "@/constant/schema";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const getBearerToken = () => {
-  return Cookies.get('printzy_ac_token'); // Replace with your actual cookie name
+  return Cookies.get("printzy_ac_token"); // Replace with your actual cookie name
 };
 
 export const getList = async () => {
   const res = await axios({
-    method: 'GET',
+    method: "GET",
     url: `${SCHEMA.API_BASE}/cart`,
     headers: {
       Authorization: `Bearer ${getBearerToken()}`,
@@ -23,7 +23,7 @@ export const add = async (
   quantity: number
 ) => {
   const res = await axios({
-    method: 'POST',
+    method: "POST",
     url: `${SCHEMA.API_BASE}/cart/add`,
     data: { productId, customizeUploadId, quantity },
     headers: {
@@ -33,11 +33,15 @@ export const add = async (
   return res;
 };
 
-export const update = async (productId: number, quantity: number) => {
+export const update = async (
+  productId: number,
+  variantId: number,
+  quantity: number
+) => {
   const res = await axios({
-    method: 'PUT',
+    method: "PUT",
     url: `${SCHEMA.API_BASE}/cart/update`,
-    data: { productId, quantity },
+    data: { productId, variantId, quantity },
     headers: {
       Authorization: `Bearer ${getBearerToken()}`,
     },
@@ -45,11 +49,11 @@ export const update = async (productId: number, quantity: number) => {
   return res;
 };
 
-export const remove = async (productId: number) => {
+export const remove = async (productId: number, variantId: number) => {
   const res = await axios({
-    method: 'DELETE',
+    method: "DELETE",
     url: `${SCHEMA.API_BASE}/cart/remove`,
-    data: { productId },
+    data: { productId, variantId },
     headers: {
       Authorization: `Bearer ${getBearerToken()}`,
     },
@@ -59,7 +63,7 @@ export const remove = async (productId: number) => {
 
 export const clear = async () => {
   const res = await axios({
-    method: 'DELETE',
+    method: "DELETE",
     url: `${SCHEMA.API_BASE}/cart/clear`,
     headers: {
       Authorization: `Bearer ${getBearerToken()}`,
