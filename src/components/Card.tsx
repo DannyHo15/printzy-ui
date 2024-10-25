@@ -9,12 +9,12 @@ function Card({ children, categories, setSort }: any) {
   const [sortOpen, setSortOpen] = useState(false);
 
   const collections = categories.flatMap(
-    (item: { collections: any }) => item.collections
+    (item: { collections: any }) => item.collections,
   );
 
   const uniqueCollections = collections.filter(
     (collection: { id: any }, index: any, self: any[]) =>
-      index === self.findIndex((c) => c.id === collection.id)
+      index === self.findIndex((c) => c.id === collection.id),
   );
 
   return (

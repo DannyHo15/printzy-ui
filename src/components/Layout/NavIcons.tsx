@@ -4,16 +4,20 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import CartModal from "./CartModal";
 import { useWishlistStore } from "@/store/useWishList";
-import useCartStore from "@/store/useCartStore";
+import { useUserStore } from "@/store/user/user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const router = useRouter();
   const pathname = usePathname();
   const isLoggedIn = Cookies.get("printzy_ac_token");
+
+  //STORE
+  const userStore = createSelectors(useUserStore);
+  const user = userStore.use.user();
 
   const handleProfile = () => {
     if (!isLoggedIn) {
@@ -27,6 +31,7 @@ const NavIcons = () => {
     setIsLoading(true);
     Cookies.remove("printzy_ac_token");
     Cookies.remove("printzy_refresh_token");
+    localStorage.removeItem("userId");
     setIsLoading(false);
     setIsProfileOpen(false);
     setSession("");
@@ -196,7 +201,7 @@ const NavIcons = () => {
                 />
               </svg>
             </div>
-            <Link href="/profile" className="text-primary">
+            <Link href={`/profile/${user.id}`} className="text-primary">
               Profile
             </Link>
           </div>
