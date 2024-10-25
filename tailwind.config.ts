@@ -56,11 +56,13 @@ const config: Config = {
         "pr-color-error-300": "#fe7c7c",
         lama: "#F35C7A",
         border: "hsl(var(--border))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         cusgray: {
           DEFAULT: "#F2F5F6",
         },
         cusblack: {
-          DEFAULT: '#383838',
+          DEFAULT: "#383838",
         },
       },
       animation: {
