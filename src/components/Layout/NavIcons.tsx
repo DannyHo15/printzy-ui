@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import CartModal from "./CartModal";
-import { useWishlistStore } from "@/store/useWishList";
-import { useUserStore } from "@/store/user/user.store";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import useCartStore from "@/store/useCartStore";
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import CartModal from './CartModal';
+import { useWishlistStore } from '@/store/useWishList';
+import { useUserStore } from '@/store/user/user.store';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import useCartStore from '@/store/useCartStore';
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -14,7 +14,7 @@ const NavIcons = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const isLoggedIn = Cookies.get("printzy_ac_token");
+  const isLoggedIn = Cookies.get('printzy_ac_token');
 
   //STORE
   const userStore = createSelectors(useUserStore);
@@ -22,7 +22,7 @@ const NavIcons = () => {
 
   const handleProfile = () => {
     if (!isLoggedIn) {
-      router.push("/login");
+      router.push('/login');
     } else {
       setIsProfileOpen((prev) => !prev);
     }
@@ -30,29 +30,29 @@ const NavIcons = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    Cookies.remove("printzy_ac_token");
-    Cookies.remove("printzy_refresh_token");
-    localStorage.removeItem("userId");
+    Cookies.remove('printzy_ac_token');
+    Cookies.remove('printzy_refresh_token');
+    localStorage.removeItem('userId');
     setIsLoading(false);
     setIsProfileOpen(false);
-    setSession("");
-    router.push("/login");
+    setSession('');
+    router.push('/login');
   };
 
   const { wishlist, getWishList } = useWishlistStore();
   const { cart, getCart } = useCartStore();
 
   useEffect(() => {
-    if (Cookies.get("printzy_ac_token")) {
+    if (Cookies.get('printzy_ac_token')) {
       getWishList();
       getCart();
     }
   }, []);
 
-  const [session, setSession] = useState("");
+  const [session, setSession] = useState('');
 
   useEffect(() => {
-    const current = Cookies.get("printzy_ac_token");
+    const current = Cookies.get('printzy_ac_token');
 
     if (current) setSession(current);
   }, [pathname]);
@@ -178,7 +178,7 @@ const NavIcons = () => {
           )}
         </div>
         <span className="text-xs text-gray-600 font-semibold">
-          {!session ? "SignIn" : "Account"}
+          {!session ? 'SignIn' : 'Account'}
         </span>
       </button>
 
@@ -248,7 +248,7 @@ const NavIcons = () => {
                 </svg>
               </div>
               <span className="text-primary">
-                {isLoading ? "Logging out" : "Logout"}
+                {isLoading ? 'Logging out' : 'Logout'}
               </span>
             </div>
           </div>
