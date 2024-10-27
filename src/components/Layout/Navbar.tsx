@@ -1,12 +1,12 @@
-'use client';
-import { useState, useEffect } from 'react'; // Import useState and useEffect from React
-import Link from 'next/link';
-import Image from 'next/image';
-import SearchBar from './SearchBar';
-import Menu from './Menu';
-import NavIcons from './NavIcons';
-import useCategories from '@/hooks/useCategories';
-import ThemeToggle from './themeToggle/theme-toggle';
+"use client";
+import { useState, useEffect } from "react"; // Import useState and useEffect from React
+import Link from "next/link";
+import Image from "next/image";
+import SearchBar from "./SearchBar";
+import Menu from "./Menu";
+import NavIcons from "./NavIcons";
+import useCategories from "@/hooks/useCategories";
+import ThemeToggle from "./themeToggle/theme-toggle";
 
 interface Collection {
   id: string;
@@ -31,16 +31,16 @@ const Navbar = () => {
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container')) {
+    if (!target.closest(".dropdown-container")) {
       setDropdownOpen(null); // Close dropdown if clicked outside
     }
   };
 
   useEffect(() => {
     // Add event listener to handle clicks outside dropdown
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside); // Cleanup listener
+      document.removeEventListener("mousedown", handleClickOutside); // Cleanup listener
     };
   }, []);
 
@@ -56,10 +56,19 @@ const Navbar = () => {
       {/* BIGGER SCREENS */}
       <div className="hidden md:flex items-start justify-between gap-8 h-full w-[90%] mx-auto m-5">
         {/* LEFT (Logo) */}
-        <div className="w-1/2 xl:w-1/12 flex items-center justify-start m-2">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="" width={24} height={24} />
-            <div className="text-2xl tracking-wide">PRINTZY</div>
+        <div className="flex items-center justify-start m-2 w-1/2 xl:w-1/12">
+          <Link
+            href="/"
+            className="flex items-center gap-3 relative w-full h-full"
+          >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              layout="responsive"
+              width={800}
+              height={400}
+              objectFit="contain"
+            />
           </Link>
         </div>
         {/* CENTER (SearchBar and Dropdown) */}

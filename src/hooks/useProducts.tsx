@@ -12,10 +12,20 @@ const useProducts = ({
   categoryId,
   collectionId,
   price,
+  color,
+  style,
+  size,
+  sort,
 }: UseProductsParams) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const orderOptions = {
+    0: { createdAt: "ASC" },
+    1: { price: "ASC" },
+    2: { price: "DESC" },
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,6 +40,9 @@ const useProducts = ({
         if (name) query.name = { $iLike: `%${name}%` };
         if (categoryId !== undefined) query.categoryId = categoryId;
         if (collectionId !== undefined) query.collectionId = collectionId;
+        query.options = { color, style, size };
+
+        query.$order = orderOptions[sort as 0 | 1 | 2] || {};
 
         if (price) {
           const [minPrice, maxPrice] = price.split("-").map(Number);
@@ -58,7 +71,18 @@ const useProducts = ({
     };
 
     fetchProducts();
-  }, [limit, skip, name, categoryId, collectionId, price]);
+  }, [
+    limit,
+    skip,
+    name,
+    categoryId,
+    collectionId,
+    price,
+    color,
+    style,
+    size,
+    sort,
+  ]);
 
   return products;
 };

@@ -16,7 +16,7 @@ type TModalProp = {
 const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
   return (
     <Dialog onOpenChange={(value) => setIsOpenModal(value)} open={isOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle>Add new address</DialogTitle>
           <DialogDescription></DialogDescription>
