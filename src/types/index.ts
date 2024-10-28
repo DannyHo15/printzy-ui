@@ -11,3 +11,11 @@ export interface NavItem {
   color?: string;
   action?: () => void;
 }
+
+export interface IMetaPagination {
+  currentPage: number;
+  itemsPerPage: number;
+  sortBy: string[];
+  totalItems: number;
+  totalPages: number;
+}

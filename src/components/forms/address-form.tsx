@@ -1,7 +1,8 @@
 "use client";
 import { PHONE_REGEX } from "@/constant";
+import * as _ from "lodash";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -21,8 +22,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
-const AddressForm = () => {
+import {
+  useAddress,
+  useDistrict,
+  useProvince,
+  useWard,
+} from "@/store/user/useAddress";
+import { toast } from "react-toastify";
+interface IAddressFormProps {
+  setIsOpenModal: (value: boolean) => void;
+}
+const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
+  const defaultValues = {
+    fullName: "",
+    phone: "",
+    province: "",
+    district: "",
+    ward: "",
+    addressDetail: "",
+  };
   const AddressSchema = z.object({
     fullName: z.string().min(1, "Full name is required"),
     phone: z
@@ -37,14 +55,45 @@ const AddressForm = () => {
 
   const form = useForm<z.infer<typeof AddressSchema>>({
     resolver: zodResolver(AddressSchema),
+    defaultValues,
   });
+  const provinceId = form.watch("province");
+  const districtId = form.watch("district");
 
+  //Load data
+  const { data, isLoading: isProvinceLoading } = useProvince();
+  const { data: districtData, isLoading: isDistrictLoading } =
+    useDistrict(provinceId);
+  const { data: wardData, isLoading: isWardLoading } = useWard(districtId);
+  //Mutations
+  const {
+    createAddress,
+    createAddressError,
+    createAddressErrorDetail,
+    createAddressSuccess,
+  } = useAddress();
+
+  //handle action result
+  useEffect(() => {
+    if (createAddressSuccess) {
+      setIsOpenModal(false);
+    } else if (createAddressError) {
+    }
+  }, [createAddressSuccess, createAddressError]);
   const onSubmit = (data: z.infer<typeof AddressSchema>) => {
-    console.log(data);
+    const payload = {
+      districtId: data.district,
+      fullName: data.fullName,
+      phone: data.phone,
+      provinceId: data.province,
+      wardId: data.ward,
+      addressDetail: data.addressDetail,
+    };
+    createAddress(payload);
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           render={({ field }) => (
             <FormItem>
@@ -77,18 +126,31 @@ const AddressForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Province</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue {...field} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
+              {isProvinceLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue {...field} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {_.isArray(data) &&
+                      data.map((province) => (
+                        <SelectItem
+                          key={`${province.id}`}
+                          value={province.id.toString()}
+                        >
+                          {province.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -96,25 +158,70 @@ const AddressForm = () => {
         <FormField
           name="district"
           control={form.control}
+          disabled={!form.getValues("province")}
           render={({ field }) => (
             <FormItem>
               <FormLabel>District</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              {isDistrictLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={!form.getValues("province")}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue {...field} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {_.isArray(districtData) &&
+                      districtData.map((district) => (
+                        <SelectItem
+                          key={district.id}
+                          value={district.id.toString()}
+                        >
+                          {district.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}{" "}
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           name="ward"
+          disabled={!form.getValues("district")}
           control={form.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ward</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              {isWardLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={!form.getValues("district")}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue {...field} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {_.isArray(wardData) &&
+                      wardData.map((ward) => (
+                        <SelectItem key={ward.id} value={ward.id.toString()}>
+                          {ward.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}{" "}
               <FormMessage />
             </FormItem>
           )}

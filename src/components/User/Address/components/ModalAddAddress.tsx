@@ -21,7 +21,7 @@ const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
           <DialogTitle>Add new address</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <AddressForm></AddressForm>
+        <AddressForm setIsOpenModal={setIsOpenModal}></AddressForm>
       </DialogContent>
     </Dialog>
   );
