@@ -6,13 +6,15 @@ import React, { useCallback, useMemo, useState } from "react";
 import ModalAddAddress from "./components/ModalAddAddress";
 import { useAddress } from "@/store/user/useAddress";
 import { Edit } from "lucide-react";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import { useUserStore } from "@/store/user/user.store";
 
 const AddressBook = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const { isLoadingAddresses, listAddress } = useAddress();
-
-  console.log(listAddress);
+  const userStore = createSelectors(useUserStore);
+  const setAddressId = userStore.use.setAddressId();
 
   const toggleModal = useCallback(() => {
     setIsOpenModal((prev) => !prev);
@@ -40,8 +42,11 @@ const AddressBook = () => {
         ) : (
           <div className="">
             {listAddress?.map((address) => (
-              <div className="flex justify-between py-4 gap-4 border-b-gray border-b">
-                <div key={address.id}>
+              <div
+                className="flex justify-between py-4 gap-4 border-b-gray border-b"
+                key={address.id}
+              >
+                <div>
                   <div>{address.fullName}</div>
                   <div>{address.phone}</div>
                   <div>{`${address.addressDetail}, ${address.ward.name}, ${address.district.name}, ${address.province.name}`}</div>
@@ -50,6 +55,10 @@ const AddressBook = () => {
                   variant={"ghost"}
                   className="p-0 cursor-pointer"
                   asChild
+                  onClick={() => {
+                    setAddressId(address.id);
+                    toggleModal();
+                  }}
                 >
                   <Edit size={20} className="h-6 w-6 text-primary-dk" />
                 </Button>

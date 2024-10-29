@@ -1,4 +1,9 @@
-import { createAddress, getAddresses } from "@/api/address";
+import {
+  createAddress,
+  getAddressById,
+  getAddresses,
+  updateAddress,
+} from "@/api/address";
 import { getDistrictsByProvinceId } from "@/api/district";
 import { getProvinces } from "@/api/province";
 import { getWardsByDistrict } from "@/api/ward";
@@ -54,8 +59,36 @@ export const useWard = (districtId: string) => {
   return createQueryResult(queryResult);
 };
 
-export const useAddress = () => {
+export const useAddress = (id?: string) => {
   const queryClient = useQueryClient();
+  //Query
+  const { data, isLoading } = useQuery<IAddressDataResponse[]>({
+    queryKey: ["addresses"],
+    queryFn: () => getAddresses(),
+  });
+
+  const { data: addressDetail, isLoading: isLoadingAddressDetail } =
+    useQuery<IAddressDataResponse>({
+      queryKey: ["addresses", id],
+      queryFn: () => getAddressById(id!),
+      enabled: !!id,
+    });
+
+  //mutation
+  const { mutate: UpdateAddressMutate } = useMutation({
+    mutationFn: ({ id, address }: { id: string; address: IAddressPayload }) =>
+      updateAddress(id, address),
+
+    onError: (error) => {
+      toast.error("Update address failed:" + error.message);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["addresses"],
+      });
+      toast.success("Update address successfully");
+    },
+  });
   const { mutate, error, isSuccess, isError } = useMutation({
     mutationFn: (address: IAddressPayload) => createAddress(address),
     onError: (error) => {
@@ -69,11 +102,6 @@ export const useAddress = () => {
     },
   });
 
-  const { data, isLoading } = useQuery<IAddressDataResponse[]>({
-    queryKey: ["addresses"],
-    queryFn: () => getAddresses(),
-  });
-
   return {
     createAddress: mutate,
     createAddressErrorDetail: error,
@@ -81,5 +109,8 @@ export const useAddress = () => {
     createAddressError: isError,
     listAddress: data,
     isLoadingAddresses: isLoading,
+    updateAddress: UpdateAddressMutate,
+    getAddressDetail: addressDetail,
+    isLoadingAddressDetail: isLoading,
   };
 };

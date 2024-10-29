@@ -1,8 +1,8 @@
 "use client";
 import { PHONE_REGEX } from "@/constant";
-import * as _ from "lodash";
+import { isArray, isEmpty } from "lodash";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -29,29 +29,39 @@ import {
   useWard,
 } from "@/store/user/useAddress";
 import { toast } from "react-toastify";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import { useUserStore } from "@/store/user/user.store";
 interface IAddressFormProps {
   setIsOpenModal: (value: boolean) => void;
+  // onReset: () => void; // Add this prop
 }
 const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
-  const defaultValues = {
-    fullName: "",
-    phone: "",
-    province: "",
-    district: "",
-    ward: "",
-    addressDetail: "",
-  };
-  const AddressSchema = z.object({
-    fullName: z.string().min(1, "Full name is required"),
-    phone: z
-      .string()
-      .min(1, "Phone number is required")
-      .regex(new RegExp(PHONE_REGEX), "Invalid phone number"),
-    province: z.string().min(1, "Province is required"),
-    district: z.string().min(1, "District is required"),
-    ward: z.string().min(1, "Ward is required"),
-    addressDetail: z.string().min(1, "Address detail is required"),
-  });
+  const defaultValues = useMemo(
+    () => ({
+      fullName: "",
+      phone: "",
+      province: "",
+      district: "",
+      ward: "",
+      addressDetail: "",
+    }),
+    [],
+  );
+  const AddressSchema = useMemo(
+    () =>
+      z.object({
+        fullName: z.string().min(1, "Full name is required"),
+        phone: z
+          .string()
+          .min(1, "Phone number is required")
+          .regex(new RegExp(PHONE_REGEX), "Invalid phone number"),
+        province: z.string().min(1, "Province is required"),
+        district: z.string().min(1, "District is required"),
+        ward: z.string().min(1, "Ward is required"),
+        addressDetail: z.string().min(1, "Address detail is required"),
+      }),
+    [],
+  );
 
   const form = useForm<z.infer<typeof AddressSchema>>({
     resolver: zodResolver(AddressSchema),
@@ -59,6 +69,11 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
   });
   const provinceId = form.watch("province");
   const districtId = form.watch("district");
+  const { reset } = form; // Destructure reset method
+
+  //STORE
+  const userStore = createSelectors(useUserStore);
+  const addressId = userStore.use.addressId();
 
   //Load data
   const { data, isLoading: isProvinceLoading } = useProvince();
@@ -69,9 +84,20 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
   const {
     createAddress,
     createAddressError,
-    createAddressErrorDetail,
     createAddressSuccess,
-  } = useAddress();
+    getAddressDetail,
+  } = useAddress(addressId ?? "");
+
+  useEffect(() => {
+    if (addressId && getAddressDetail) {
+      form.setValue("fullName", getAddressDetail.fullName);
+      form.setValue("phone", getAddressDetail?.phone);
+      // form.setValue("province", getAddressDetail?.province.id);
+      // form.setValue("district", getAddressDetail?.district.id);
+      // form.setValue("ward", getAddressDetail?.ward.id);
+      form.setValue("addressDetail", getAddressDetail?.addressDetail);
+    }
+  }, [addressId, getAddressDetail]);
 
   //handle action result
   useEffect(() => {
@@ -80,6 +106,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
     } else if (createAddressError) {
     }
   }, [createAddressSuccess, createAddressError]);
+
   const onSubmit = (data: z.infer<typeof AddressSchema>) => {
     const payload = {
       districtId: data.district,
@@ -139,7 +166,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {_.isArray(data) &&
+                    {isArray(data) &&
                       data.map((province) => (
                         <SelectItem
                           key={`${province.id}`}
@@ -176,7 +203,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {_.isArray(districtData) &&
+                    {isArray(districtData) &&
                       districtData.map((district) => (
                         <SelectItem
                           key={district.id}
@@ -213,7 +240,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {_.isArray(wardData) &&
+                    {isArray(wardData) &&
                       wardData.map((ward) => (
                         <SelectItem key={ward.id} value={ward.id.toString()}>
                           {ward.name}
@@ -240,7 +267,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
           )}
         />
         <div className="mt-6 float-right">
-          <Button type="submit">Save</Button>
+          <Button type="submit">{!addressId ? "Create" : "Update"}</Button>
         </div>
       </form>
     </Form>
