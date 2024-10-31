@@ -7,10 +7,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import AddressForm from "@/components/forms/address-form";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { createSelectors } from "@/lib/auto-genarate-selector";
 import { useUserStore } from "@/store/user/user.store";
+import dynamic from "next/dynamic";
+const AddressForm = dynamic(() => import("../../../forms/address-form"));
 type TModalProp = {
   isOpen: boolean;
   setIsOpenModal: (value: boolean) => void;

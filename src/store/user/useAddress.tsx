@@ -19,7 +19,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 const STALE_TIME = 1000 * 60 * 60 * 24;
-const createQueryResult = (
+const formatQueryResult = (
   queryResult: UseQueryResult<
     IProvinceDataResponse[] | IDistrictDataResponse[] | IWardDataResponse[]
   >,
@@ -30,43 +30,47 @@ const createQueryResult = (
   isError: queryResult.isError,
 });
 
-export const useProvince = () => {
+export const useProvinces = () => {
   const queryResult = useQuery<IProvinceDataResponse[]>({
     queryKey: ["province"],
     queryFn: () => getProvinces(),
-    staleTime: STALE_TIME,
   });
-  return createQueryResult(queryResult);
+  return formatQueryResult(queryResult);
 };
 
-export const useDistrict = (provinceId: string) => {
+export const useDistricts = (provinceId: string) => {
   const queryResult = useQuery<IDistrictDataResponse[]>({
     queryKey: ["district", provinceId],
     queryFn: () => getDistrictsByProvinceId(provinceId),
     enabled: !!provinceId,
-    staleTime: STALE_TIME,
   });
-  return createQueryResult(queryResult);
+  return formatQueryResult(queryResult);
 };
 
-export const useWard = (districtId: string) => {
+export const useWards = (districtId: string) => {
   const queryResult = useQuery<IWardDataResponse[]>({
     queryKey: ["ward", districtId],
     queryFn: () => getWardsByDistrict(districtId),
     enabled: !!districtId,
-    staleTime: STALE_TIME,
   });
-  return createQueryResult(queryResult);
+  return formatQueryResult(queryResult);
+};
+
+export const useAllAddresses = () => {
+  const { data, isLoading } = useQuery<IAddressDataResponse[]>({
+    queryKey: ["getAllAddresses"],
+    queryFn: () => getAddresses(),
+  });
+
+  return {
+    listAddress: data,
+    isLoadingAddresses: isLoading,
+  };
 };
 
 export const useAddress = (id?: string) => {
   const queryClient = useQueryClient();
   //Query
-  const { data, isLoading } = useQuery<IAddressDataResponse[]>({
-    queryKey: ["addresses"],
-    queryFn: () => getAddresses(),
-  });
-
   const { data: addressDetail, isLoading: isLoadingAddressDetail } =
     useQuery<IAddressDataResponse>({
       queryKey: ["addresses", id],
@@ -75,20 +79,21 @@ export const useAddress = (id?: string) => {
     });
 
   //mutation
-  const { mutate: UpdateAddressMutate } = useMutation({
-    mutationFn: ({ id, address }: { id: string; address: IAddressPayload }) =>
-      updateAddress(id, address),
+  const { mutate: updateAddressMutate, status: updateAddressStatus } =
+    useMutation({
+      mutationFn: ({ id, address }: { id: string; address: IAddressPayload }) =>
+        updateAddress(id, address),
 
-    onError: (error) => {
-      toast.error("Update address failed:" + error.message);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["addresses"],
-      });
-      toast.success("Update address successfully");
-    },
-  });
+      onError: (error) => {
+        toast.error("Update address failed:" + error.message);
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: ["getAllAddresses"],
+        });
+        toast.success("Update address successfully");
+      },
+    });
   const { mutate, error, isSuccess, isError } = useMutation({
     mutationFn: (address: IAddressPayload) => createAddress(address),
     onError: (error) => {
@@ -96,7 +101,7 @@ export const useAddress = (id?: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["addresses"],
+        queryKey: ["getAllAddresses"],
       });
       toast.success("Create address successfully");
     },
@@ -107,10 +112,9 @@ export const useAddress = (id?: string) => {
     createAddressErrorDetail: error,
     createAddressSuccess: isSuccess,
     createAddressError: isError,
-    listAddress: data,
-    isLoadingAddresses: isLoading,
-    updateAddress: UpdateAddressMutate,
+    updateAddress: updateAddressMutate,
     getAddressDetail: addressDetail,
-    isLoadingAddressDetail: isLoading,
+    isLoadingAddressDetail,
+    updateAddressStatus,
   };
 };

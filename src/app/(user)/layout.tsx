@@ -11,6 +11,7 @@ import UserSidebar from "@/components/User/UserSidebar";
 import { createSelectors } from "@/lib/auto-genarate-selector";
 import { useUserStore } from "@/store/user/user.store";
 import { NavItem } from "@/types";
+import { IProfileResponse } from "@/types/user";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useMemo } from "react";
@@ -62,6 +63,12 @@ const layout = ({
     return link ? link.title : "";
   };
 
+  const getUserName = (user: IProfileResponse) => {
+    return user.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : user.firstName;
+  };
+
   return (
     <div className="grid md:grid-cols-3 grid-cols-1 px-16 py-12 bg-light-gray gap-4">
       <div className="col-span-3 md:col-span-1">
@@ -70,7 +77,11 @@ const layout = ({
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>US</AvatarFallback>
           </Avatar>
-          <span>Danny</span>
+          {user && (
+            <span className="text-lg font-bold truncate">
+              {getUserName(user)}
+            </span>
+          )}
         </div>
         <div className="flex justify-between items-center gap-4 mt-4 p-2 bg-white rounded-lg">
           <UserSidebar links={SIDE_BAR_LINKS} />

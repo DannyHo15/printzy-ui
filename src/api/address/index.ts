@@ -26,7 +26,7 @@ export const getAddresses = async () => {
 export const getAddressById = async (id: string) => {
   try {
     const res = await axiosInstance.get<IAddressDataResponse>(
-      `/addresses?id=${id}`,
+      `/addresses/${id}`,
     );
     return res.data;
   } catch (error) {

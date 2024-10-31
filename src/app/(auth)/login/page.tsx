@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { login, register } from "@/api/auth";
+import { useUserStore } from "@/store/user/user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
 
 enum MODE {
   LOGIN = "LOGIN",
@@ -29,23 +31,26 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const userStore = createSelectors(useUserStore);
+  const setUserAction = userStore.use.setUser();
+
   const formTitle =
     mode === MODE.LOGIN
       ? "Log in"
       : mode === MODE.REGISTER
-      ? "Register"
-      : mode === MODE.RESET_PASSWORD
-      ? "Reset Your Password"
-      : "Verify Your Email";
+        ? "Register"
+        : mode === MODE.RESET_PASSWORD
+          ? "Reset Your Password"
+          : "Verify Your Email";
 
   const buttonTitle =
     mode === MODE.LOGIN
       ? "Login"
       : mode === MODE.REGISTER
-      ? "Register"
-      : mode === MODE.RESET_PASSWORD
-      ? "Reset"
-      : "Verify";
+        ? "Register"
+        : mode === MODE.RESET_PASSWORD
+          ? "Reset"
+          : "Verify";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,19 +103,21 @@ const LoginPage = () => {
             });
             Cookies.set(
               "printzy_refresh_token",
-              loginResponse.data.payload.refreshToken
+              loginResponse.data.payload.refreshToken,
             );
             Cookies.set(
               "printzy_ac_token",
-              loginResponse.data.payload.refreshToken
+              loginResponse.data.payload.refreshToken,
             );
+            setUserAction(loginResponse.data.user);
             redirect("/");
           }
 
           Cookies.set(
             "printzy_refresh_token",
-            response.data.payload.refreshToken
+            response.data.payload.refreshToken,
           );
+          setUserAction(response.data.user);
           Cookies.set("printzy_ac_token", response.data.payload.refreshToken);
           redirect("/");
         case 400:

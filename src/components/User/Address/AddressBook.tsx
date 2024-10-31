@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import React, { useCallback, useMemo, useState } from "react";
 import ModalAddAddress from "./components/ModalAddAddress";
-import { useAddress } from "@/store/user/useAddress";
+import { useAllAddresses } from "@/store/user/useAddress";
 import { Edit } from "lucide-react";
 import { createSelectors } from "@/lib/auto-genarate-selector";
 import { useUserStore } from "@/store/user/user.store";
@@ -12,7 +12,7 @@ import { useUserStore } from "@/store/user/user.store";
 const AddressBook = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const { isLoadingAddresses, listAddress } = useAddress();
+  const { isLoadingAddresses, listAddress } = useAllAddresses();
   const userStore = createSelectors(useUserStore);
   const setAddressId = userStore.use.setAddressId();
 

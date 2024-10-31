@@ -6,17 +6,23 @@ import { IProfileResponse } from "@/types/user";
 import { Separator } from "@/components/ui/separator";
 import ProfileForm from "@/components/forms/profile-forms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import { useUserStore } from "@/store/user/user.store";
 interface ProfileProps {
   userId: string;
 }
 const Profile = () => {
-  const params = useParams();
-  const userId = Array.isArray(params?.userId)
-    ? params.userId[0]
-    : (params?.userId ?? "");
+  const { userId: paramUserId } = useParams();
+  const userId = Array.isArray(paramUserId)
+    ? paramUserId[0]
+    : (paramUserId ?? "");
 
+  const userStore = createSelectors(useUserStore);
+  const setUser = userStore.use.setUser();
   const { data, isLoading, isError, error } = useUserProfile(userId);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (data) setUser(data);
+  }, [data]);
 
   if (isError) {
     return <div>Error loading profile: {error?.message}</div>;

@@ -2,10 +2,11 @@ import { getProfile, updateProfile } from "@/api/user";
 import { IProfileResponse } from "@/types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { useUserStore } from "./user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
 
 export const useUserProfile = (id: string) => {
   const queryClient = useQueryClient();
-
   const fetchProfile = useCallback(async () => {
     try {
       return await getProfile(id);

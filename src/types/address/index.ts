@@ -10,6 +10,7 @@ export interface IAddressPayload {
 
 export interface IName {
   name: string;
+  id: string;
 }
 
 export interface IAddressResponse {
