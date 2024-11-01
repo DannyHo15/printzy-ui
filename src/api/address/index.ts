@@ -42,3 +42,12 @@ export const updateAddress = async (id: string, address: IAddressPayload) => {
     throw error;
   }
 };
+
+export const deleteAddress = async (id: string) => {
+  try {
+    const res = await axiosInstance.delete(`/addresses/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};

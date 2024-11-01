@@ -1,5 +1,6 @@
 import {
   createAddress,
+  deleteAddress,
   getAddressById,
   getAddresses,
   updateAddress,
@@ -107,6 +108,19 @@ export const useAddress = (id?: string) => {
     },
   });
 
+  const { mutate: deleteAddressMutate } = useMutation({
+    mutationFn: (id: string) => deleteAddress(id),
+    onError: (error) => {
+      toast.error("Delete address failed:" + error.message);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["getAllAddresses"],
+      });
+      toast.success("Delete address successfully");
+    },
+  });
+
   return {
     createAddress: mutate,
     createAddressErrorDetail: error,
@@ -116,5 +130,6 @@ export const useAddress = (id?: string) => {
     getAddressDetail: addressDetail,
     isLoadingAddressDetail,
     updateAddressStatus,
+    deleteAddress: deleteAddressMutate,
   };
 };

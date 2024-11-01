@@ -146,8 +146,8 @@ const ProfileForm = ({ initialData, userId }: IProfileFormProps) => {
               <FormControl className="">
                 <RadioGroup
                   className="flex space-x-4"
-                  {...field}
-                  value={field.value?.toString()}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value || ""} // Convert null to empty string
                 >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
@@ -179,6 +179,7 @@ const ProfileForm = ({ initialData, userId }: IProfileFormProps) => {
           <Checkbox
             id="terms1"
             checked={changePassword}
+            aria-label="Change password"
             onCheckedChange={(checked: boolean) => setChangePassword(checked)}
           />
           <label
