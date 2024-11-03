@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import Head from "next/head";
+import React, { useEffect } from 'react';
+import Head from 'next/head';
 
-import Link from "next/link";
-import useCartStore from "@/store/useCartStore";
-import CartProduct from "@/components/Product/CartProduct";
-import { NumericFormat } from "react-number-format";
-import Cookies from "js-cookie";
-import { usePathname, useRouter } from "next/navigation";
+import Link from 'next/link';
+import useCartStore from '@/store/useCartStore';
+import CartProduct from '@/components/Product/CartProduct';
+import { NumericFormat } from 'react-number-format';
+import Cookies from 'js-cookie';
+import { usePathname, useRouter } from 'next/navigation';
 
 function Cart() {
   const { cart, getCart, isLoading } = useCartStore();
   const router = useRouter();
 
-  const isLoggedIn = Cookies.get("printzy_ac_token");
+  const isLoggedIn = Cookies.get('printzy_ac_token');
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push("/login");
+      router.push('/login');
     }
     getCart();
   }, []);
@@ -64,7 +64,7 @@ function Cart() {
                         <p className="text-center">
                           Your basket is empty,
                           <br />
-                          to start shopping click{" "}
+                          to start shopping click{' '}
                           <span className="underline">
                             <Link href="/shop">here</Link>
                           </span>
@@ -105,9 +105,9 @@ function Cart() {
                         total + item.variant.price * item.quantity,
                       0
                     )}
-                    displayType={"text"}
+                    displayType={'text'}
                     thousandSeparator={true}
-                    prefix={"$"}
+                    prefix={'$'}
                     renderText={(value) => (
                       <p className="text-lg font-bold text-primary-price uppercase">
                         {value}
@@ -146,9 +146,9 @@ function Cart() {
                         total + item.variant.price * item.quantity,
                       0
                     )}
-                    displayType={"text"}
+                    displayType={'text'}
                     thousandSeparator={true}
-                    prefix={"$"}
+                    prefix={'$'}
                     renderText={(value) => (
                       <p className="text-lg font-bold text-primary-price uppercase">
                         {value}
@@ -163,23 +163,25 @@ function Cart() {
                   className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-secondary "
                 >
                   {!isLoading ? (
-                    <span className="flex justify-center place-items-center">
-                      CHECKOUT
-                      <svg
-                        className="ml-2 w-4 h-4 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                        />
-                      </svg>
-                    </span>
+                    <Link href={'/checkout'}>
+                      <span className="flex justify-center place-items-center">
+                        CHECKOUT
+                        <svg
+                          className="ml-2 w-4 h-4 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                      </span>
+                    </Link>
                   ) : (
                     <img
                       className="w-6 h-6 mx-auto"

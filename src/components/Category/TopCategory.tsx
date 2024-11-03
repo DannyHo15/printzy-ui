@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 function TopCategory({ collections }: any) {
-  const [isActive, setIsActive] = useState("/shop");
+  const [isActive, setIsActive] = useState('/shop');
 
   const router = useRouter();
   const pathname = usePathname();
@@ -12,7 +12,7 @@ function TopCategory({ collections }: any) {
   const handleClick = (path: string, collectionName: string) => {
     setIsActive(path);
     const params = new URLSearchParams(window.location.search);
-    params.set("collection", collectionName);
+    params.set('collection', collectionName);
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -26,7 +26,7 @@ function TopCategory({ collections }: any) {
                 ? `bg-cusblack text-white shadow-lg`
                 : `bg-cusgray text-primary hover:text-secondary`
             } py-2.5 px-6 rounded-3xl text-xs mr-3 mb-2 md:mb-0 font-semibold`}
-            onClick={() => handleClick("/shop", "")}
+            onClick={() => handleClick('/shop', '')}
           >
             All items
           </button>

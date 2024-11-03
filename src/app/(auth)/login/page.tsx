@@ -32,9 +32,6 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  const userStore = createSelectors(useUserStore);
-  const setUserAction = userStore.use.setUser();
-
   const formTitle =
     mode === MODE.LOGIN
       ? 'Log in'
@@ -70,23 +67,12 @@ const LoginPage = () => {
           break;
         case MODE.REGISTER:
           response = await register({
-            name: username,
+            firstName: username.split(' ')?.[0],
+            lastName: username.split(' ')?.[1] || null,
             email,
             password,
           });
           break;
-        // case MODE.RESET_PASSWORD:
-        //   response = await wixClient.auth.sendPasswordResetEmail(
-        //     email,
-        //     window.location.href
-        //   );
-        //   setMessage("Password reset email sent. Please check your e-mail.");
-        //   break;
-        // case MODE.EMAIL_VERIFICATION:
-        //   response = await wixClient.auth.processVerification({
-        //     verificationCode: emailCode,
-        //   });
-        //   break;
         default:
           break;
       }

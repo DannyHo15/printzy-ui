@@ -1,21 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import SideCategory from "./Category/SideCategory";
-import TopCategory from "./Category/TopCategory";
+import SideCategory from './Category/SideCategory';
+import TopCategory from './Category/TopCategory';
 
-function Card({ children, categories, setSort, sort }: any) {
+function Card({ children, categories, collections, setSort, sort }: any) {
   const [open, setOpen] = useState(false);
   const [grid, setGrid] = useState(4);
   const [sortOpen, setSortOpen] = useState(false);
-
-  const collections = categories.flatMap(
-    (item: { collections: any }) => item.collections
-  );
-
-  const uniqueCollections = collections.filter(
-    (collection: { id: any }, index: any, self: any[]) =>
-      index === self.findIndex((c) => c.id === collection.id)
-  );
 
   return (
     <div className="w-full min-h-screen pb-10">
@@ -50,7 +41,7 @@ function Card({ children, categories, setSort, sort }: any) {
           </div>
           <div className="col-span-4 md:col-span-4 lg:col-span-3 flex flex-col py-4 mx-2 md:mx-0">
             {/* <ShopCarousel /> */}
-            <TopCategory collections={uniqueCollections} />
+            <TopCategory collections={collections} />
             <div className="rounded-2xl overflow-hidden w-full bg-white mt-6 px-5 py-4">
               <div className="mb-3">
                 <div className="flex justify-between place-items-center text-gray-600 text-sm relative">
@@ -131,7 +122,7 @@ function Card({ children, categories, setSort, sort }: any) {
 
                   <div
                     className={`${
-                      sortOpen ? "absolute" : "hidden"
+                      sortOpen ? 'absolute' : 'hidden'
                     } top-7 shadow-lg rounded-md text-sm right-0 bg-white text-gray-500 z-20 px-2 py-2`}
                   >
                     <ul>
@@ -143,7 +134,7 @@ function Card({ children, categories, setSort, sort }: any) {
                             setSortOpen(false);
                           }}
                         >
-                          <span style={{ width: "24px", height: "24px" }}>
+                          <span style={{ width: '24px', height: '24px' }}>
                             {sort === 0 && (
                               <svg
                                 width="24"
@@ -173,7 +164,7 @@ function Card({ children, categories, setSort, sort }: any) {
                             setSortOpen(false);
                           }}
                         >
-                          <span style={{ width: "24px", height: "24px" }}>
+                          <span style={{ width: '24px', height: '24px' }}>
                             {sort === 1 && (
                               <svg
                                 width="24"
@@ -203,7 +194,7 @@ function Card({ children, categories, setSort, sort }: any) {
                             setSortOpen(false);
                           }}
                         >
-                          <span style={{ width: "24px", height: "24px" }}>
+                          <span style={{ width: '24px', height: '24px' }}>
                             {sort === 2 && (
                               <svg
                                 width="24"

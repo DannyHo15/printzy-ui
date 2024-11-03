@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
 
 const ProductImages = ({
   items,
@@ -20,12 +20,16 @@ const ProductImages = ({
           onClick={() => setIndex(-1)}
         >
           <Image
-            src={primaryUpload?.path}
+            src={
+              primaryUpload?.path
+                ? primaryUpload?.path
+                : items?.[0]?.upload?.path
+            }
             alt=""
             fill
             sizes="30vw"
             className={`object-cover rounded-md ${
-              index === -1 ? "border-2 border-primary" : ""
+              index === -1 ? 'border-2 border-primary' : ''
             }`}
           />
         </div>
@@ -41,7 +45,7 @@ const ProductImages = ({
               fill
               sizes="30vw"
               className={`object-cover rounded-md ${
-                index === i ? "border-2 border-primary" : ""
+                index === i ? 'border-2 border-primary' : ''
               }`}
             />
           </div>
@@ -50,7 +54,11 @@ const ProductImages = ({
       <div className="h-[500px] w-5/6 relative">
         <Image
           src={
-            index === -1 ? primaryUpload?.path : items?.[index]?.upload?.path
+            index === -1
+              ? primaryUpload?.path
+                ? primaryUpload?.path
+                : items?.[0]?.upload?.path
+              : items?.[index]?.upload?.path
           }
           alt=""
           fill
