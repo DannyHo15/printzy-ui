@@ -8,7 +8,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'static.wixstatic.com',
+        hostname: 'storage.googleapis.com',
       },
       {
         protocol: 'https',

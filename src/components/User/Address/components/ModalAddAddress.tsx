@@ -1,17 +1,17 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useUserStore } from "@/store/user/user.store";
-import dynamic from "next/dynamic";
-const AddressForm = dynamic(() => import("../../../forms/address-form"));
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { DialogDescription } from '@radix-ui/react-dialog';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useUserStore } from '@/store/user/user.store';
+import dynamic from 'next/dynamic';
+const AddressForm = dynamic(() => import('../../../forms/address-form'));
 type TModalProp = {
   isOpen: boolean;
   setIsOpenModal: (value: boolean) => void;
@@ -31,7 +31,7 @@ const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
       }
       setIsOpenModal(value);
     },
-    [resetForm, setAddressId, setIsOpenModal],
+    [resetForm, setAddressId, setIsOpenModal]
   );
   return (
     <Dialog
@@ -43,7 +43,7 @@ const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {!addressId ? "Add new address" : "Update address"}
+            {!addressId ? 'Add new address' : 'Update address'}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>

@@ -15,10 +15,23 @@ export default function Home() {
   const collectionId = searchParams.get("collection");
   const categoryId = searchParams.get("category");
   const price = searchParams.get("price");
+  const color = searchParams.get("color");
+  const style = searchParams.get("style");
+  const size = searchParams.get("size");
 
   useEffect(() => {
-    setFilter({ ...filter, name, collectionId, categoryId, price });
-  }, [name, collectionId, categoryId, price]);
+    setFilter({
+      ...filter,
+      name,
+      collectionId,
+      categoryId,
+      price,
+      color,
+      style,
+      size,
+      sort,
+    });
+  }, [name, collectionId, categoryId, price, color, style, size, sort]);
 
   const categories = useCategories();
 
@@ -28,7 +41,7 @@ export default function Home() {
 
   return (
     <>
-      <Card categories={categories} setSort={setSort}>
+      <Card categories={categories} setSort={setSort} sort={sort}>
         {!loading ? (
           products?.length < 1 ? (
             <p className="col-span-full mx-auto text-sm text-gray-400">

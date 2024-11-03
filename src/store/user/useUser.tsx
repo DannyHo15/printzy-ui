@@ -31,7 +31,6 @@ export const useUserProfile = (id: string) => {
       }
     },
     onSuccess: () => {
-      // Invalidate and refetch the user profile query to get the updated data
       queryClient.invalidateQueries({
         queryKey: ["users/profile", id],
       });

@@ -46,12 +46,12 @@ export default function RootLayout({
       >
         <main>
           <QueryProvider>
-            <ThemeProvider defaultTheme="light" attribute="class">
-              <ToastContainer {...toastConfig} />
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </ThemeProvider>
+            {/* <ThemeProvider defaultTheme="light" attribute="class"> */}
+            <ToastContainer {...toastConfig} />
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            {/* </ThemeProvider> */}
           </QueryProvider>
         </main>
       </body>

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ProductPropertiesTable from "./ProductPropertiesTable";
+import { useState } from 'react';
+import ProductPropertiesTable from './ProductPropertiesTable';
 
 const DescriptionProduct = ({
   product,
@@ -16,7 +16,7 @@ const DescriptionProduct = ({
     setIsExpanded((prev) => !prev);
   };
 
-  const description = product?.description || "";
+  const description = product?.description || '';
 
   return (
     <>
@@ -24,7 +24,7 @@ const DescriptionProduct = ({
       {/* Thiết lập opacity thành 50% khi isExpanded là false */}
       <div
         className={`transition-opacity duration-300  ${
-          !isExpanded ? "opacity-50" : "opacity-100"
+          !isExpanded ? 'opacity-50' : 'opacity-100'
         }`}
       >
         <ProductPropertiesTable
@@ -34,9 +34,10 @@ const DescriptionProduct = ({
           variant={variant}
         />
       </div>
-      <p className="text-gray-500 whitespace-pre-wrap">
-        {isExpanded ? description : ""}
-      </p>
+      <p
+        className="mt-2 text-gray-500 whitespace-pre-wrap"
+        dangerouslySetInnerHTML={{ __html: isExpanded ? description : '' }}
+      ></p>
 
       <span
         className="relative flex items-center cursor-pointer mt-2"
@@ -114,7 +115,7 @@ const DescriptionProduct = ({
                 className="text-secondary ml-1 underline"
               >
                 Easy Refund
-              </a>{" "}
+              </a>{' '}
               or
               <a
                 href="/return-exchange-policy-n19.html"

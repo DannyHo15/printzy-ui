@@ -3,18 +3,18 @@ import React, { useState } from "react";
 import SideCategory from "./Category/SideCategory";
 import TopCategory from "./Category/TopCategory";
 
-function Card({ children, categories, setSort }: any) {
+function Card({ children, categories, setSort, sort }: any) {
   const [open, setOpen] = useState(false);
   const [grid, setGrid] = useState(4);
   const [sortOpen, setSortOpen] = useState(false);
 
   const collections = categories.flatMap(
-    (item: { collections: any }) => item.collections,
+    (item: { collections: any }) => item.collections
   );
 
   const uniqueCollections = collections.filter(
     (collection: { id: any }, index: any, self: any[]) =>
-      index === self.findIndex((c) => c.id === collection.id),
+      index === self.findIndex((c) => c.id === collection.id)
   );
 
   return (
@@ -136,37 +136,94 @@ function Card({ children, categories, setSort }: any) {
                   >
                     <ul>
                       <li className="py-1 px-2 rounded-sm hover:bg-gray-100 active:bg-gray-200">
-                        <button
-                          className="w-full"
+                        <span
+                          className="w-full flex items-center gap-2"
                           onClick={() => {
                             setSort(0);
                             setSortOpen(false);
                           }}
                         >
+                          <span style={{ width: "24px", height: "24px" }}>
+                            {sort === 0 && (
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M5 12L9 16L19 6"
+                                  stroke="gray"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
                           Newest
-                        </button>
+                        </span>
                       </li>
                       <li className="py-1 px-2 rounded-sm hover:bg-gray-100 active:bg-gray-200">
-                        <button
-                          className="w-full"
+                        <span
+                          className="w-full flex items-center gap-2"
                           onClick={() => {
                             setSort(1);
                             setSortOpen(false);
                           }}
                         >
+                          <span style={{ width: "24px", height: "24px" }}>
+                            {sort === 1 && (
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M5 12L9 16L19 6"
+                                  stroke="gray"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
                           Price low to high
-                        </button>
+                        </span>
                       </li>
                       <li className="py-1 px-2 rounded-sm hover:bg-gray-100 active:bg-gray-200">
-                        <button
-                          className="w-full"
+                        <span
+                          className="w-full flex items-center gap-2"
                           onClick={() => {
                             setSort(2);
                             setSortOpen(false);
                           }}
                         >
+                          <span style={{ width: "24px", height: "24px" }}>
+                            {sort === 2 && (
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M5 12L9 16L19 6"
+                                  stroke="gray"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
                           Price high to low
-                        </button>
+                        </span>
                       </li>
                     </ul>
                   </div>

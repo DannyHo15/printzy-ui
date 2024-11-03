@@ -20,6 +20,7 @@ export default function CollectionTabs() {
       <div className="flex flex-wrap gap-4 mb-4 overflow-hidden rounded-lg">
         {collections?.slice(0, 4)?.map((collection, index: number) => (
           <button
+            key={`collection-tab-${index}`}
             type="button"
             className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
               activeTab === `event-tab-${index}`

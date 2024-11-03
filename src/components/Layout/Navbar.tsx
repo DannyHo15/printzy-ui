@@ -54,16 +54,25 @@ const Navbar = () => {
         <Menu />
       </div>
       {/* BIGGER SCREENS */}
-      <div className="hidden md:flex items-center justify-between gap-8 h-full w-[90%] mx-auto">
+      <div className="hidden md:flex items-start justify-between gap-8 h-full w-[90%] mx-auto m-5">
         {/* LEFT (Logo) */}
-        <div className="w-1/2 xl:w-1/12 flex items-center justify-start">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="" width={24} height={24} />
-            <div className="text-2xl tracking-wide">PRINTZY</div>
+        <div className="flex items-center justify-start m-2 w-1/2 xl:w-1/12">
+          <Link
+            href="/"
+            className="flex items-center gap-3 relative w-full h-full"
+          >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              layout="responsive"
+              width={800}
+              height={400}
+              objectFit="contain"
+            />
           </Link>
         </div>
         {/* CENTER (SearchBar and Dropdown) */}
-        <div className="w-1/2 xl:w-9/12 flex items-center justify-center h-full">
+        <div className="w-1/2 xl:w-9/12 flex items-start justify-center h-full">
           <div className="w-full">
             <SearchBar />
 

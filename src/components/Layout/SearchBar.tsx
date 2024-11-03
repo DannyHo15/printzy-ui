@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const SearchBar = () => {
   const router = useRouter();
@@ -9,10 +9,10 @@ const SearchBar = () => {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
+    const name = formData.get('name') as string;
 
     const params = new URLSearchParams(window.location.search);
-    params.set("name", name);
+    params.set('name', name);
     router.push(`/shop?${params.toString()}`);
   };
 
@@ -20,20 +20,20 @@ const SearchBar = () => {
   const [inputFocused, setInputFocused] = useState(false);
 
   const trendingSearches = [
-    "Search designs and products",
-    "Jesus shirts",
-    "Eeyore",
-    "Michael jackson jersey white and black one",
-    "Jujutsu kaisen",
-    "Judas priest",
-    "Michael jackson",
-    "Bedding set",
+    'Search designs and products',
+    'Jesus shirts',
+    'Eeyore',
+    'Michael jackson jersey white and black one',
+    'Jujutsu kaisen',
+    'Judas priest',
+    'Michael jackson',
+    'Bedding set',
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex(
-        (prevIndex) => (prevIndex + 1) % trendingSearches.length,
+        (prevIndex) => (prevIndex + 1) % trendingSearches.length
       );
     }, 5000); // Change every 5 seconds
     return () => clearInterval(interval);
