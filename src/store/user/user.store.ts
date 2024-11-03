@@ -1,20 +1,35 @@
 import { IProfileResponse } from "@/types/user";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 interface UserState {
   user: IProfileResponse;
+  addressId: string | null;
 }
 
 interface UserAction {
   setUser: (user: IProfileResponse) => void;
+  setAddressId: (addressId: string | null) => void;
+  logout: () => void;
 }
 
 export const useUserStore = create<UserState & UserAction>()(
   persist(
-    (set) => ({
-      user: {} as IProfileResponse,
-      setUser: (user) => set({ user }),
-    }),
+    (set) => {
+      return {
+        user: {} as IProfileResponse,
+        addressId: "",
+        setUser: (user) => set({ user }),
+        setAddressId: (addressId) => set({ addressId }),
+        logout: () => {
+          Cookies.remove("printzy_ac_token");
+          Cookies.remove("printzy_refresh_token");
+          localStorage.removeItem("userId");
+          set({ user: {} as IProfileResponse });
+        },
+      };
+    },
     {
       name: "user-storage",
       storage: createJSONStorage(() => localStorage),

@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { login, register } from '@/api/auth';
-import { createSelectors } from '@/lib/auto-genarate-selector';
 import { useUserStore } from '@/store/user/user.store';
+import { createSelectors } from '@/lib/auto-genarate-selector';
 
 enum MODE {
   LOGIN = 'LOGIN',
@@ -31,6 +31,9 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+
+  const userStore = createSelectors(useUserStore);
+  const setUserAction = userStore.use.setUser();
 
   const formTitle =
     mode === MODE.LOGIN
@@ -91,14 +94,33 @@ const LoginPage = () => {
       switch (response?.status) {
         case 201:
           setMessage('Successful! You are being redirected.');
+          if (
+            !response?.data?.payload?.refreshToken ||
+            !response?.data?.payload?.refreshToken
+          ) {
+            const loginResponse = await login({
+              email: response?.data?.email,
+              password: response?.data?.password,
+            });
+            Cookies.set(
+              'printzy_refresh_token',
+              loginResponse.data.payload.refreshToken
+            );
+            Cookies.set(
+              'printzy_ac_token',
+              loginResponse.data.payload.refreshToken
+            );
+            setUserAction(loginResponse.data.user);
+            redirect('/');
+          }
 
           Cookies.set(
             'printzy_refresh_token',
             response.data.payload.refreshToken
           );
-          Cookies.set('printzy_ac_token', response.data.payload.refreshToken);
           setUserAction(response.data.user);
-          break;
+          Cookies.set('printzy_ac_token', response.data.payload.refreshToken);
+          redirect('/');
         case 400:
           setError(response?.data.message || 'Invalid email or password');
 

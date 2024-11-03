@@ -19,6 +19,7 @@ const NavIcons = () => {
   //STORE
   const userStore = createSelectors(useUserStore);
   const user = userStore.use.user();
+  const logoutAction = userStore.use.logout();
 
   const handleProfile = () => {
     if (!isLoggedIn) {
@@ -30,9 +31,7 @@ const NavIcons = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    Cookies.remove('printzy_ac_token');
-    Cookies.remove('printzy_refresh_token');
-    localStorage.removeItem('userId');
+    logoutAction();
     setIsLoading(false);
     setIsProfileOpen(false);
     setSession('');
@@ -202,7 +201,7 @@ const NavIcons = () => {
                 />
               </svg>
             </div>
-            <Link href={`/profile/${user.id}`} className="text-primary">
+            <Link href={`/profile/${user?.id}`} className="text-primary">
               Profile
             </Link>
           </div>

@@ -1,27 +1,53 @@
-import React from "react";
+import React, { useCallback, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import AddressForm from "@/components/forms/address-form";
-import { DialogDescription } from "@radix-ui/react-dialog";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { DialogDescription } from '@radix-ui/react-dialog';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useUserStore } from '@/store/user/user.store';
+import dynamic from 'next/dynamic';
+const AddressForm = dynamic(() => import('../../../forms/address-form'));
 type TModalProp = {
   isOpen: boolean;
   setIsOpenModal: (value: boolean) => void;
 };
 const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
+  const userStore = createSelectors(useUserStore);
+  const setAddressId = userStore.use.setAddressId();
+  const addressId = userStore.use.addressId();
+
+  const [resetForm, setResetForm] = useState<() => void>(() => () => {});
+
+  const handleModal = useCallback(
+    (value: boolean) => {
+      if (!value) {
+        setAddressId(null);
+        resetForm(); // Reset the form when closing the modal
+      }
+      setIsOpenModal(value);
+    },
+    [resetForm, setAddressId, setIsOpenModal]
+  );
   return (
-    <Dialog onOpenChange={(value) => setIsOpenModal(value)} open={isOpen}>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+    <Dialog
+      onOpenChange={(value) => {
+        handleModal(value);
+      }}
+      open={isOpen}
+    >
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add new address</DialogTitle>
+          <DialogTitle>
+            {!addressId ? 'Add new address' : 'Update address'}
+          </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <AddressForm></AddressForm>
+        <AddressForm setIsOpenModal={setIsOpenModal}></AddressForm>
       </DialogContent>
     </Dialog>
   );
