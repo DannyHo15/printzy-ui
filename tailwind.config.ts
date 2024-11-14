@@ -11,7 +11,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#0b5179",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
         "primary-dk": "#0b5179",
         "primary-lt": "#a397e1",
         secondary: "#A7165C",
@@ -60,6 +63,15 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         cusgray: {
           DEFAULT: "#F2F5F6",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         cusblack: {
           DEFAULT: "#383838",
