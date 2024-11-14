@@ -84,7 +84,7 @@ const useProducts = ({
     sort,
   ]);
 
-  return products;
+  return { products, loading, error };
 };
 
 export default useProducts;

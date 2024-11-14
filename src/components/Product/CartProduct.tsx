@@ -45,7 +45,7 @@ function CartProduct({
                         ? ", "
                         : ""}
                     </span>
-                  )
+                  ),
                 )}
               </li>
               {/* 
@@ -63,7 +63,9 @@ function CartProduct({
           value={item.variant.price * item.quantity}
           displayType={"text"}
           thousandSeparator={true}
-          prefix={"$"}
+          fixedDecimalScale={true}
+          decimalScale={2}
+          suffix={" VND"}
           renderText={(value) => (
             <p className="text-lg font-bold text-primary-price uppercase">
               {value}

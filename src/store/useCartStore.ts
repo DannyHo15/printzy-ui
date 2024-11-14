@@ -5,8 +5,13 @@ type CartState = {
   cart: any;
   isLoading: boolean;
   getCart: () => void;
-  addItem: (index: number, quantity: number) => void;
+  updateItem: (index: number, quantity: number) => void;
   removeItem: (index: number) => void;
+  addItem: (
+    productId: number,
+    customizeUploadId: number,
+    quantity: number,
+  ) => void;
   clearCart: () => void;
 };
 
@@ -29,8 +34,17 @@ const useCartStore = create<CartState>((set) => ({
       set({ isLoading: false });
     }
   },
-
-  addItem: (index, quantity) => {
+  addItem: (productId, customizeUploadId, quantity) => {
+    set({ isLoading: true });
+    try {
+      cartService.add(productId, customizeUploadId, quantity);
+      set({ isLoading: false });
+    } catch (error) {
+      console.error("Failed to add item to cart", error);
+      set({ isLoading: false });
+    }
+  },
+  updateItem: (index, quantity) => {
     try {
       set((state) => {
         const existingItem = state.cart?.cartItems[index];
@@ -46,7 +60,7 @@ const useCartStore = create<CartState>((set) => ({
           cartService.update(
             updatedItem.productId,
             updatedItem.variant.id,
-            updatedItem.quantity
+            updatedItem.quantity,
           );
 
           return {

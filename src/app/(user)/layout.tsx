@@ -70,7 +70,7 @@ const layout = ({
   };
 
   return (
-    <div className="grid md:grid-cols-3 grid-cols-1 px-16 py-12 bg-light-gray gap-4">
+    <div className=" h-full grid md:grid-cols-3 grid-cols-1 px-16 py-12 bg-light-gray gap-4">
       <div className="col-span-3 md:col-span-1">
         <div className="flex justify-start items-center gap-2">
           <Avatar className="h-8 w-8">

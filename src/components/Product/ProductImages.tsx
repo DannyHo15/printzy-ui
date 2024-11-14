@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useState } from 'react';
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const ProductImages = ({
   items,
@@ -11,6 +11,10 @@ const ProductImages = ({
   primaryUpload: any;
 }) => {
   const [index, setIndex] = useState(0);
+  useEffect(() => {
+    console.log("items", items);
+    console.log("primaryUpload", primaryUpload);
+  }, [items, primaryUpload]);
 
   return (
     <div className="flex ">
@@ -29,7 +33,7 @@ const ProductImages = ({
             fill
             sizes="30vw"
             className={`object-cover rounded-md ${
-              index === -1 ? 'border-2 border-primary' : ''
+              index === -1 ? "border-2 border-primary" : ""
             }`}
           />
         </div>
@@ -45,7 +49,7 @@ const ProductImages = ({
               fill
               sizes="30vw"
               className={`object-cover rounded-md ${
-                index === i ? 'border-2 border-primary' : ''
+                index === i ? "border-2 border-primary" : ""
               }`}
             />
           </div>

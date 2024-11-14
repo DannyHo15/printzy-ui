@@ -42,18 +42,16 @@ export default function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning={true}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col justify-between gap-0`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col gap-0`}
       >
-        <main>
-          <QueryProvider>
-            {/* <ThemeProvider defaultTheme="light" attribute="class"> */}
-            <ToastContainer {...toastConfig} />
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            {/* </ThemeProvider> */}
-          </QueryProvider>
-        </main>
+        <QueryProvider>
+          {/* <ThemeProvider defaultTheme="light" attribute="class"> */}
+          <ToastContainer {...toastConfig} />
+          <Navbar />
+          <main className="mt-24 flex-1">{children}</main>
+          <Footer />
+          {/* </ThemeProvider> */}
+        </QueryProvider>
       </body>
     </html>
   );

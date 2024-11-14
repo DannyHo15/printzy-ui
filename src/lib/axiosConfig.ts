@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { SCHEMA } from "@/constant/schema";
+import { toast } from "react-toastify";
 const getBearerToken = () => {
   return Cookies.get("printzy_ac_token"); // Replace with your actual cookie name
 };
@@ -24,11 +25,14 @@ axiosInstance.interceptors.request.use(
 );
 axiosInstance.interceptors.response.use(
   (response) => {
-    // You can modify the response here
     return response;
   },
   (error) => {
     console.log(error, "error");
+    const response = error?.response;
+    if (response.config.method === "get") {
+      toast(response?.data?.message, { type: "error" });
+    }
     return Promise.reject(error?.response?.data ?? "Something went wrong!");
   },
 );

@@ -1,21 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import useProductVariants from '@/hooks/useVariants';
-import Add from '../Add';
+import { useEffect, useState } from "react";
+import useProductVariants from "@/hooks/useVariants";
+import Add from "../Add";
+import { TProductDataResponse } from "@/types/product";
 
 const CustomizeProducts = ({
-  productId,
+  product,
   productOptions,
   setVariant,
 }: {
-  productId: string;
+  product: TProductDataResponse;
   productOptions: any[];
   setVariant: (variant: any) => void;
 }) => {
   const [selectedVariant, setSelectedVariant] = useState<any>();
 
-  const variants = useProductVariants(productId);
+  const variants = useProductVariants(product?.id.toString());
 
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
@@ -44,8 +45,8 @@ const CustomizeProducts = ({
           productOptions?.map(({ option, productOptionValues }: any) => [
             option.id,
             productOptionValues[0].optionValue.id,
-          ])
-        )
+          ]),
+        ),
       );
     }
   }, [variants]);
@@ -77,10 +78,10 @@ const CustomizeProducts = ({
                 : () =>
                     handleOptionSelect(
                       optionValue.optionValue.optionId,
-                      optionValue.optionValue.id
+                      optionValue.optionValue.id,
                     );
 
-              return option.option.name === 'Color' ? (
+              return option.option.name === "Color" ? (
                 <li
                   className="relative inline-block group"
                   key={optionValue.optionValue.value}
@@ -89,7 +90,7 @@ const CustomizeProducts = ({
                     className="w-8 h-8 rounded-full ring-1 ring-gray-300 relative"
                     style={{
                       backgroundColor: optionValue.optionValue.value,
-                      cursor: disabled ? 'not-allowed' : 'pointer',
+                      cursor: disabled ? "not-allowed" : "pointer",
                     }}
                     onClick={clickHandler}
                   >
@@ -109,14 +110,14 @@ const CustomizeProducts = ({
                 <li
                   className="ring-1 ring-lama rounded-md py-1 px-4 text-sm"
                   style={{
-                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    cursor: disabled ? "not-allowed" : "pointer",
                     backgroundColor: selected
-                      ? '#f35c7a'
+                      ? "#f35c7a"
                       : disabled
-                      ? '#FBCFE8'
-                      : 'white',
-                    color: selected || disabled ? 'white' : '#f35c7a',
-                    boxShadow: disabled ? 'none' : '',
+                        ? "#FBCFE8"
+                        : "white",
+                    color: selected || disabled ? "white" : "#f35c7a",
+                    boxShadow: disabled ? "none" : "",
                   }}
                   key={optionValue.optionValue.value}
                   onClick={clickHandler}
@@ -129,9 +130,9 @@ const CustomizeProducts = ({
         </div>
       ))}
       <Add
-        productId={productId}
+        product={product}
         variantId={
-          selectedVariant?._id || '00000000-0000-0000-0000-000000000000'
+          selectedVariant?._id || "00000000-0000-0000-0000-000000000000"
         }
         stockNumber={selectedVariant?.stock?.quantity || 0}
       />

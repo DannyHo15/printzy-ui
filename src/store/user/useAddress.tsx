@@ -3,12 +3,18 @@ import {
   deleteAddress,
   getAddressById,
   getAddresses,
+  getShippingfee,
   updateAddress,
 } from "@/api/address";
 import { getDistrictsByProvinceId } from "@/api/district";
 import { getProvinces } from "@/api/province";
 import { getWardsByDistrict } from "@/api/ward";
-import { IAddressDataResponse, IAddressPayload } from "@/types/address";
+import {
+  IAddressDataResponse,
+  IAddressPayload,
+  IShippingFeeParams,
+  IShippingFeeResponse,
+} from "@/types/address";
 import { IDistrictDataResponse } from "@/types/district";
 import { IProvinceDataResponse } from "@/types/province";
 import { IWardDataResponse } from "@/types/ward";
@@ -95,12 +101,19 @@ export const useAddress = (id?: string) => {
         toast.success("Update address successfully");
       },
     });
-  const { mutate, error, isSuccess, isError } = useMutation({
+  const {
+    mutate,
+    error,
+    isSuccess,
+    isError,
+    status,
+    data: newAddress,
+  } = useMutation({
     mutationFn: (address: IAddressPayload) => createAddress(address),
     onError: (error) => {
       toast.error("Create address failed:" + error.message);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["getAllAddresses"],
       });
@@ -123,6 +136,8 @@ export const useAddress = (id?: string) => {
 
   return {
     createAddress: mutate,
+    createAddressStatus: status,
+    newAddress,
     createAddressErrorDetail: error,
     createAddressSuccess: isSuccess,
     createAddressError: isError,
@@ -131,5 +146,21 @@ export const useAddress = (id?: string) => {
     isLoadingAddressDetail,
     updateAddressStatus,
     deleteAddress: deleteAddressMutate,
+  };
+};
+
+export const useShippingFee = (payload: IShippingFeeParams) => {
+  const { data, isFetching, isLoading, isError } =
+    useQuery<IShippingFeeResponse>({
+      queryKey: ["shippingFee", payload],
+      queryFn: () => getShippingfee(payload),
+      enabled: !!payload.pick_province,
+    });
+
+  return {
+    shippingFee: data,
+    isFetching,
+    isLoading,
+    isError,
   };
 };

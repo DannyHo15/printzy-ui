@@ -1,17 +1,22 @@
 "use client";
 
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import useCartStore from "@/store/useCartStore";
+import { TProductDataResponse } from "@/types/product";
 import { useState } from "react";
 
 const Add = ({
-  productId,
+  product,
   variantId,
   stockNumber,
 }: {
-  productId: string;
+  product: TProductDataResponse;
   variantId: string;
   stockNumber: number;
 }) => {
   const [quantity, setQuantity] = useState(1);
+  const cartStore = createSelectors(useCartStore);
+  const addItemAction = cartStore.use.addItem();
 
   const handleQuantity = (type: "i" | "d") => {
     if (type === "d" && quantity > 1) {
@@ -20,6 +25,11 @@ const Add = ({
     if (type === "i" && quantity < stockNumber) {
       setQuantity((prev) => prev + 1);
     }
+  };
+
+  const handleAddToCart = () => {
+    // Add to cart logic
+    console.log(product, variantId, quantity);
   };
 
   return (
@@ -48,6 +58,7 @@ const Add = ({
       </div>
       <button
         // disabled={isLoading}
+        onClick={handleAddToCart}
         className="w-full text-sm rounded-3xl ring-1 ring-lama text-lama py-2 px-4 hover:bg-lama hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
       >
         Go to customize

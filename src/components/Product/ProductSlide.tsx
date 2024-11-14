@@ -24,7 +24,7 @@ const ProductSlide = (props: Props) => {
             pagination: { clickable: true },
           },
           768: {
-            slidesPerView: slidesPerView,
+            slidesPerView: 3,
             pagination: false,
           },
           1024: {

@@ -25,7 +25,9 @@ function WishlistProduct({ item }: any) {
           className="text-sm font-semibold text-cusblack"
           displayType={"text"}
           thousandSeparator={true}
-          prefix={"$"}
+          fixedDecimalScale={true}
+          decimalScale={2}
+          suffix={" VND"}
           renderText={(value) => (
             <p className="text-base font-bold text-red-600 uppercase ">
               {value}

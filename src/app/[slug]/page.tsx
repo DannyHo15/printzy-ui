@@ -14,7 +14,7 @@ import Breadcrumb from "@/components/BreadCrumb";
 const SinglePage = ({ params }: { params: { slug: string } }) => {
   const product = useDetailProduct(params?.slug);
 
-  const products = useProducts({ limit: 5, skip: 0 });
+  const { products, loading } = useProducts({ limit: 5, skip: 0 });
 
   const [selectedVariant, setSelectedVariant] = useState<any>({});
 
@@ -45,25 +45,19 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
               <DetailProductReviews productId={product?.id} />
             </Suspense>
           </div>
-          <div className="mt-10">
-            <h1 className="text-xl text-primary">You may also like</h1>
-            <Suspense fallback="Loading...">
-              <ProductSlide items={products} slidesPerView={4} />
-            </Suspense>
-          </div>
         </div>
         {/* TEXTS */}
         <div className="w-full lg:w-5/12 flex flex-col gap-2">
           <h1 className="text-2xl font-medium">{product?.name}</h1>
 
           <div className="h-[2px] bg-gray-100" />
-          {product?.price === product?.discountedPrice ? (
+          {!product?.discountPercent ? (
             <h2 className="font-medium text-xl">${product?.price}</h2>
           ) : (
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-medium text-xl text-secondary">
-                  ${product?.price}
+                  ${product?.price * (1 - product?.discountPercent / 100)}
                 </h2>
                 <h3 className="text-md text-gray-500 line-through">
                   ${product?.price}
@@ -76,7 +70,7 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
           )}
           <div className="h-[2px] bg-gray-100" />
           <CustomizeProducts
-            productId={product?.id}
+            product={product}
             productOptions={product?.productOptions}
             setVariant={(variant) => setSelectedVariant(variant)}
           />
@@ -91,11 +85,17 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
           <div className="h-[2px] bg-gray-100" />
         </div>
       </div>
+      <div className="mt-10">
+        <h1 className="text-xl text-primary">You may also like</h1>
+        <Suspense fallback="Loading...">
+          <ProductSlide items={products} slidesPerView={4} />
+        </Suspense>
+      </div>
 
       <div className="mt-10 ">
         <h1 className="text-xl text-primary">Because you viewed</h1>
         <Suspense fallback="Loading...">
-          <ProductSlide items={products} slidesPerView={6} />
+          <ProductSlide items={products} slidesPerView={4} />
         </Suspense>
       </div>
     </div>

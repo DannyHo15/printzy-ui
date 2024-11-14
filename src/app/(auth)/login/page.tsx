@@ -1,59 +1,65 @@
-'use client';
+"use client";
 
-import { redirect } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { useState } from 'react';
-import { login, register } from '@/api/auth';
-import { useUserStore } from '@/store/user/user.store';
-import { createSelectors } from '@/lib/auto-genarate-selector';
+import { redirect } from "next/navigation";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import { login, register } from "@/api/auth";
+import { useUserStore } from "@/store/user/user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
 
 enum MODE {
-  LOGIN = 'LOGIN',
-  REGISTER = 'REGISTER',
-  RESET_PASSWORD = 'RESET_PASSWORD',
-  EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
+  LOGIN = "LOGIN",
+  REGISTER = "REGISTER",
+  RESET_PASSWORD = "RESET_PASSWORD",
+  EMAIL_VERIFICATION = "EMAIL_VERIFICATION",
 }
 
 const LoginPage = () => {
-  const isLoggedIn = Cookies.get('printzy_ac_token');
+  const isLoggedIn = Cookies.get("printzy_ac_token");
   const userStore = createSelectors(useUserStore);
   const setUserAction = userStore.use.setUser();
   if (isLoggedIn) {
-    redirect('/');
+    redirect("/");
   }
 
   const [mode, setMode] = useState(MODE.LOGIN);
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailCode, setEmailCode] = useState('');
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailCode, setEmailCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  const formTitle =
-    mode === MODE.LOGIN
-      ? 'Log in'
-      : mode === MODE.REGISTER
-      ? 'Register'
-      : mode === MODE.RESET_PASSWORD
-      ? 'Reset Your Password'
-      : 'Verify Your Email';
+  let formTitle;
+  if (mode === MODE.LOGIN) {
+    formTitle = "Log in";
+  } else if (mode === MODE.REGISTER) {
+    formTitle = "Register";
+  } else if (mode === MODE.RESET_PASSWORD) {
+    formTitle = "Reset Your Password";
+  } else {
+    formTitle = "Verify Your Email";
+  }
 
-  const buttonTitle =
-    mode === MODE.LOGIN
-      ? 'Login'
-      : mode === MODE.REGISTER
-      ? 'Register'
-      : mode === MODE.RESET_PASSWORD
-      ? 'Reset'
-      : 'Verify';
+  let buttonTitle;
+  if (mode === MODE.LOGIN) {
+    buttonTitle = "Login";
+  } else if (mode === MODE.REGISTER) {
+    buttonTitle = "Register";
+  } else if (mode === MODE.RESET_PASSWORD) {
+    buttonTitle = "Reset";
+  } else {
+    buttonTitle = "Verify";
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       let response;
@@ -67,8 +73,9 @@ const LoginPage = () => {
           break;
         case MODE.REGISTER:
           response = await register({
-            firstName: username.split(' ')?.[0],
-            lastName: username.split(' ')?.[1] || null,
+            firstName: firstName.split(" ")?.[0],
+            name: username,
+            lastName: lastName,
             email,
             password,
           });
@@ -79,7 +86,7 @@ const LoginPage = () => {
 
       switch (response?.status) {
         case 201:
-          setMessage('Successful! You are being redirected.');
+          setMessage("Successful! You are being redirected.");
           if (
             !response?.data?.payload?.refreshToken ||
             !response?.data?.payload?.refreshToken
@@ -89,26 +96,26 @@ const LoginPage = () => {
               password: response?.data?.password,
             });
             Cookies.set(
-              'printzy_refresh_token',
-              loginResponse.data.payload.refreshToken
+              "printzy_refresh_token",
+              loginResponse.data.payload.refreshToken,
             );
             Cookies.set(
-              'printzy_ac_token',
-              loginResponse.data.payload.refreshToken
+              "printzy_ac_token",
+              loginResponse.data.payload.refreshToken,
             );
             setUserAction(loginResponse.data.user);
-            redirect('/');
+            redirect("/");
           }
 
           Cookies.set(
-            'printzy_refresh_token',
-            response.data.payload.refreshToken
+            "printzy_refresh_token",
+            response.data.payload.refreshToken,
           );
           setUserAction(response.data.user);
-          Cookies.set('printzy_ac_token', response.data.payload.refreshToken);
-          redirect('/');
+          Cookies.set("printzy_ac_token", response.data.payload.refreshToken);
+          redirect("/");
         case 400:
-          setError(response?.data.message || 'Invalid email or password');
+          setError(response?.data.message || "Invalid email or password");
 
         // case LoginState.EMAIL_VERIFICATION_REQUIRED:
         //   setMode(MODE.EMAIL_VERIFICATION);
@@ -134,12 +141,36 @@ const LoginPage = () => {
             <input
               type="text"
               name="username"
-              placeholder="john"
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
         ) : null}
+        {mode === MODE.REGISTER ? (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-gray-700">First name</label>
+            <input
+              type="text"
+              name="firstName"
+              placeholder="john"
+              className="ring-2 ring-gray-300 rounded-md p-4"
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
+        ) : null}
+        {mode === MODE.REGISTER ? (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-gray-700">Last name</label>
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Williams"
+              className="ring-2 ring-gray-300 rounded-md p-4"
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
+        ) : null}
+
         {mode !== MODE.EMAIL_VERIFICATION ? (
           <div className="flex flex-col gap-2">
             <label className="text-sm text-gray-700">E-mail</label>
@@ -187,7 +218,7 @@ const LoginPage = () => {
           className="bg-lama text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? 'Loading...' : buttonTitle}
+          {isLoading ? "Loading..." : buttonTitle}
         </button>
         {error && <div className="text-red-600">{error}</div>}
         {mode === MODE.LOGIN && (

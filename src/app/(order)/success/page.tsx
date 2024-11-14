@@ -1,13 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Head from "next/head";
 // import { motion } from "framer-motion";
 
 function Success() {
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(deleteFromBasket());
-  // }, []);
   return (
     <>
       <Head>

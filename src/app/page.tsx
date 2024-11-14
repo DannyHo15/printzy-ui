@@ -30,7 +30,7 @@ export default function Home() {
         <Suspense fallback={<Skeleton />}>
           <ProductList
             categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
-            limit={5}
+            limit={4}
           />
         </Suspense>
       </div>
@@ -58,7 +58,7 @@ export default function Home() {
         <Suspense fallback={<Skeleton />}>
           <ReviewProductList
             categoryId={process.env.FEATURED_PRODUCTS_NEW_CATEGORY_ID!}
-            limit={5}
+            limit={4}
           />
         </Suspense>
       </div>

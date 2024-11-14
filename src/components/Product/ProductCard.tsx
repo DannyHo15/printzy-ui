@@ -1,28 +1,29 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { NumericFormat } from 'react-number-format';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useWishlistStore } from '@/store/useWishList';
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { NumericFormat } from "react-number-format";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useWishlistStore } from "@/store/useWishList";
+import { Heart } from "lucide-react";
 
 function ProductCard({ item }: any) {
   const { addWishList } = useWishlistStore();
   const router = useRouter();
 
   const handleAddWishList = (id: string) => {
-    const isLoggedIn = Cookies.get('printzy_ac_token');
+    const isLoggedIn = Cookies.get("printzy_ac_token");
     if (!isLoggedIn) {
-      router.push('/login');
+      router.push("/login");
     } else {
       addWishList(item.id);
     }
   };
 
   return (
-    <div className="rounded-xl cursor-pointer">
+    <div className="rounded-xl cursor-pointer border overflow-hidden px-1">
       <div className="overflow-hidden cursor-default rounded-xl relative group">
         <motion.div
           initial={{ scale: 1, x: 50, opacity: 0 }}
@@ -30,12 +31,13 @@ function ProductCard({ item }: any) {
           transition={{ delay: 0.2 }}
           className="relative w-full h-64"
         >
-          <Link href={'/' + item.slug}>
+          <Link href={"/" + item.slug}>
             <Image
               alt=""
               fill
-              sizes="25vw"
-              className="absolute object-cover rounded-2xl"
+              loading="lazy"
+              sizes="100%"
+              className="object-cover rounded-2xl"
               src={item?.upload?.path}
             />
           </Link>
@@ -46,54 +48,51 @@ function ProductCard({ item }: any) {
               onClick={() => handleAddWishList(item.id)}
               className="p-2 bg-white hover:bg-gray-100 active:bg-gray-200 rounded-full "
             >
-              <svg
-                className="w-6 m-auto h-6 text-secondary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
+              <Heart size={24} className="text-secondary-dk" />
             </button>
           </div>
-          <div className="flex cursor-pointer mr-2">
-            <div className="p-4 bg-secondary rounded-full text-[15px] font-semibold text-white w-[50px] h-[50px] flex justify-center items-center">
-              {item.discountPercent}% OFF
+          {item.discountPercent > 0 && (
+            <div className="flex mr-2">
+              <div className="p-4 bg-secondary rounded-full text-[15px] font-semibold text-white w-[50px] h-[50px] flex justify-center items-center">
+                {item.discountPercent}% OFF
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
-      <Link href={'/' + item.slug} key={item._id} className="mt-0.5">
+      <Link
+        href={"/" + item.slug}
+        key={item._id}
+        className="mt-0.5 p-4 flex flex-col"
+      >
         <p className="text-sm line-clamp-1 text-primary font-semibold">
           {item.name}
         </p>
-        <div className="flex gap-2 items-center">
+        <div className="flex w-full gap-2 items-center">
           <NumericFormat
             value={item.price - (item.price * item.discountPercent) / 100}
-            displayType={'text'}
+            displayType={"text"}
             thousandSeparator={true}
-            prefix={'$'}
+            fixedDecimalScale={true}
+            decimalScale={2}
+            suffix={" VND"}
             renderText={(value) => (
               <p className="text-base font-bold text-primary-price uppercase ">
                 {value}
               </p>
             )}
           />
-          <NumericFormat
-            value={item.price}
-            displayType={'text'}
-            thousandSeparator={true}
-            prefix={'$'}
-            renderText={(value) => (
-              <p className="text-sm text-darkness line-through">{value}</p>
-            )}
-          />
+          {item.discountPercent > 0 && (
+            <NumericFormat
+              value={item.price}
+              displayType={"text"}
+              thousandSeparator={true}
+              suffix={" VND"}
+              renderText={(value) => (
+                <p className="text-sm text-darkness line-through">{value}</p>
+              )}
+            />
+          )}
         </div>
       </Link>
     </div>

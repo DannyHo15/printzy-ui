@@ -1,12 +1,21 @@
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import CartModal from './CartModal';
-import { useWishlistStore } from '@/store/useWishList';
-import { useUserStore } from '@/store/user/user.store';
-import { createSelectors } from '@/lib/auto-genarate-selector';
-import useCartStore from '@/store/useCartStore';
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import CartModal from "./CartModal";
+import { useWishlistStore } from "@/store/useWishList";
+import { useUserStore } from "@/store/user/user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import useCartStore from "@/store/useCartStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { User } from "lucide-react";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -14,7 +23,7 @@ const NavIcons = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const isLoggedIn = Cookies.get('printzy_ac_token');
+  const isLoggedIn = Cookies.get("printzy_ac_token");
 
   //STORE
   const userStore = createSelectors(useUserStore);
@@ -23,7 +32,7 @@ const NavIcons = () => {
 
   const handleProfile = () => {
     if (!isLoggedIn) {
-      router.push('/login');
+      router.push("/login");
     } else {
       setIsProfileOpen((prev) => !prev);
     }
@@ -34,24 +43,24 @@ const NavIcons = () => {
     logoutAction();
     setIsLoading(false);
     setIsProfileOpen(false);
-    setSession('');
-    router.push('/login');
+    setSession("");
+    router.push("/login");
   };
 
   const { wishlist, getWishList } = useWishlistStore();
   const { cart, getCart } = useCartStore();
 
   useEffect(() => {
-    if (Cookies.get('printzy_ac_token')) {
+    if (Cookies.get("printzy_ac_token")) {
       getWishList();
       getCart();
     }
   }, []);
 
-  const [session, setSession] = useState('');
+  const [session, setSession] = useState("");
 
   useEffect(() => {
-    const current = Cookies.get('printzy_ac_token');
+    const current = Cookies.get("printzy_ac_token");
 
     if (current) setSession(current);
   }, [pathname]);
@@ -80,7 +89,6 @@ const NavIcons = () => {
           <span className="text-xs text-gray-600 font-semibold">Shop</span>
         </div>
       </Link>
-
       {/* Wishlist Icon */}
       <Link href="/wishlist">
         <div className="flex flex-col items-center">
@@ -108,7 +116,6 @@ const NavIcons = () => {
           <span className="text-xs text-gray-600 font-semibold">Wishlist</span>
         </div>
       </Link>
-
       {/* Cart Icon */}
       <Link href="/cart">
         <div
@@ -140,8 +147,23 @@ const NavIcons = () => {
           <span className="text-xs text-gray-600 font-semibold">Cart</span>
         </div>
       </Link>
-
       {/* Profile Icon */}
+      {
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        //     <div className="flex flex-col justify-center items-center gap-1">
+        //       <User size={24} className="text-primary-dk" />
+        //       <span className="text-xs text-gray-600 font-semibold">Profile</span>
+        //     </div>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent className="w-56">
+        //     <Link href={`/profile/${user?.id}`} className="text-primary">
+        //       Profile
+        //     </Link>
+        //     <DropdownMenuSeparator />
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
+      }
       <button onClick={handleProfile} className="flex flex-col items-center">
         <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 active:bg-gray-300 cursor-pointer duration-200">
           {!session ? (
@@ -177,10 +199,9 @@ const NavIcons = () => {
           )}
         </div>
         <span className="text-xs text-gray-600 font-semibold">
-          {!session ? 'SignIn' : 'Account'}
+          {!session ? "SignIn" : "Account"}
         </span>
       </button>
-
       {/* Profile Dropdown */}
       {isProfileOpen && (
         <div className="absolute p-4 rounded-md top-12 left-20 bg-white text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20 flex flex-col gap-3 w-fit">
@@ -247,7 +268,7 @@ const NavIcons = () => {
                 </svg>
               </div>
               <span className="text-primary">
-                {isLoading ? 'Logging out' : 'Logout'}
+                {isLoading ? "Logging out" : "Logout"}
               </span>
             </div>
           </div>
