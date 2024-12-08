@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Input } from '../ui/input';
+import usePrintzyImageGenerateHistory from '@/store/generateImageHistory/generateImageHistory';
 
 interface IUploadImageFeatureProps {
   editor: Editor;
@@ -24,6 +25,8 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
+
+  const { images, addImage } = usePrintzyImageGenerateHistory();
 
   const generateGraphic = async (prompt: string) => {
     setLoading(true);
@@ -68,8 +71,26 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
         type: blob.type,
       });
 
+      if (option === 'none') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+
+          // Lưu ảnh đã xử lý dưới dạng base64 và Blob
+          addImage({
+            file: generatedFile,
+            name: generatedFile.name,
+            url: base64, // Lưu base64 để hiển thị ảnh
+          });
+
+          // Thêm ảnh đã xử lý vào editor
+          editor.addImageForFile(generatedFile);
+        };
+        reader.readAsDataURL(blob);
+      } else {
+        removeBackground(generatedFile);
+      }
       // Add the generated image to the editor
-      editor.addImageForFile(generatedFile);
     } catch (err: any) {
       setError(err.message || 'An error occurred while generating the graphic');
     } finally {
@@ -79,6 +100,79 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
 
   const handleButtonClick = async () => {
     await generateGraphic(prompt);
+  };
+
+  const removeBackground = async (file: File) => {
+    setLoading(true);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(
+        'https://409d-2405-4802-915d-3f40-ec5c-27ee-b0ae-40e3.ngrok-free.app/remove-background',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to remove background');
+      }
+
+      const blob = await response.blob();
+      const processedFile = new File([blob], 'processed-image.png', {
+        type: blob.type,
+      });
+
+      // Chuyển blob thành base64 để lưu trữ và hiển thị
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+
+        // Lưu ảnh đã xử lý dưới dạng base64 và Blob
+        addImage({
+          file: processedFile,
+          name: processedFile.name,
+          url: base64, // Lưu base64 để hiển thị ảnh
+        });
+
+        // Thêm ảnh đã xử lý vào editor
+        editor.addImageForFile(processedFile);
+      };
+      reader.readAsDataURL(blob); // Đọc blob dưới dạng base64
+    } catch (err: any) {
+      setError(err.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageClick = async (image: any) => {
+    let blob;
+
+    // Nếu image.url là base64, chuyển thành Blob
+    if (image.url.startsWith('data:image')) {
+      const base64 = image.url.split(',')[1]; // Loại bỏ header base64
+      const binary = atob(base64); // Giải mã base64
+      const array = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        array[i] = binary.charCodeAt(i);
+      }
+      blob = new Blob([array], { type: 'image/png' }); // Tạo Blob
+    } else {
+      // Nếu image.url là URL, tải về và chuyển thành Blob
+      const response = await fetch(image.url);
+      blob = await response.blob();
+    }
+
+    // Tạo File từ Blob
+    const fileToUse = new File([blob], image.name, { type: blob.type });
+
+    // Thêm File vào editor
+    editor.addImageForFile(fileToUse);
   };
 
   return (
@@ -91,7 +185,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
             placeholder="Enter your creative prompt"
           />
 
-          {/* <Select value={option} onValueChange={(value) => setOption(value)}>
+          <Select value={option} onValueChange={(value) => setOption(value)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -102,7 +196,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select> */}
+          </Select>
 
           <Button
             className="w-full text-base"
@@ -113,6 +207,33 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
           </Button>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <div className="mt-8">
+            <h3 className="text-sm font-semibold">Generated Images</h3>
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={image.url} // Sử dụng base64 URL đã lưu
+                    alt={image.name}
+                    className="w-full h-auto object-cover rounded-lg shadow-md"
+                    onClick={() => handleImageClick(image)}
+                  />
+                  <div className="absolute top-2 right-2 bg-white text-red-500 cursor-pointer p-1 rounded-full text-xs">
+                    <button
+                      onClick={() =>
+                        usePrintzyImageGenerateHistory
+                          .getState()
+                          .removeImage(index)
+                      }
+                    >
+                      x
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
