@@ -75,7 +75,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
   }, [init]);
 
   return (
-    <div className="flex max-h-screen   w-full">
+    <div className="flex max-h-screen w-screen">
       <EditorSidebar
         onChangeActiveTool={onChangeActiveTool}
         activeTool={activeTool}
