@@ -17,26 +17,35 @@ interface ImageStore {
 
 // Tạo store printzyImageHistory với Zustand
 const usePrintzyImageHistory = create<ImageStore>((set) => ({
-  images: JSON.parse(localStorage.getItem('printzyImageHistory') || '[]'), // Lấy lịch sử tải lên từ localStorage nếu có
+  images:
+    typeof window !== 'undefined' && localStorage.getItem('printzyImageHistory')
+      ? JSON.parse(localStorage.getItem('printzyImageHistory') || '[]')
+      : [], // Lấy lịch sử tải lên từ localStorage nếu có và chạy trên client-side
   addImage: (image) => {
     set((state) => {
       const newImages = [...state.images, image];
-      // Cập nhật lại localStorage với lịch sử mới
-      localStorage.setItem('printzyImageHistory', JSON.stringify(newImages));
+      if (typeof window !== 'undefined') {
+        // Cập nhật lại localStorage với lịch sử mới chỉ khi chạy trên client-side
+        localStorage.setItem('printzyImageHistory', JSON.stringify(newImages));
+      }
       return { images: newImages };
     });
   },
   removeImage: (index) => {
     set((state) => {
       const newImages = state.images.filter((_, i) => i !== index);
-      // Cập nhật lại localStorage với danh sách mới
-      localStorage.setItem('printzyImageHistory', JSON.stringify(newImages));
+      if (typeof window !== 'undefined') {
+        // Cập nhật lại localStorage với danh sách mới chỉ khi chạy trên client-side
+        localStorage.setItem('printzyImageHistory', JSON.stringify(newImages));
+      }
       return { images: newImages };
     });
   },
   clearImages: () => {
     set({ images: [] });
-    localStorage.removeItem('printzyImageHistory'); // Xóa lịch sử trong localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('printzyImageHistory'); // Xóa lịch sử trong localStorage chỉ khi chạy trên client-side
+    }
   },
 }));
 

@@ -96,7 +96,7 @@ const EditorSidebar = ({
     }
   };
   return (
-    <div className="flex ">
+    <div className="flex">
       <div className="h-full border-r relative w-24 bg-background flex flex-col px-2 shadow-lg">
         {EditorSidebarItems.map((item) => (
           <div

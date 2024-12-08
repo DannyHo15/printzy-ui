@@ -17,34 +17,42 @@ interface ImageStore {
 
 // Tạo store printzyImageGenerateHistory với Zustand
 const usePrintzyImageGenerateHistory = create<ImageStore>((set) => ({
-  images: JSON.parse(
-    localStorage.getItem('printzyImageGenerateHistory') || '[]'
-  ), // Lấy lịch sử tải lên từ localStorage nếu có
+  images:
+    typeof window !== 'undefined' &&
+    localStorage.getItem('printzyImageGenerateHistory')
+      ? JSON.parse(localStorage.getItem('printzyImageGenerateHistory') || '[]')
+      : [], // Lấy lịch sử tải lên từ localStorage nếu có và chỉ khi chạy trên client-side
   addImage: (image) => {
     set((state) => {
       const newImages = [...state.images, image];
-      // Cập nhật lại localStorage với lịch sử mới
-      localStorage.setItem(
-        'printzyImageGenerateHistory',
-        JSON.stringify(newImages)
-      );
+      if (typeof window !== 'undefined') {
+        // Cập nhật lại localStorage với lịch sử mới chỉ khi chạy trên client-side
+        localStorage.setItem(
+          'printzyImageGenerateHistory',
+          JSON.stringify(newImages)
+        );
+      }
       return { images: newImages };
     });
   },
   removeImage: (index) => {
     set((state) => {
       const newImages = state.images.filter((_, i) => i !== index);
-      // Cập nhật lại localStorage với danh sách mới
-      localStorage.setItem(
-        'printzyImageGenerateHistory',
-        JSON.stringify(newImages)
-      );
+      if (typeof window !== 'undefined') {
+        // Cập nhật lại localStorage với danh sách mới chỉ khi chạy trên client-side
+        localStorage.setItem(
+          'printzyImageGenerateHistory',
+          JSON.stringify(newImages)
+        );
+      }
       return { images: newImages };
     });
   },
   clearImages: () => {
     set({ images: [] });
-    localStorage.removeItem('printzyImageGenerateHistory'); // Xóa lịch sử trong localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('printzyImageGenerateHistory'); // Xóa lịch sử trong localStorage chỉ khi chạy trên client-side
+    }
   },
 }));
 

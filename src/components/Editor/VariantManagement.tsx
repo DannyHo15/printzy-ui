@@ -24,19 +24,28 @@ export default function VariantManagement({
   variant,
 }: IVariantManagementProps) {
   return (
-    <Popover defaultOpen={true}>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Variant</Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 bg-background">
-        <CustomizeProducts
-          productOptions={productOptions}
-          product={product}
-          initialOptions={variant}
-          setVariant={setVariant}
-          setColor={setColor}
-        />
-      </PopoverContent>
-    </Popover>
+    // <Popover defaultOpen={true}>
+    //   <PopoverTrigger asChild>
+    //     {/* <Button variant="outline">Variant</Button> */}
+    //   </PopoverTrigger>
+    //   <PopoverContent align="end" className="w-80 bg-background">
+    <div className="w-72 rounded-md border bg-white p-4 text-popover-foreground shadow-md outline-none">
+      <CustomizeProducts
+        productOptions={productOptions}
+        product={product}
+        initialOptions={variant}
+        setVariant={setVariant}
+        setColor={setColor}
+      />
+      <Button
+        variant="secondary"
+        className="flex-1 mt-10 w-full rounded-lg"
+        // onClick={handleAddToCart}
+      >
+        Confirm & Add to cart
+      </Button>
+    </div>
+    //   </PopoverContent>
+    // </Popover>
   );
 }
