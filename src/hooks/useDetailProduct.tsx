@@ -1,5 +1,5 @@
 import productsService from "@/api/products";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 // Custom hook to fetch product by slug and SKU
 const useDetailProduct = (slug: string | string[] | undefined) => {
@@ -26,7 +26,11 @@ const useDetailProduct = (slug: string | string[] | undefined) => {
     fetchProduct();
   }, []);
 
-  return product;
+  return {
+    product,
+    loading,
+    error,
+  };
 };
 
 export default useDetailProduct;

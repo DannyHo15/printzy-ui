@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import productsService from "@/api/products";
 
@@ -84,7 +85,7 @@ const useProducts = ({
     sort,
   ]);
 
-  return products;
+  return { products, loading, error };
 };
 
 export default useProducts;

@@ -1,3 +1,4 @@
+import { warn } from "console";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -11,7 +12,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#0b5179",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
         "primary-dk": "#0b5179",
         "primary-lt": "#a397e1",
         secondary: "#A7165C",
@@ -61,6 +65,15 @@ const config: Config = {
         cusgray: {
           DEFAULT: "#F2F5F6",
         },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
         cusblack: {
           DEFAULT: "#383838",
         },
@@ -82,6 +95,14 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      fontFamily: {
+        poppins: ["var(--font-poppins)"],
+        inter: ["var(--font-inter)"],
+        geistSans: ["var(--font-geist-sans)"],
+        geistMono: ["var(--font-geist-mono)"],
+        roboto: ["var(--font-roboto)"],
+        eduArrow: ["var(--font-edu-arrow)"],
       },
     },
   },

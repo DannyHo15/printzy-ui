@@ -1,3 +1,4 @@
+"use client";
 import useCategories from "@/hooks/useCategories";
 import Image from "next/image";
 import Link from "next/link";

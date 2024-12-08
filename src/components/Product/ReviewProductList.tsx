@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import Skeleton from "../Skeleton";
 import useProducts from "@/hooks/useProducts";
@@ -16,7 +17,7 @@ const ReviewProductList = ({
   limit?: number;
   searchParams?: any;
 }) => {
-  const products = useProducts({ limit: limit || 0, skip: 0 });
+  const { products, loading } = useProducts({ limit: limit || 0, skip: 0 });
   const reviews = useAllProductReviews({ limit: 10, skip: 0 });
 
   return (

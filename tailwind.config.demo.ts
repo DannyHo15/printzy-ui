@@ -102,6 +102,7 @@ const config: Config = {
       },
       animation: {
         gradient: "gradient 10s ease infinite",
+        shine: "shine 8s ease-in-out infinite",
       },
       keyframes: {
         gradient: {
@@ -114,6 +115,10 @@ const config: Config = {
           "100%": {
             backgroundPosition: "0% 50%",
           },
+        },
+        shine: {
+          from: { backgroundPosition: "200% 0" },
+          to: { backgroundPosition: "-200% 0" },
         },
       },
       backgroundSize: {
@@ -128,6 +133,14 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        poppins: ["var(--font-poppins)"],
+        inter: ["var(--font-inter)"],
+        geistSans: ["var(--font-geist-sans)"],
+        geistMono: ["var(--font-geist-mono)"],
+        roboto: "var(--font-roboto)",
+        eduArrow: ["var(--font-edu-arrow)"],
       },
     },
   },

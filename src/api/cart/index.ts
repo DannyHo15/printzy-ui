@@ -1,4 +1,5 @@
 import { SCHEMA } from "@/constant/schema";
+import axiosInstance from "@/lib/axiosConfig";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -7,44 +8,32 @@ const getBearerToken = () => {
 };
 
 export const getList = async () => {
-  const res = await axios({
-    method: "GET",
-    url: `${SCHEMA.API_BASE}/cart`,
-    headers: {
-      Authorization: `Bearer ${getBearerToken()}`,
-    },
-  });
+  const res = await axiosInstance.get(`${SCHEMA.API_BASE}/cart`);
   return res;
 };
 
 export const add = async (
   productId: number,
+  variantId: number,
+  quantity: number,
   customizeUploadId: number,
-  quantity: number
 ) => {
-  const res = await axios({
-    method: "POST",
-    url: `${SCHEMA.API_BASE}/cart/add`,
-    data: { productId, customizeUploadId, quantity },
-    headers: {
-      Authorization: `Bearer ${getBearerToken()}`,
-    },
+  const res = await axiosInstance.post(`${SCHEMA.API_BASE}/cart/add`, {
+    productId,
+    customizeUploadId,
+    quantity,
+    variantId,
   });
-  return res;
+  return res.data;
 };
 
 export const update = async (
   productId: number,
   variantId: number,
-  quantity: number
+  quantity: number,
 ) => {
-  const res = await axios({
-    method: "PUT",
-    url: `${SCHEMA.API_BASE}/cart/update`,
+  const res = await axiosInstance.put(`${SCHEMA.API_BASE}/cart/update`, {
     data: { productId, variantId, quantity },
-    headers: {
-      Authorization: `Bearer ${getBearerToken()}`,
-    },
   });
   return res;
 };

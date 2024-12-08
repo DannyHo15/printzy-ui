@@ -1,5 +1,6 @@
-import wishlistsService from '@/api/wishlists';
-import { create } from 'zustand';
+import wishlistsService from "@/api/wishlists";
+import { toast } from "react-toastify";
+import { create } from "zustand";
 
 type WishListState = {
   wishlist: any;
@@ -25,12 +26,16 @@ export const useWishlistStore = create<WishListState>((set) => ({
   },
   addWishList: async (productId) => {
     set((state) => ({ ...state, isLoading: true }));
-    const res = await wishlistsService.add(productId);
-
-    set((state) => ({
-      wishlist: [res.data, ...(state.wishlist || [])],
-      isLoading: false,
-    }));
+    try {
+      const res = await wishlistsService.add(productId);
+      set((state) => ({
+        wishlist: [res.data, ...(state.wishlist || [])],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set((state) => ({ ...state, isLoading: false }));
+      toast.error(error?.message ?? "Something went wrong!");
+    }
   },
   removeWishList: async (productId) => {
     set((state) => ({ ...state, isLoading: true }));
@@ -38,7 +43,7 @@ export const useWishlistStore = create<WishListState>((set) => ({
 
     set((state) => ({
       wishlist: state.wishlist.filter(
-        (item: any) => item.product.id !== productId
+        (item: any) => item.product.id !== productId,
       ),
       isLoading: false,
     }));

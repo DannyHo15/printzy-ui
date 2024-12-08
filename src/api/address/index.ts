@@ -3,7 +3,9 @@ import {
   IAddressDataResponse,
   IAddressPayload,
   IAddressResponse,
+  IShippingFeeParams,
 } from "@/types/address";
+import queryString from "query-string";
 
 export const createAddress = async (address: IAddressPayload) => {
   try {
@@ -18,6 +20,17 @@ export const getAddresses = async () => {
   try {
     const res = await axiosInstance.get<IAddressResponse>("/addresses");
     return res.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getShippingfee = async (payload: IShippingFeeParams) => {
+  try {
+    const res = await axiosInstance.get(
+      `/shipping/calculate-fee?${queryString.stringify(payload)}`,
+    );
+    return res.data;
   } catch (error) {
     throw error;
   }

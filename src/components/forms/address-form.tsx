@@ -28,17 +28,24 @@ import {
   useProvinces,
   useWards,
 } from "@/store/user/useAddress";
-import { toast } from "react-toastify";
 import { createSelectors } from "@/lib/auto-genarate-selector";
 import { useUserStore } from "@/store/user/user.store";
+import { Skeleton } from "../ui/skeleton";
+import { Checkbox } from "../ui/checkbox";
 interface IAddressFormProps {
   setIsOpenModal: (value: boolean) => void;
-  // onReset: () => void; // Add this prop
+  onResetForm: (resetFn: () => void) => void;
+  onCreateSuccess?: () => void;
 }
-const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
+const AddressForm = ({
+  setIsOpenModal,
+  onResetForm,
+  onCreateSuccess,
+}: IAddressFormProps) => {
   //STORE
   const userStore = createSelectors(useUserStore);
   const addressId = userStore.use.addressId();
+  const setAddressId = userStore.use.setAddressId();
   const AddressSchema = useMemo(
     () =>
       z.object({
@@ -51,6 +58,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
         district: z.string().min(1, "District is required"),
         ward: z.string().min(1, "Ward is required"),
         addressDetail: z.string().min(1, "Address detail is required"),
+        isDefault: z.boolean().optional(),
       }),
     [],
   );
@@ -63,34 +71,20 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
     getAddressDetail,
     updateAddress,
     updateAddressStatus,
+    newAddress,
   } = useAddress(addressId ?? "");
 
-  const getDefaultValue = useCallback(() => {
-    if (addressId && getAddressDetail) {
-      const { fullName, phone, province, district, ward, addressDetail } =
-        getAddressDetail;
-      return {
-        fullName,
-        phone,
-        province: province.id.toString(),
-        district: district.id.toString(),
-        ward: ward.id.toString(),
-        addressDetail,
-      };
-    }
-    return {
+  const form = useForm<z.infer<typeof AddressSchema>>({
+    resolver: zodResolver(AddressSchema),
+    defaultValues: {
       fullName: "",
       phone: "",
       province: "",
       district: "",
       ward: "",
       addressDetail: "",
-    };
-  }, [addressId, getAddressDetail]);
-
-  const form = useForm<z.infer<typeof AddressSchema>>({
-    resolver: zodResolver(AddressSchema),
-    defaultValues: getDefaultValue(),
+      isDefault: false,
+    },
   });
   const provinceId = form.watch("province");
   const districtId = form.watch("district");
@@ -103,24 +97,38 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
     useDistricts(provinceId);
   const { data: wardsData = [], isLoading: isWardLoading } =
     useWards(districtId);
+
   // Load existing address details
   useEffect(() => {
     if (addressId && getAddressDetail) {
-      const { fullName, phone, province, district, ward, addressDetail } =
-        getAddressDetail;
-      // Set values sequentially to ensure proper loading of dependent fields
-      form.setValue("fullName", fullName);
-      form.setValue("phone", phone);
-      form.setValue("province", province.id.toString());
-      form.setValue("district", district.id.toString());
-      form.setValue("ward", ward.id.toString());
-      form.setValue("addressDetail", addressDetail);
+      const {
+        fullName,
+        phone,
+        province,
+        district,
+        ward,
+        addressDetail,
+        isDefault,
+      } = getAddressDetail;
+
+      // Use reset instead of setValue for bulk updates
+      form.reset({
+        fullName,
+        phone,
+        province: province.id.toString(),
+        district: district.id.toString(),
+        ward: ward.id.toString(),
+        addressDetail,
+        isDefault,
+      });
     }
-  }, [addressId, getAddressDetail]);
+  }, [addressId, getAddressDetail, form.reset]);
   //handle action result
   useEffect(() => {
     if (createAddressSuccess) {
+      setAddressId(newAddress?.id);
       setIsOpenModal(false);
+      if (onCreateSuccess) onCreateSuccess();
     } else if (createAddressError) {
     }
   }, [createAddressSuccess, createAddressError]);
@@ -131,7 +139,14 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
     }
   }, [updateAddressStatus]);
 
-  const onSubmit = (data: z.infer<typeof AddressSchema>) => {
+  useEffect(() => {
+    console.log("reset form", onResetForm);
+    if (onResetForm) {
+      onResetForm(() => form.reset);
+    }
+  }, [form.reset, onResetForm]);
+
+  const onSubmit = async (data: z.infer<typeof AddressSchema>) => {
     const payload = {
       districtId: data.district,
       fullName: data.fullName,
@@ -139,6 +154,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
       provinceId: data.province,
       wardId: data.ward,
       addressDetail: data.addressDetail,
+      isDefault: data.isDefault,
     };
     if (addressId) {
       updateAddress({ id: addressId, address: payload });
@@ -146,7 +162,10 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-2"
+      >
         <FormField
           render={({ field }) => (
             <FormItem>
@@ -180,7 +199,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
             <FormItem>
               <FormLabel>Province</FormLabel>
               {isProvinceLoading ? (
-                <div>Loading...</div>
+                <Skeleton className="w-full h-[40px] " />
               ) : (
                 <Select
                   {...field}
@@ -216,7 +235,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
             <FormItem>
               <FormLabel>District</FormLabel>
               {isDistrictLoading ? (
-                <div>Loading...</div>
+                <Skeleton className="w-full h-[40px] " />
               ) : (
                 <Select
                   {...field}
@@ -252,7 +271,7 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
             <FormItem>
               <FormLabel>Ward</FormLabel>
               {isWardLoading ? (
-                <div>Loading...</div>
+                <Skeleton className="w-full h-[40px] " />
               ) : (
                 <Select
                   {...field}
@@ -290,6 +309,26 @@ const AddressForm = ({ setIsOpenModal }: IAddressFormProps) => {
             </FormItem>
           )}
         />
+        {addressId && (
+          <FormField
+            name="isDefault"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => field.onChange(checked)}
+                  />
+                </FormControl>
+                <FormLabel className="text-sm font-normal">
+                  Default address
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+        )}
+
         <div className="mt-6 float-right">
           <Button type="submit">{!addressId ? "Create" : "Update"}</Button>
         </div>

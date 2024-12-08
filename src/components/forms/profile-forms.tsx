@@ -131,7 +131,7 @@ const ProfileForm = ({ initialData, userId }: IProfileFormProps) => {
             <FormItem>
               <FormLabel>Last name</FormLabel>
               <FormControl>
-                <Input {...field} autoComplete="off" />
+                <Input {...field} type="text" aria-autocomplete="none" />
               </FormControl>
               <FormMessage />
             </FormItem>

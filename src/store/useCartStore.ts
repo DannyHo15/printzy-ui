@@ -1,12 +1,20 @@
 import cartService from "@/api/cart";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 import { create } from "zustand";
 
 type CartState = {
   cart: any;
   isLoading: boolean;
   getCart: () => void;
-  addItem: (index: number, quantity: number) => void;
+  updateItem: (index: number, quantity: number) => void;
   removeItem: (index: number) => void;
+  addItem: (
+    productId: number,
+    variantId: number,
+    quantity: number,
+    customizeUploadId: number,
+  ) => void;
   clearCart: () => void;
 };
 
@@ -29,8 +37,19 @@ const useCartStore = create<CartState>((set) => ({
       set({ isLoading: false });
     }
   },
-
-  addItem: (index, quantity) => {
+  addItem: async (productId, variantId, quantity, customizeUploadId) => {
+    set({ isLoading: true });
+    try {
+      await cartService.add(productId, variantId, quantity, customizeUploadId);
+      toast.success("Added to cart");
+      useCartStore.getState().getCart();
+      set({ isLoading: false });
+    } catch (error: any) {
+      toast.error("Failed to add item to cart - " + error.message);
+      set({ isLoading: false });
+    }
+  },
+  updateItem: (index, quantity) => {
     try {
       set((state) => {
         const existingItem = state.cart?.cartItems[index];
@@ -46,7 +65,7 @@ const useCartStore = create<CartState>((set) => ({
           cartService.update(
             updatedItem.productId,
             updatedItem.variant.id,
-            updatedItem.quantity
+            updatedItem.quantity,
           );
 
           return {

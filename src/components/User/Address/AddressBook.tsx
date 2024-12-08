@@ -9,6 +9,8 @@ import { Edit, Trash } from "lucide-react";
 import { createSelectors } from "@/lib/auto-genarate-selector";
 import { useUserStore } from "@/store/user/user.store";
 import AlertDialogComponent from "@/components/utils/AlertDialog";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AddressBook = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -54,7 +56,11 @@ const AddressBook = () => {
       <Separator />
       <CardContent className="py-5">
         {isLoadingAddresses ? (
-          <div>Loading...</div>
+          <div className="flex flex-col gap-6">
+            <Skeleton className="h-24"></Skeleton>
+            <Skeleton className="h-24"></Skeleton>
+            <Skeleton className="h-24"></Skeleton>
+          </div>
         ) : (
           <div className="">
             {listAddress?.map((address) => (
@@ -63,11 +69,18 @@ const AddressBook = () => {
                 key={address.id}
               >
                 <div>
-                  <div>{address.fullName}</div>
-                  <div>{address.phone}</div>
+                  <div className="flex">
+                    <b>{address.fullName}</b> &nbsp;- &nbsp;
+                    <span>{address.phone}</span>
+                  </div>
                   <div>{`${address.addressDetail}, ${address.ward.name}, ${address.district.name}, ${address.province.name}`}</div>
                 </div>
                 <div className="flex gap-2">
+                  {address.isDefault && (
+                    <Badge variant="default" className="h-fit">
+                      Default
+                    </Badge>
+                  )}
                   <Button
                     variant={"ghost"}
                     className="p-0 cursor-pointer"
