@@ -1,23 +1,22 @@
-import Image from "next/image";
-import React, { useEffect } from "react";
+import Image from 'next/image';
+import React, { useEffect } from 'react';
 interface IMockupProps {
   color: string;
+  mockupPath?: string;
 }
-export default function Mockup({ color }: IMockupProps) {
-  useEffect(() => {
-    console.log(color);
-  }, [color]);
+export default function Mockup({ color, mockupPath }: IMockupProps) {
+  useEffect(() => {}, [color]);
 
   return (
     <div className="absolute w-full top-7 flex justify-center">
       <Image
-        src={"/photo.png"}
+        src={mockupPath ? mockupPath : '/photo.png'}
         width={600}
         style={{
           backgroundColor: color,
         }}
         height={800}
-        alt={"mockup"}
+        alt={'mockup'}
       ></Image>
     </div>
   );

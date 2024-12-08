@@ -1,5 +1,5 @@
-import * as fabric from "fabric";
-import { useCallback, useEffect } from "react";
+import * as fabric from 'fabric';
+import { useCallback, useEffect } from 'react';
 
 interface UseAutoResizeProps {
   canvas: fabric.Canvas | null;
@@ -22,7 +22,7 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
     const zoomRatio = 0.4;
     const localWorkspace = canvas
       .getObjects()
-      .find((object) => object.get("name") === "clip");
+      .find((object) => object.get('name') === 'clip');
 
     if (!localWorkspace) return;
     // @ts-ignore

@@ -1,4 +1,4 @@
-import { EditorSidebarItem, ActiveTool, Editor } from "@/types/editor";
+import { EditorSidebarItem, ActiveTool, Editor } from '@/types/editor';
 import {
   Download,
   Flower2,
@@ -8,18 +8,19 @@ import {
   TextIcon,
   Type,
   Upload,
-} from "lucide-react";
-import React from "react";
-import SubContent from "./SubContent";
-import { useEditor } from "@/hooks/useEditor";
-import ShapesFeature from "./ShapesFeature";
-import OpacityFeature from "./Opacity";
-import ColorPicker from "./ColorPicker";
-import StrokeOptions from "./StrokeOptions";
-import AddTextFeature from "./AddTextFeature";
-import FontFamilySidebar from "./FontFamilySidebar";
-import UploadImageFeature from "./UploadImageFeature";
-import ExportFeature from "./ExportFeature";
+} from 'lucide-react';
+import React from 'react';
+import SubContent from './SubContent';
+import { useEditor } from '@/hooks/useEditor';
+import ShapesFeature from './ShapesFeature';
+import OpacityFeature from './Opacity';
+import ColorPicker from './ColorPicker';
+import StrokeOptions from './StrokeOptions';
+import AddTextFeature from './AddTextFeature';
+import FontFamilySidebar from './FontFamilySidebar';
+import UploadImageFeature from './UploadImageFeature';
+import ExportFeature from './ExportFeature';
+import GraphicFeature from './GraphicFeature';
 
 interface IEditorSidebarProps {
   editor: Editor;
@@ -30,13 +31,13 @@ interface IEditorSidebarProps {
 const EditorSidebarItems: EditorSidebarItem[] = [
   {
     id: ActiveTool.Text,
-    name: "Text",
+    name: 'Text',
     icon: <Type size={24} />,
   },
 
   {
     id: ActiveTool.Shapes,
-    name: "Shapes",
+    name: 'Shapes',
     icon: <Shapes size={24} />,
   },
   // {
@@ -46,17 +47,17 @@ const EditorSidebarItems: EditorSidebarItem[] = [
   // },
   {
     id: ActiveTool.Graphics,
-    name: "Graphics",
+    name: 'Graphics',
     icon: <Flower2 size={24} />,
   },
   {
     id: ActiveTool.Upload,
-    name: "Image",
+    name: 'Image',
     icon: <ImageIcon size={24} />,
   },
   {
     id: ActiveTool.Export,
-    name: "Export",
+    name: 'Export',
     icon: <Download size={24} />,
   },
 ];
@@ -71,7 +72,7 @@ const EditorSidebar = ({
       case ActiveTool.Text:
         return <AddTextFeature editor={editor} />;
       case ActiveTool.Graphics:
-        return <div>Feature</div>;
+        return <GraphicFeature editor={editor} />;
       case ActiveTool.Shapes:
         return <ShapesFeature editor={editor} />;
       case ActiveTool.Images:

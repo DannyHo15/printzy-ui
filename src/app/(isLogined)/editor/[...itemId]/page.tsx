@@ -1,26 +1,23 @@
-"use client";
-import { useEditor } from "@/hooks/useEditor";
+'use client';
+import { useEditor } from '@/hooks/useEditor';
 import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import * as fabric from "fabric";
-import EditorSidebar from "@/components/Editor/EditorSidebar";
-import { EditorNavbar } from "@/components/Editor/EditorNavbar";
-import { ActiveTool, selectionDependentTools } from "@/types/editor";
-import Mockup from "@/components/Editor/Mockup";
-import useDetailProduct from "@/hooks/useDetailProduct";
-import { LoaderCircle } from "lucide-react";
-import VariantManagement from "@/components/Editor/VariantManagement";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useProductStore } from "@/store/product/product.store";
-import { useProductQuery } from "@/store/product/useProduct";
+} from 'react';
+import * as fabric from 'fabric';
+import EditorSidebar from '@/components/Editor/EditorSidebar';
+import { EditorNavbar } from '@/components/Editor/EditorNavbar';
+import { ActiveTool, selectionDependentTools } from '@/types/editor';
+import Mockup from '@/components/Editor/Mockup';
+import { LoaderCircle } from 'lucide-react';
+import VariantManagement from '@/components/Editor/VariantManagement';
+import { useProductQuery } from '@/store/product/useProduct';
 const Page = ({ params }: { params: { itemId: string } }) => {
   const { data: product, isLoading: isLoadingProductDetail } = useProductQuery(
-    params.itemId,
+    params.itemId
   );
   const [activeTool, setActiveTool] = useState<ActiveTool>(ActiveTool.Select);
   const [selectedVariant, setSelectedVariant] = useState<any>({});
@@ -41,7 +38,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
 
   const onChangeActiveTool = useCallback(
     (tool: ActiveTool) => {
-      if (tool === "draw") {
+      if (tool === 'draw') {
         // editor?.enableDrawingMode();
       }
 
@@ -55,7 +52,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
 
       setActiveTool(tool);
     },
-    [activeTool, editor],
+    [activeTool, editor]
   );
 
   useEffect(() => {
@@ -63,10 +60,10 @@ const Page = ({ params }: { params: { itemId: string } }) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
       controlsAboveOverlay: true,
       preserveObjectStacking: true,
-      selectionColor: "rgba(253, 242, 248,0.5)",
-      selectionBorderColor: "#fbcfe8",
+      selectionColor: 'rgba(253, 242, 248,0.5)',
+      selectionBorderColor: '#fbcfe8',
     });
-    canvas.backgroundColor = "transparent";
+    canvas.backgroundColor = 'transparent';
 
     init({
       initialCanvas: canvas,
@@ -78,7 +75,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
   }, [init]);
 
   return (
-    <div className="flex h-[calc(100vh-96px)]   w-full">
+    <div className="flex max-h-screen   w-full">
       <EditorSidebar
         onChangeActiveTool={onChangeActiveTool}
         activeTool={activeTool}
@@ -98,7 +95,10 @@ const Page = ({ params }: { params: { itemId: string } }) => {
           />
           <div className="w-full h-full relative">
             <div id="workspace" className="w-full h-full">
-              <Mockup color={color} />
+              <Mockup
+                color={color}
+                mockupPath={selectedVariant?.upload?.path}
+              />
               <canvas ref={canvasRef} className="w-full h-full"></canvas>
             </div>
             <div className="absolute right-6 top-6 z-40">
