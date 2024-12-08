@@ -7,12 +7,20 @@ import ProductSlide from "@/components/Product/ProductSlide";
 import ProductImages from "@/components/Product/ProductImages";
 import useDetailProduct from "@/hooks/useDetailProduct";
 import useProducts from "@/hooks/useProducts";
-
-import { Suspense, useState } from "react";
-import Breadcrumb from "@/components/BreadCrumb";
+import { Suspense, useEffect, useLayoutEffect, useState } from "react";
+import { NumericFormat } from "react-number-format";
+import { notFound } from "next/navigation";
+import BreadcrumbComponent from "@/components/BreadCrumb";
+import { Action } from "@radix-ui/react-alert-dialog";
+import ActionGroup from "@/components/DetailProduct/ActionGroup";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import { useProductStore } from "@/store/product/product.store";
 
 const SinglePage = ({ params }: { params: { slug: string } }) => {
-  const product = useDetailProduct(params?.slug);
+  const productStore = createSelectors(useProductStore);
+  const getProductDetail = productStore.use.getProduct();
+  const product = productStore.use.product();
+  const isLoadingProductDetail = productStore.use.loading();
 
   const { products, loading } = useProducts({ limit: 5, skip: 0 });
 
@@ -20,70 +28,106 @@ const SinglePage = ({ params }: { params: { slug: string } }) => {
 
   const categories = [
     {
-      name: product?.category?.name,
-      href: `/shop?category=${product?.category?.id}`,
+      name: product?.categoryProducts[0]?.category.name ?? "",
+      href: `/shop?category=${product?.categoryProducts[0]?.id}`,
     },
     {
-      name: product?.collection?.name,
-      href: `/shop?category=${product?.category?.id}&collection=${product?.collection?.id}`,
+      name: product?.collection?.name ?? "",
+      href: `/shop?category=${product?.categoryProducts[0]?.id}&collection=${product?.collection?.id}`,
     },
   ];
 
+  useLayoutEffect(() => {
+    getProductDetail(params.slug);
+  }, []);
+  useEffect(() => {
+    if (!product && !isLoadingProductDetail) {
+      notFound();
+    }
+  }, [product, isLoadingProductDetail]);
+
   return (
-    <div className="px-4 md:px-8 lg:px-10 xl:px-20 2xl:px-32 mt-10">
+    <div className="px-4 md:px-8 lg:px-10 xl:px-20 2xl:px-32  space-y-10">
       {/* IMG */}
-      <Breadcrumb categories={categories} />
+      <BreadcrumbComponent categories={categories} />
       <div className="flex flex-col lg:flex-row gap-16">
-        <div className="w-full lg:w-7/12 lg:sticky top-20 h-max">
+        <div className="w-full flex lg:flex-row flex-col gap-9  h-max">
           <ProductImages
             items={product?.photos}
             primaryUpload={selectedVariant?.upload}
           />
-          <div className="mt-10">
-            <h1 className="text-2xl text-primary">Reviews</h1>
-            <Suspense fallback="Loading...">
-              <DetailProductReviews productId={product?.id} />
-            </Suspense>
+          <div className="w-full flex flex-col gap-2">
+            <h1 className="text-2xl font-medium">{product?.name}</h1>
+
+            <div className="h-[2px] bg-gray-100" />
+            {!product?.discountPercent ? (
+              <h2 className="font-medium text-xl">${product?.price}</h2>
+            ) : (
+              <div>
+                <div className="flex items-center gap-2">
+                  <NumericFormat
+                    value={
+                      +product?.price * (1 - product?.discountPercent / 100)
+                    }
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    fixedDecimalScale={true}
+                    decimalScale={0}
+                    suffix={" VND"}
+                    renderText={(value) => (
+                      <p className="text-xl text-right font-bold text-primary-price uppercase mt-auto">
+                        {value}
+                      </p>
+                    )}
+                  />
+                  <NumericFormat
+                    value={product?.price}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    fixedDecimalScale={true}
+                    decimalScale={0}
+                    suffix={" VND"}
+                    renderText={(value) => (
+                      <p className="text-md text-gray-500 line-through">
+                        {value}
+                      </p>
+                    )}
+                  />
+                </div>
+                <p className="text-pr-color-success-500 font-semibold text-sm">
+                  FREE returns
+                </p>
+              </div>
+            )}
+            <div className="h-[2px] bg-gray-100" />
+            {product && (
+              <>
+                <CustomizeProducts
+                  product={product}
+                  productOptions={product?.productOptions}
+                  setVariant={(variant) => setSelectedVariant(variant)}
+                />
+                <ActionGroup
+                  selectedVariant={selectedVariant}
+                  slug={params.slug}
+                  product={product}
+                />
+              </>
+            )}
           </div>
         </div>
         {/* TEXTS */}
-        <div className="w-full lg:w-5/12 flex flex-col gap-2">
-          <h1 className="text-2xl font-medium">{product?.name}</h1>
-
-          <div className="h-[2px] bg-gray-100" />
-          {!product?.discountPercent ? (
-            <h2 className="font-medium text-xl">${product?.price}</h2>
-          ) : (
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-medium text-xl text-secondary">
-                  ${product?.price * (1 - product?.discountPercent / 100)}
-                </h2>
-                <h3 className="text-md text-gray-500 line-through">
-                  ${product?.price}
-                </h3>
-              </div>
-              <p className="text-pr-color-success-500 font-semibold text-sm">
-                FREE returns
-              </p>
-            </div>
-          )}
-          <div className="h-[2px] bg-gray-100" />
-          <CustomizeProducts
-            product={product}
-            productOptions={product?.productOptions}
-            setVariant={(variant) => setSelectedVariant(variant)}
-          />
-          <div className="h-[2px] bg-gray-100" />
-          <div>
-            <DescriptionProduct
-              product={product}
-              categories={categories}
-              variant={selectedVariant}
-            />
-          </div>
-          <div className="h-[2px] bg-gray-100" />
-        </div>
+      </div>
+      <DescriptionProduct
+        product={product}
+        categories={categories}
+        variant={selectedVariant}
+      />
+      <div className="mt-10">
+        <h1 className="text-2xl text-primary">Reviews</h1>
+        <Suspense fallback="Loading...">
+          <DetailProductReviews productId={product?.id} />
+        </Suspense>
       </div>
       <div className="mt-10">
         <h1 className="text-xl text-primary">You may also like</h1>

@@ -1,3 +1,4 @@
+import { warn } from "console";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -94,6 +95,14 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      fontFamily: {
+        poppins: ["var(--font-poppins)"],
+        inter: ["var(--font-inter)"],
+        geistSans: ["var(--font-geist-sans)"],
+        geistMono: ["var(--font-geist-mono)"],
+        roboto: ["var(--font-roboto)"],
+        eduArrow: ["var(--font-edu-arrow)"],
       },
     },
   },

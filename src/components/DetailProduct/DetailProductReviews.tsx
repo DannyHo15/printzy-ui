@@ -1,3 +1,4 @@
+"use client";
 import reviewsService from "@/api/reviews";
 import useProductReviews from "@/hooks/useProductReviews";
 import React, { useState } from "react";
@@ -18,7 +19,7 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
 
   reviews.forEach((review: any) => {
     const foundRating = reviewsData.find(
-      (item) => item.rating === review.rating
+      (item) => item.rating === review.rating,
     );
     if (foundRating) {
       foundRating.count += 1;

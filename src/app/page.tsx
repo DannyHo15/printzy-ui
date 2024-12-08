@@ -1,5 +1,3 @@
-"use client";
-
 import CategoryList from "@/components/Category/CategoryList";
 import PerfectFitGuarantee from "@/components/PerfectFitGuarantee";
 import CollectionTabs from "@/components/Product/CollectionTab";
@@ -13,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Slider />
-      <div className="mt-24 md:px-32">
+      <div className="mt-24 md:px-32 ">
         <Suspense fallback={<Skeleton />}>
           <CategoryList />
         </Suspense>

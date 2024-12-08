@@ -1,3 +1,4 @@
+"use client";
 import { Suspense, useState } from "react";
 import Skeleton from "../Skeleton";
 import ProductList from "./ProductList";
@@ -39,7 +40,7 @@ export default function CollectionTabs() {
       <Suspense fallback={<Skeleton />}>
         <ProductList
           categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
-          limit={10}
+          limit={4}
           searchParams={{ collectionId: selectedCollectionId }}
         />
       </Suspense>

@@ -1,3 +1,4 @@
+import { logout } from "@/api/auth";
 import { IProfileResponse } from "@/types/user";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
@@ -23,9 +24,7 @@ export const useUserStore = create<UserState & UserAction>()(
         setUser: (user) => set({ user }),
         setAddressId: (addressId) => set({ addressId }),
         logout: () => {
-          Cookies.remove("printzy_ac_token");
-          Cookies.remove("printzy_refresh_token");
-          localStorage.removeItem("userId");
+          logout();
           set({ user: {} as IProfileResponse });
         },
       };

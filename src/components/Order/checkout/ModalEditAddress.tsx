@@ -39,9 +39,10 @@ const ModalEditAddress = ({
       console.log(value);
       if (!value) {
         setAddressId(null);
+        if(resetForm) 
         resetForm(); // Reset the form when closing the modal
-        setIsCreate(false); 
-     }
+        setIsCreate(false);
+      }
       setIsOpenModal(value);
     },
     [resetForm, setAddressId, setIsOpenModal],
@@ -79,9 +80,9 @@ const ModalEditAddress = ({
           <DialogDescription></DialogDescription>
         </DialogHeader>
         {isCreate ? (
-          <AddressForm 
-            setIsOpenModal={setIsOpenModal} 
-            onResetForm={(resetFn) => setResetForm(() => resetFn)}
+          <AddressForm
+            setIsOpenModal={setIsOpenModal}
+            onResetForm={(resetFn) => setResetForm(resetFn)}
             onCreateSuccess={handleCreateSuccess}
           />
         ) : (

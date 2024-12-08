@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NumericFormat } from "react-number-format";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import useCartStore from "@/store/useCartStore";
-
+import { Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import { ProductPriceService } from "@/services/ProductPriceService";
 function CartProduct({
   item,
   key,
@@ -13,28 +15,37 @@ function CartProduct({
   key: string;
   idx: number;
 }) {
-  const { addItem, removeItem } = useCartStore();
+  const { addItem, removeItem, updateItem } = useCartStore();
 
+  const totalPrice = useMemo(() => {
+    return ProductPriceService.calculateTotalPrice(
+      item.variant.price,
+      item.quantity,
+      item.product.discountPercent,
+    );
+  }, [item.variant.price, item.quantity, item.product.discountPercent]);
   return (
-    <div className="product md:flex justify-between mb-6" key={key}>
+    <div className="product md:flex gap-4 justify-between mb-6" key={key}>
       <Link href={"/product/" + item.slug}>
         <div className="image md:flex cursor-pointer">
           <motion.div
             initial={{ scale: 1.5, x: 50, y: -50, opacity: 0 }}
             animate={{ scale: 1, x: 0, y: 0, opacity: 1 }}
           >
-            <img
-              className="w-full md:w-32 h-32 object-cover rounded-xl"
+            <Image
+              className="w-full md:w-24 h-24 object-cover rounded-xl"
               src={item.product.upload.path}
-              alt=""
+              alt="image product"
+              width={128}
+              height={128}
             />
           </motion.div>
           <div className="ml-3 flex flex-col justify-start">
             <p className="font-medium text-primary text-lg">
               {item.product.name}
             </p>
-            <ul className="text-base leading-relaxed text-gray-400">
-              <li>Design ID: {item.variant.sku}</li>
+            <ul className="text-md leading-relaxed text-gray-400">
+              <li>Design ID: {item.variant?.sku}</li>
               <li>
                 Options:{" "}
                 {item.variant.variantOptionValues.map(
@@ -60,14 +71,14 @@ function CartProduct({
       </Link>
       <div className="flex flex-col justify-end py-1 gap-2 item-center">
         <NumericFormat
-          value={item.variant.price * item.quantity}
+          value={totalPrice}
           displayType={"text"}
           thousandSeparator={true}
           fixedDecimalScale={true}
           decimalScale={2}
           suffix={" VND"}
           renderText={(value) => (
-            <p className="text-lg font-bold text-primary-price uppercase">
+            <p className="text-base font-bold text-primary-price uppercase">
               {value}
             </p>
           )}
@@ -76,43 +87,17 @@ function CartProduct({
         <div className="flex ml-auto text-cusblack mt-1 md:mt-0">
           <button
             onClick={() => {
-              if (item.quantity > 1) addItem(idx, -1);
+              if (item.quantity > 1) updateItem(idx, -1);
             }}
             className="border border-cusblack active:bg-gray-800 rounded-sm p-1 hover:bg-cusblack hover:text-white duration-100"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 12H4"
-              />
-            </svg>
+            <Minus size={16} />
           </button>
           <button
-            onClick={() => addItem(idx, 1)}
+            onClick={() => updateItem(idx, 1)}
             className="border border-cusblack active:bg-gray-800 rounded-sm p-1 hover:bg-cusblack hover:text-white duration-100 mx-1"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
+            <Plus size={16} />
           </button>
           <button
             onClick={() => removeItem(idx)}

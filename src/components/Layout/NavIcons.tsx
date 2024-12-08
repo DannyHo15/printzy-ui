@@ -31,11 +31,7 @@ const NavIcons = () => {
   const logoutAction = userStore.use.logout();
 
   const handleProfile = () => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    } else {
-      setIsProfileOpen((prev) => !prev);
-    }
+    setIsProfileOpen((prev) => !prev);
   };
 
   const handleLogout = async () => {
@@ -44,7 +40,7 @@ const NavIcons = () => {
     setIsLoading(false);
     setIsProfileOpen(false);
     setSession("");
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   const { wishlist, getWishList } = useWishlistStore();
@@ -66,7 +62,7 @@ const NavIcons = () => {
   }, [pathname]);
 
   return (
-    <div className="flex items-center gap-4 xl:gap-6 relative">
+    <div className="font-poppins flex items-center gap-4 xl:gap-6 relative">
       {/* Shop Icon */}
       <Link href="/shop">
         <div className="flex flex-col items-center">

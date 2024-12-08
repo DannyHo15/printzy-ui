@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 
@@ -8,8 +8,8 @@ const Stepper = () => {
   const navigate = useRouter();
   const steps = [
     { path: "/cart", label: "Cart" },
-    { path: "/checkout", label: "Checkout" },
     { path: "/order-summary", label: "Order summary" },
+    { path: "/checkout", label: "Checkout" },
   ];
 
   const isActive = (path: string) => {
@@ -19,7 +19,7 @@ const Stepper = () => {
       (pathname === "/checkout" || pathname === "/order-summary")
     )
       return true;
-    if (path === "/checkout" && pathname === "/order-summary") return true;
+    if (path === "/order-summary" && pathname === "/checkout") return true;
     return false;
   };
   return (

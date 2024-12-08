@@ -34,10 +34,14 @@ import { Skeleton } from "../ui/skeleton";
 import { Checkbox } from "../ui/checkbox";
 interface IAddressFormProps {
   setIsOpenModal: (value: boolean) => void;
-  onResetForm?: (resetFn: () => void) => void;
+  onResetForm: (resetFn: () => void) => void;
   onCreateSuccess?: () => void;
 }
-const AddressForm = ({ setIsOpenModal, onResetForm, onCreateSuccess }: IAddressFormProps) => {
+const AddressForm = ({
+  setIsOpenModal,
+  onResetForm,
+  onCreateSuccess,
+}: IAddressFormProps) => {
   //STORE
   const userStore = createSelectors(useUserStore);
   const addressId = userStore.use.addressId();
@@ -106,7 +110,7 @@ const AddressForm = ({ setIsOpenModal, onResetForm, onCreateSuccess }: IAddressF
         addressDetail,
         isDefault,
       } = getAddressDetail;
-      
+
       // Use reset instead of setValue for bulk updates
       form.reset({
         fullName,
@@ -124,7 +128,7 @@ const AddressForm = ({ setIsOpenModal, onResetForm, onCreateSuccess }: IAddressF
     if (createAddressSuccess) {
       setAddressId(newAddress?.id);
       setIsOpenModal(false);
-      if(onCreateSuccess) onCreateSuccess()
+      if (onCreateSuccess) onCreateSuccess();
     } else if (createAddressError) {
     }
   }, [createAddressSuccess, createAddressError]);
@@ -136,8 +140,9 @@ const AddressForm = ({ setIsOpenModal, onResetForm, onCreateSuccess }: IAddressF
   }, [updateAddressStatus]);
 
   useEffect(() => {
+    console.log("reset form", onResetForm);
     if (onResetForm) {
-      onResetForm(form.reset);
+      onResetForm(() => form.reset);
     }
   }, [form.reset, onResetForm]);
 

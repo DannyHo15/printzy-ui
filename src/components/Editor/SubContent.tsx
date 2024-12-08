@@ -1,33 +1,34 @@
 import React from "react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-  DrawerOverlay,
-  DrawerClose,
-} from "../ui/drawer";
+import { X } from "lucide-react";
 interface Props {
   children: React.ReactNode;
   title: string;
+  description?: string;
   isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
-const SubContent = ({ children, title, isOpen }: Props) => {
+const SubContent = ({
+  children,
+  title,
+  description,
+  isOpen,
+  setIsOpen,
+}: Props) => {
   return (
-    <div className="w-60 h-full">
-      <Drawer shouldScaleBackground={false} direction="left" open={isOpen}>
-        <DrawerContent>
-          <DrawerOverlay className="bg-transparent inset-1" />
-          <DrawerHeader>
-            <DrawerTitle>{title}</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
-          </DrawerHeader>
-          {children}
-        </DrawerContent>
-      </Drawer>
-    </div>
+    isOpen && (
+      <div className="w-80 h-full flex flex-col bg-background border-y border-r shadow-lg divide-y">
+        <div className="flex h-12 justify-between items-center p-2 ">
+          <h2 className="font-bold capitalize text-lg">{title}</h2>
+          <p>{description}</p>
+          <X
+            size={20}
+            onClick={() => setIsOpen(false)}
+            className="cursor-pointer hover:text-primary-dk"
+          />
+        </div>
+        <div className="p-4 h-full flex flex-col border-b">{children}</div>
+      </div>
+    )
   );
 };
 

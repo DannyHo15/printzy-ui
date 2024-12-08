@@ -69,8 +69,10 @@ const AddressBook = () => {
                 key={address.id}
               >
                 <div>
-                  <div>{address.fullName}</div>
-                  <div>{address.phone}</div>
+                  <div className="flex">
+                    <b>{address.fullName}</b> &nbsp;- &nbsp;
+                    <span>{address.phone}</span>
+                  </div>
                   <div>{`${address.addressDetail}, ${address.ward.name}, ${address.district.name}, ${address.province.name}`}</div>
                 </div>
                 <div className="flex gap-2">

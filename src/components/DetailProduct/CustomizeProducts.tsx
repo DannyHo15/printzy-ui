@@ -9,18 +9,20 @@ const CustomizeProducts = ({
   product,
   productOptions,
   setVariant,
+  setColor,
+  initialOptions = {},
 }: {
   product: TProductDataResponse;
   productOptions: any[];
   setVariant: (variant: any) => void;
+  setColor?: (option: any) => void;
+  initialOptions?: any;
 }) => {
-  const [selectedVariant, setSelectedVariant] = useState<any>();
-
-  const variants = useProductVariants(product?.id.toString());
+  const variants = useProductVariants(product?.id?.toString());
 
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
-  }>({});
+  }>(initialOptions);
   useEffect(() => {
     const variant = variants.find((v) => {
       const variantChoices = v?.variantOptionValues;
@@ -35,11 +37,18 @@ const CustomizeProducts = ({
     });
 
     setVariant(variant);
-    setSelectedVariant(variant);
   }, [selectedOptions]);
 
   useEffect(() => {
-    if (variants && variants.length > 0) {
+    console.log("variants");
+  }, []);
+
+  useEffect(() => {
+    if (
+      variants &&
+      variants.length > 0 &&
+      Object.keys(initialOptions).length === 0
+    ) {
       setSelectedOptions(
         Object.fromEntries(
           productOptions?.map(({ option, productOptionValues }: any) => [
@@ -60,7 +69,7 @@ const CustomizeProducts = ({
       {productOptions?.map((option: any) => (
         <div className="flex flex-col gap-4" key={option.option.name}>
           <h4 className="font-medium">Choose a {option.option.name}</h4>
-          <ul className="flex items-center gap-3">
+          <ul className="flex items-center flex-wrap gap-3">
             {option.productOptionValues?.map((optionValue: any) => {
               // const disabled = !isVariantInStock({
               //   ...selectedOptions,
@@ -92,7 +101,10 @@ const CustomizeProducts = ({
                       backgroundColor: optionValue.optionValue.value,
                       cursor: disabled ? "not-allowed" : "pointer",
                     }}
-                    onClick={clickHandler}
+                    onClick={() => {
+                      clickHandler?.();
+                      setColor?.(optionValue.optionValue.value);
+                    }}
                   >
                     {selected && (
                       <div className="absolute w-10 h-10 rounded-full ring-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -129,13 +141,6 @@ const CustomizeProducts = ({
           </ul>
         </div>
       ))}
-      <Add
-        product={product}
-        variantId={
-          selectedVariant?._id || "00000000-0000-0000-0000-000000000000"
-        }
-        stockNumber={selectedVariant?.stock?.quantity || 0}
-      />
       {/* COLOR */}
       {/* 
           <ul className="flex items-center gap-3">

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -11,20 +12,13 @@ import { Heart } from "lucide-react";
 
 function ProductCard({ item }: any) {
   const { addWishList } = useWishlistStore();
-  const router = useRouter();
-
   const handleAddWishList = (id: string) => {
-    const isLoggedIn = Cookies.get("printzy_ac_token");
-    if (!isLoggedIn) {
-      router.push("/login");
-    } else {
-      addWishList(item.id);
-    }
+    addWishList(item.id);
   };
 
   return (
-    <div className="rounded-xl cursor-pointer border overflow-hidden px-1">
-      <div className="overflow-hidden cursor-default rounded-xl relative group">
+    <div className="rounded-xl cursor-pointer border overflow-hidden">
+      <div className="overflow-hidden cursor-default  relative group">
         <motion.div
           initial={{ scale: 1, x: 50, opacity: 0 }}
           animate={{ scale: 1, x: 0, opacity: 1 }}
@@ -37,7 +31,7 @@ function ProductCard({ item }: any) {
               fill
               loading="lazy"
               sizes="100%"
-              className="object-cover rounded-2xl"
+              className="object-cover "
               src={item?.upload?.path}
             />
           </Link>
@@ -62,7 +56,7 @@ function ProductCard({ item }: any) {
       </div>
       <Link
         href={"/" + item.slug}
-        key={item._id}
+        key={item.id}
         className="mt-0.5 p-4 flex flex-col"
       >
         <p className="text-sm line-clamp-1 text-primary font-semibold">
@@ -74,7 +68,7 @@ function ProductCard({ item }: any) {
             displayType={"text"}
             thousandSeparator={true}
             fixedDecimalScale={true}
-            decimalScale={2}
+            decimalScale={0}
             suffix={" VND"}
             renderText={(value) => (
               <p className="text-base font-bold text-primary-price uppercase ">
@@ -88,6 +82,8 @@ function ProductCard({ item }: any) {
               displayType={"text"}
               thousandSeparator={true}
               suffix={" VND"}
+              fixedDecimalScale={true}
+              decimalScale={0}
               renderText={(value) => (
                 <p className="text-sm text-darkness line-through">{value}</p>
               )}

@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import Skeleton from "../Skeleton";
 import ProductCard from "./ProductCard";
@@ -29,6 +30,7 @@ const ProductList = ({
     }
     console.log("limit", grid);
   }, [limit]);
+
   return (
     <div
       className={cn("mt-12 grid gap-x-8 gap-y-16 justify-between", {

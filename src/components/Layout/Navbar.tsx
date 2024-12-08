@@ -7,6 +7,7 @@ import Menu from "./Menu";
 import NavIcons from "./NavIcons";
 import useCategories from "@/hooks/useCategories";
 import ThemeToggle from "./themeToggle/theme-toggle";
+import { useHiddenDefaultComponent } from "@/hooks/useHiddenDefaultComponent";
 
 interface Collection {
   id: string;
@@ -28,6 +29,8 @@ const Navbar = () => {
   const toggleDropdown = (categoryId: string) => {
     setDropdownOpen((prev) => (prev === categoryId ? null : categoryId)); // Toggle dropdown
   };
+
+  const hiddenNav = useHiddenDefaultComponent();
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;

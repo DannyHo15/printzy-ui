@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import Skeleton from "../Skeleton";
 import useProducts from "@/hooks/useProducts";
