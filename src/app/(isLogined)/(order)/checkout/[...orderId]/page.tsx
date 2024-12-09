@@ -1,31 +1,38 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
-import { NumericFormat } from "react-number-format";
-import useCartStore from "@/store/useCartStore";
-import CheckoutProduct from "@/components/Product/CheckoutProduct";
-import { usePayment } from "@/store/payment/usePayment";
-import { EPaymentMethod } from "@/types/payment";
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { NumericFormat } from 'react-number-format';
+import { usePayment } from '@/store/payment/usePayment';
+import { EPaymentMethod } from '@/types/payment';
+import { getOrderById } from '@/api/order';
+import CheckoutProduct from '@/components/Product/CheckoutProduct';
+import { toast } from 'react-toastify';
 
-const CheckoutPage = () => {
+const CheckoutPage = ({ params }: { params: { orderId: string } }) => {
   const { createVnpayUrl } = usePayment();
-  const { cart, getCart } = useCartStore();
+  const [order, setOrder] = useState<any>();
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    if (!order) {
+      toast.error('Fail to pay');
+    }
     createVnpayUrl({
-      sum: 200000,
-      orderId: 2,
-      clientId: 1,
-      tokenId: "123123",
+      sum: +order.total,
+      orderId: order.id,
+      clientId: order.client.id,
+      tokenId: '123123',
       method: EPaymentMethod.VNPAY,
     });
-    // Handle form submission
+  };
+
+  const getCurrentOrder = async () => {
+    const orderData = await getOrderById(+params.orderId);
+    setOrder(orderData);
   };
 
   useEffect(() => {
-    getCart();
+    getCurrentOrder();
   }, []);
 
   return (
@@ -39,7 +46,7 @@ const CheckoutPage = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Order number</span>
-                  <span className="font-medium">#ORDER-12345</span>
+                  <span className="font-medium">#{order?.orderNumber}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Payment method</span>
@@ -55,10 +62,20 @@ const CheckoutPage = () => {
             <div className="rounded-lg border p-6">
               <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
               <address className="not-italic">
-                <div className="font-medium">John Doe</div>
-                <div className="text-gray-500">123 Street Name</div>
-                <div className="text-gray-500">City, State, ZIP</div>
-                <div className="text-gray-500">Phone: (123) 456-7890</div>
+                <div className="font-medium">{order?.fullName}</div>
+                <div className="text-gray-500">
+                  {order?.address.addressDetail}
+                </div>
+                <div className="text-gray-500">
+                  {order?.address?.province?.name}
+                  {' - '}
+                  {order?.address?.district?.name}
+                  {' - '}
+                  {order?.address?.ward?.name}
+                </div>
+                <div className="text-gray-500">
+                  Phone: (+84) {order?.address.phone}
+                </div>
               </address>
             </div>
           </div>
@@ -67,29 +84,23 @@ const CheckoutPage = () => {
           <div className="space-y-6">
             <div className="rounded-lg border p-6">
               <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-              <div className="divide-y">
-                {cart?.cartItems?.map((item: any, idx: number) => (
-                  <CheckoutProduct
-                    idx={idx}
-                    key={item?.variant?.sku}
-                    item={item}
-                    canEdit={false}
-                  />
-                ))}
-              </div>
+              {order?.orderItems?.map((orderItem: any, idx: number) => (
+                <CheckoutProduct
+                  idx={idx}
+                  key={orderItem?.id}
+                  item={orderItem}
+                  canEdit={false}
+                />
+              ))}
 
               <div className="mt-6 space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Subtotal</span>
                   <NumericFormat
-                    value={cart?.cartItems?.reduce(
-                      (total: number, item: any) =>
-                        total + item.variant.price * item.quantity,
-                      0,
-                    )}
-                    displayType={"text"}
+                    value={order?.total}
+                    displayType={'text'}
                     thousandSeparator={true}
-                    suffix={" VND"}
+                    suffix={' VND'}
                   />
                 </div>
                 <div className="flex justify-between">
@@ -99,14 +110,10 @@ const CheckoutPage = () => {
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
                   <NumericFormat
-                    value={cart?.cartItems?.reduce(
-                      (total: number, item: any) =>
-                        total + item.variant.price * item.quantity,
-                      30000,
-                    )}
-                    displayType={"text"}
+                    value={order?.total}
+                    displayType={'text'}
                     thousandSeparator={true}
-                    suffix={" VND"}
+                    suffix={' VND'}
                   />
                 </div>
               </div>

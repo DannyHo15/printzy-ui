@@ -98,29 +98,64 @@ const buildEditor = ({
 
     canvas.discardActiveObject();
     let node = document.getElementById('workspace');
-    console.log(node);
+
     htmlToImage
       .toPng(node!)
       .then(function (dataUrl) {
         download(dataUrl, 'my-image.png');
         rect.set({
-          stroke: '#ccc', // Reset stroke to the original color
+          stroke: '#ccc',
         });
         canvas.renderAll();
       })
       .catch(function (error) {
         console.error('oops, something went wrong!', error);
       });
-    // const options = generateSaveOptions();
-    // canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-    // const dataUrl = canvas.toDataURL(options);
-    // downloadFile(dataUrl, "png");
-    // autoZoom();
   };
+
+  const createImageBlob = async (): Promise<Blob> => {
+    const rect = getWorkspace() as fabric.Rect;
+
+    // Tạm thời thay đổi các thuộc tính canvas để phù hợp với xuất hình ảnh
+    rect.set({
+      stroke: 'transparent',
+    });
+    canvas.renderAll();
+
+    canvas.discardActiveObject();
+    let node = document.getElementById('workspace');
+
+    if (!node) {
+      throw new Error('Workspace element not found');
+    }
+
+    try {
+      const dataUrl = await htmlToImage.toPng(node);
+
+      const blob = await (await fetch(dataUrl)).blob();
+
+      rect.set({
+        stroke: '#ccc',
+      });
+      canvas.renderAll();
+
+      return blob;
+    } catch (error) {
+      console.error('Oops, something went wrong!', error);
+      throw error;
+    }
+  };
+
+  const getCustomize = async (fileName = 'my-image.png'): Promise<File> => {
+    const blob = await createImageBlob();
+    return new File([blob], fileName, { type: 'image/png' });
+  };
+
   return {
     saveJson,
     getWorkspace,
     savePng,
+    getCustomize,
     canvas,
     autoZoom,
     selectedObjects,

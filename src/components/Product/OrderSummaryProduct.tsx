@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { SquarePen, Trash } from 'lucide-react';
 import Image from 'next/image';
+import { Button } from '../ui/button';
 import PreviewCustomize from '../PreviewCustomize';
 
-function CheckoutProduct({
+function OrderSummaryProduct({
   item,
   key,
   idx,
+  canEdit = true,
 }: {
   item: any;
   key: string;
@@ -33,7 +36,7 @@ function CheckoutProduct({
         className="image md:flex cursor-pointer"
         onClick={() =>
           openZoomedImage(
-            item?.customizeUpload?.path || item.variant.product.upload.path
+            item?.customizeUpload?.path || item.product.upload.path
           )
         }
       >
@@ -42,9 +45,7 @@ function CheckoutProduct({
           animate={{ scale: 1, x: 0, y: 0, opacity: 1 }}
         >
           <Image
-            src={
-              item?.customizeUpload?.path || item.variant.product.upload.path
-            }
+            src={item?.customizeUpload?.path || item.product.upload.path}
             height={135}
             width={135}
             alt=""
@@ -52,20 +53,31 @@ function CheckoutProduct({
           />
         </motion.div>
         <div className="ml-3 flex flex-col justify-start">
-          <Link href={item.variant.product.slug}>
+          <Link href={item.product.slug}>
             <p className="font-medium text-primary text-base">
-              {item.variant.product.name}
+              {item.product.name}
             </p>
           </Link>
-          <ul className="text-base leading-relaxed text-secondary-dk">
-            <span>{item.variant.sku}</span>
+          <ul className="text-base leading-relaxed text-gray-400">
+            <li>
+              {item.variant.variantOptionValues.map(
+                (optionValue: any, index: number) => (
+                  <span key={index}>
+                    {optionValue.optionValue.value}
+                    {index < item.variant.variantOptionValues.length - 1
+                      ? ', '
+                      : ''}
+                  </span>
+                )
+              )}
+            </li>
 
             <li className="text-primary text-sm font-medium">
               {Math.round(item.variant.price) + 'VND'} x {item.quantity}
             </li>
-            {item.variant.product.discountPrice && (
+            {item.product.discountPrice && (
               <li className="text-gray font-medium line-through">
-                {item.variant.product.price}
+                {item.product.price}
               </li>
             )}
           </ul>
@@ -73,6 +85,25 @@ function CheckoutProduct({
       </div>
 
       <div className="flex flex-col justify-between py-1 gap-2 item-center">
+        {canEdit && (
+          <div className="flex gap-2 items-center justify-end">
+            <Button variant="ghost" size="icon" asChild id="js-update-item">
+              {/* Conditional rendering based on loadingMakeChange */}
+              <Link href={'/cart'}>
+                <SquarePen size={20} />
+              </Link>
+            </Button>
+            {
+              //   <span
+              //   id="js-update-item"
+              //   className="cursor-pointer flex items-center gap-1 text-sm"
+              // >
+              //   {/* Conditional rendering based on loadingMakeChange */}
+              //   <Trash size={16} />
+              // </span>
+            }
+          </div>
+        )}
         <NumericFormat
           value={item.variant.price * item.quantity}
           displayType={'text'}
@@ -98,4 +129,4 @@ function CheckoutProduct({
   );
 }
 
-export default CheckoutProduct;
+export default OrderSummaryProduct;

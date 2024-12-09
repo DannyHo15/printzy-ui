@@ -5,47 +5,52 @@ import useCartStore from '@/store/useCartStore';
 import { TProductDataResponse } from '@/types/product';
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Heart } from 'lucide-react';
-import { useWishlistStore } from '@/store/useWishList';
-import { useRouter } from 'next/navigation';
+import { uploadCustomizeFile } from '@/api/customizeUpload';
+import { Editor } from '@/types/editor';
+import { generateRandomName } from '@/lib/utils';
+import { toast } from 'react-toastify';
 
-const Add = ({
+const ConfirmAndAdd = ({
   product,
   variantId,
-  stockNumber,
-  customUploadId,
+  isInStock,
+  editor,
 }: {
   product: TProductDataResponse;
   variantId: number;
-  stockNumber: number;
-  customUploadId: number;
+  isInStock: boolean;
+  editor: Editor | undefined;
 }) => {
   const [quantity, setQuantity] = useState(1);
   const cartStore = createSelectors(useCartStore);
   const addItemAction = cartStore.use.addItem();
-  const { addWishList } = useWishlistStore();
-  const router = useRouter();
 
   const handleQuantity = (type: 'i' | 'd') => {
     if (type === 'd' && quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
-    if (type === 'i' && quantity < stockNumber) {
+    if (type === 'i' && isInStock) {
       setQuantity((prev) => prev + 1);
     }
   };
 
-  const handleAddToCart = () => {
-    // Add to cart logic
-    addItemAction(product.id, +variantId, quantity, customUploadId);
-  };
+  const handleAddToCart = async () => {
+    try {
+      const customizeImage = await editor?.getCustomize(generateRandomName(12));
+      if (!customizeImage) return;
 
-  const handleAddWishList = (id: string) => {
-    addWishList(id);
+      const customizeUploadData = await uploadCustomizeFile(customizeImage);
+      if (!customizeUploadData) return;
+
+      addItemAction(product.id, +variantId, quantity, customizeUploadData.id);
+    } catch (error) {
+      console.log(error);
+      toast.error('Error adding to cart');
+    }
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mt-10">
       <h4 className="font-medium">Choose a Quantity</h4>
       <div className="flex justify-between">
         <div className="flex items-center gap-4 w-full">
@@ -62,7 +67,7 @@ const Add = ({
             <Button
               className="cursor-pointer text-xl disabled:bg-transparent disabled:cursor-not-allowed disabled:opacity-70 bg-light-gray"
               onClick={() => handleQuantity('i')}
-              disabled={quantity === stockNumber}
+              disabled={isInStock === false}
               variant="ghost"
             >
               +
@@ -76,18 +81,11 @@ const Add = ({
           className="flex-1"
           onClick={handleAddToCart}
         >
-          Add to cart
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => handleAddWishList(product.id.toString())}
-          className="p-2 bg-light-gray rounded-full "
-        >
-          <Heart size={26} className="text-secondary-dk" />
+          Confirm & Add to cart
         </Button>
       </div>
     </div>
   );
 };
 
-export default Add;
+export default ConfirmAndAdd;

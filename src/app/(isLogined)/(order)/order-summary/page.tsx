@@ -1,15 +1,12 @@
-"use client";
+'use client';
 
-import useCartStore from "@/store/useCartStore";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Cookies from "js-cookie";
-import CheckoutProduct from "@/components/Product/CheckoutProduct";
-import { usePayment } from "@/store/payment/usePayment";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import useCartStore from '@/store/useCartStore';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -18,20 +15,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { NumericFormat } from "react-number-format";
-import { useAllAddresses, useShippingFee } from "@/store/user/useAddress";
-import { Skeleton } from "@/components/ui/skeleton";
-import { IAddressDataResponse } from "@/types/address";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { LoaderCircle } from "lucide-react";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useUserStore } from "@/store/user/user.store";
-import ModalEditAddress from "@/components/Order/checkout/ModalEditAddress";
-import { EDeliveryMethod, EPaymentMethod } from "@/types/payment";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { NumericFormat } from 'react-number-format';
+import { useAllAddresses, useShippingFee } from '@/store/user/useAddress';
+import { Skeleton } from '@/components/ui/skeleton';
+import { IAddressDataResponse } from '@/types/address';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { LoaderCircle } from 'lucide-react';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useUserStore } from '@/store/user/user.store';
+import ModalEditAddress from '@/components/Order/checkout/ModalEditAddress';
+import { EDeliveryMethod, EPaymentMethod } from '@/types/payment';
+import { createOrder } from '@/api/order';
+import { toast } from 'react-toastify';
+import OrderSummaryProduct from '@/components/Product/OrderSummaryProduct';
 
 const OrderSummaryPage = () => {
   const OrderSummarySchema = z.object({
@@ -59,8 +59,6 @@ const OrderSummaryPage = () => {
     useState<IAddressDataResponse>();
   const router = useRouter();
 
-  const { createVnpayUrl } = usePayment();
-
   useEffect(() => {
     getCart();
   }, []);
@@ -69,7 +67,7 @@ const OrderSummaryPage = () => {
     if (!selectedAddress && listAddress) {
       if (addressId) {
         setSelectedAddress(
-          listAddress?.find((value) => value.id === addressId),
+          listAddress?.find((value) => value.id === addressId)
         );
       } else setSelectedAddress(listAddress?.find((value) => value.isDefault));
     } else if (selectedAddress && listAddress) {
@@ -87,14 +85,14 @@ const OrderSummaryPage = () => {
   }, [cart]);
 
   const payload = {
-    pick_province: selectedAddress?.province?.name || "",
-    pick_district: selectedAddress?.district?.name || "",
-    province: selectedAddress?.province?.name || "",
-    district: selectedAddress?.district?.name || "",
+    pick_province: selectedAddress?.province?.name || '',
+    pick_district: selectedAddress?.district?.name || '',
+    province: selectedAddress?.province?.name || '',
+    district: selectedAddress?.district?.name || '',
     weight:
       cart?.cartItems?.reduce(
         (total: number, item: any) => total + 90 * item.quantity,
-        0,
+        0
       ) || 0,
     value: subTotal,
   };
@@ -102,9 +100,30 @@ const OrderSummaryPage = () => {
   const { shippingFee, isFetching, isLoading, isError } =
     useShippingFee(payload);
 
-  const onSubmit = (data: any) => {};
+  const onSubmit = async () => {
+    try {
+      const orderItems = cart?.cartItems?.map((item: any) => ({
+        variantId: item.variant.id,
+        quantity: item.quantity,
+        unitPrice: item.variant.price,
+        customizeUploadId: item?.customizeUploadId || null,
+      }));
+
+      const data = {
+        addressId: selectedAddress?.id,
+        paymentId: 1,
+        status: 'processing',
+        orderItems: orderItems,
+      };
+      await createOrder(data);
+    } catch (error) {
+      toast.error(
+        'There was an issue with your order submission. Please try again.'
+      );
+    }
+  };
   const toggleModal = useCallback(() => {
-    setAddressId(selectedAddress?.id ?? "");
+    setAddressId(selectedAddress?.id ?? '');
     setIsOpenModal((prev) => !prev);
   }, [selectedAddress]);
 
@@ -118,22 +137,26 @@ const OrderSummaryPage = () => {
         } // Pass the function to update the selected address
       />
     ),
-    [isOpenModal],
+    [isOpenModal]
   );
 
   const getReceiverAddress = () => {
     return selectedAddress
-      ? `${selectedAddress.addressDetail ?? ""} - ${selectedAddress.ward?.name ?? ""} - ${selectedAddress.district?.name ?? ""} - ${selectedAddress.province?.name ?? ""}`
-      : "";
+      ? `${selectedAddress.addressDetail ?? ''} - ${
+          selectedAddress.ward?.name ?? ''
+        } - ${selectedAddress.district?.name ?? ''} - ${
+          selectedAddress.province?.name ?? ''
+        }`
+      : '';
   };
   const getReceiverContact = () => {
     return selectedAddress ? (
       <div className="">
-        <b> {selectedAddress.fullName ?? ""}</b>
-        {` - ${selectedAddress.phone ?? ""}`}
+        <b> {selectedAddress.fullName ?? ''}</b>
+        {` - ${selectedAddress.phone ?? ''}`}
       </div>
     ) : (
-      ""
+      ''
     );
   };
 
@@ -192,14 +215,14 @@ const OrderSummaryPage = () => {
                             <div className="flex flex-col">
                               <FormLabel className="font-normal">
                                 <Image
-                                  src={"/vnpay-seeklogo.svg"}
+                                  src={'/vnpay-seeklogo.svg'}
                                   alt="vnpay-logo"
                                   width={120}
                                   height={40}
                                 ></Image>
                               </FormLabel>
                               <FormDescription>
-                                Pay with your VNPAY e-wallet’s
+                                Pay with your VNPAY e-wallet's
                               </FormDescription>
                             </div>
                           </FormItem>
@@ -232,7 +255,7 @@ const OrderSummaryPage = () => {
                             <div className="flex flex-col">
                               <FormLabel className="font-normal">
                                 <Image
-                                  src={"/logo-ghtk.png"}
+                                  src={'/logo-ghtk.png'}
                                   alt="vnpay-logo"
                                   width={120}
                                   height={40}
@@ -265,7 +288,7 @@ const OrderSummaryPage = () => {
                     <Button className="self-end max-w-20">Apply</Button>
                   </div>
                 )}
-                name={"voucher"}
+                name={'voucher'}
                 control={form.control}
               ></FormField>
             </div>
@@ -276,7 +299,7 @@ const OrderSummaryPage = () => {
                 <div className="pt-2 pb-2">
                   {productCheckout?.cartItems?.length > 0 ? (
                     productCheckout.cartItems.map((item: any, idx: number) => (
-                      <CheckoutProduct
+                      <OrderSummaryProduct
                         idx={idx}
                         key={item?.variant?.sku}
                         item={item}
@@ -295,7 +318,7 @@ const OrderSummaryPage = () => {
                       <p className="text-center">
                         Your basket is empty,
                         <br />
-                        to start shopping click{" "}
+                        to start shopping click{' '}
                         <span className="underline">
                           <Link href="/shop">here</Link>
                         </span>
@@ -313,9 +336,9 @@ const OrderSummaryPage = () => {
                     <dd className="text-base font-medium text-gray-900">
                       <NumericFormat
                         value={subTotal}
-                        displayType={"text"}
+                        displayType={'text'}
                         thousandSeparator={true}
-                        suffix={" VND"}
+                        suffix={' VND'}
                         renderText={(value) => (
                           <p className="text-lg font-bold text-primary-price uppercase">
                             {value}
@@ -334,9 +357,9 @@ const OrderSummaryPage = () => {
                     ) : (
                       <NumericFormat
                         value={shippingFee?.fee.fee}
-                        displayType={"text"}
+                        displayType={'text'}
                         thousandSeparator={true}
-                        suffix={" VND"}
+                        suffix={' VND'}
                         renderText={(value) => (
                           <p className="text-md font-bold text-black uppercase">
                             {value}
@@ -356,12 +379,12 @@ const OrderSummaryPage = () => {
                           cart?.cartItems?.reduce(
                             (total: number, item: any) =>
                               total + item.variant.price * item.quantity,
-                            0,
+                            0
                           ) + shippingFee?.fee.fee
                         }
-                        displayType={"text"}
+                        displayType={'text'}
                         thousandSeparator={true}
-                        suffix={" VND"}
+                        suffix={' VND'}
                         renderText={(value) => (
                           <p className="text-lg font-bold text-primary-price uppercase">
                             {value}
@@ -376,10 +399,11 @@ const OrderSummaryPage = () => {
               <div className="space-y-3">
                 <Button
                   size="sm"
-                  variant={"secondary"}
-                  // disabled={
-                  //   !productCheckout?.cartItems?.length || !selectedAddress
-                  // }
+                  type="submit"
+                  variant={'secondary'}
+                  disabled={
+                    !productCheckout?.cartItems?.length || !selectedAddress
+                  }
                   className="bg-secondary-dk w-full"
                 >
                   <Link href="/checkout">Checkout</Link>

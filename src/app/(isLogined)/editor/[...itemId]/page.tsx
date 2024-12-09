@@ -105,6 +105,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
               {product && (
                 <VariantManagement
                   product={product}
+                  editor={editor}
                   productOptions={product?.productOptions}
                   setColor={(color) => setColor(color)}
                   variant={selectedVariant}

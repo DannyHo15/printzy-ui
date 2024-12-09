@@ -1,18 +1,16 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo } from "react";
-import Head from "next/head";
+import React, { useEffect, useMemo } from 'react';
+import Head from 'next/head';
 
-import Link from "next/link";
-import useCartStore from "@/store/useCartStore";
-import CartProduct from "@/components/Product/CartProduct";
-import { NumericFormat } from "react-number-format";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ICartItemsResponse } from "@/types/cart";
-import { ProductPriceService } from "@/services/ProductPriceService";
+import Link from 'next/link';
+import useCartStore from '@/store/useCartStore';
+import CartProduct from '@/components/Product/CartProduct';
+import { NumericFormat } from 'react-number-format';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { ICartItemsResponse } from '@/types/cart';
+import { ProductPriceService } from '@/services/ProductPriceService';
 
 function Cart() {
   const { cart, getCart, isLoading } = useCartStore();
@@ -24,11 +22,11 @@ function Cart() {
           ProductPriceService.calculateTotalPrice(
             item.variant.price,
             item.quantity,
-            item.product.discountPercent,
+            item.product.discountPercent
           )
         );
       },
-      0,
+      0
     );
   }, [cart?.cartItems]);
   useEffect(() => {
@@ -37,9 +35,6 @@ function Cart() {
 
   return (
     <>
-      <Head>
-        <title>wefootwear | Basket</title>
-      </Head>
       <div className="w-full min-h-screen relative pb-10">
         {/* <Header /> */}
         <div className="max-w-6xl mx-auto px-10">
@@ -79,7 +74,7 @@ function Cart() {
                         <p className="text-center">
                           Your basket is empty,
                           <br />
-                          to start shopping click{" "}
+                          to start shopping click{' '}
                           <span className="underline">
                             <Link href="/shop">here</Link>
                           </span>
@@ -98,9 +93,9 @@ function Cart() {
                   <p className="">TOTAL</p>
                   <NumericFormat
                     value={totalPrice}
-                    displayType={"text"}
+                    displayType={'text'}
                     thousandSeparator={true}
-                    suffix={"VND"}
+                    suffix={'VND'}
                     renderText={(value) => (
                       <p className="text-lg font-bold text-primary-price uppercase">
                         {value}
@@ -157,7 +152,7 @@ function Cart() {
                   className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-secondary hover:bg-secondary/90 "
                 >
                   {!isLoading ? (
-                    <Link href={"/order-summary"}>
+                    <Link href={'/order-summary'}>
                       <span className="flex justify-center place-items-center">
                         Place Order
                       </span>

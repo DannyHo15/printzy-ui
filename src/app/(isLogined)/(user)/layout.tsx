@@ -1,20 +1,20 @@
-"use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+'use client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import UserSidebar from "@/components/User/UserSidebar";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useUserStore } from "@/store/user/user.store";
-import { NavItem } from "@/types";
-import { IProfileResponse } from "@/types/user";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React, { useMemo } from "react";
+} from '@/components/ui/breadcrumb';
+import UserSidebar from '@/components/User/UserSidebar';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useUserStore } from '@/store/user/user.store';
+import { NavItem } from '@/types';
+import { IProfileResponse } from '@/types/user';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useMemo } from 'react';
 
 const layout = ({
   children,
@@ -29,38 +29,38 @@ const layout = ({
   const SIDE_BAR_LINKS: NavItem[] = useMemo(
     () => [
       {
-        title: "User profile",
+        title: 'User profile',
         href: `/profile/${user.id}`,
-        icon: "user",
-        color: "blue",
+        icon: 'user',
+        color: 'blue',
       },
       {
-        title: "Address book",
-        href: "/address-book",
-        icon: "location",
-        color: "red",
+        title: 'Address book',
+        href: '/address-book',
+        icon: 'location',
+        color: 'red',
       },
       {
-        title: "My orders",
-        href: "/my-orders",
-        icon: "orders",
-        color: "orange",
+        title: 'My orders',
+        href: '/my-orders',
+        icon: 'orders',
+        color: 'orange',
       },
       {
-        title: "Logout",
-        icon: "logout",
-        color: "red",
+        title: 'Logout',
+        icon: 'logout',
+        color: 'red',
         action: () => {
-          console.log("Logout");
+          console.log('Logout');
         },
       },
     ],
-    [user.id],
+    [user.id]
   );
 
   const getNameBaseOnUrl = (pathName: string) => {
     const link = SIDE_BAR_LINKS.find((item) => item.href === pathName);
-    return link ? link.title : "";
+    return link ? link.title : '';
   };
 
   const getUserName = (user: IProfileResponse) => {
@@ -72,7 +72,7 @@ const layout = ({
   return (
     <div className=" h-full grid md:grid-cols-3 grid-cols-1 px-16 py-12 bg-light-gray gap-4">
       <div className="col-span-3 md:col-span-1">
-        <div className="flex justify-start items-center gap-2">
+        {/* <div className="flex justify-start items-center gap-2">
           <Avatar className="h-8 w-8">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>US</AvatarFallback>
@@ -82,7 +82,7 @@ const layout = ({
               {getUserName(user)}
             </span>
           )}
-        </div>
+        </div> */}
         <div className="flex justify-between items-center gap-4 mt-4 p-2 bg-white rounded-lg">
           <UserSidebar links={SIDE_BAR_LINKS} />
         </div>
