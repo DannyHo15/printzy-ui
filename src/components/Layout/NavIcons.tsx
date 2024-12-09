@@ -16,14 +16,15 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { User } from "lucide-react";
+import { isClient } from "@/lib";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [session, setSession] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const isLoggedIn = Cookies.get("printzy_ac_token");
 
   //STORE
   const userStore = createSelectors(useUserStore);
@@ -31,15 +32,15 @@ const NavIcons = () => {
   const logoutAction = userStore.use.logout();
 
   const handleProfile = () => {
-    setIsProfileOpen((prev) => !prev);
+    if (!session) {
+      router.push("/auth/login");
+    } else setIsProfileOpen((prev) => !prev);
   };
 
   const handleLogout = async () => {
-    setIsLoading(true);
     logoutAction();
-    setIsLoading(false);
     setIsProfileOpen(false);
-    setSession("");
+    setSession(null);
     router.push("/auth/login");
   };
 
@@ -47,16 +48,17 @@ const NavIcons = () => {
   const { cart, getCart } = useCartStore();
 
   useEffect(() => {
-    if (Cookies.get("printzy_ac_token")) {
+    if (localStorage.getItem("token") && isClient()) {
       getWishList();
       getCart();
     }
   }, []);
 
-  const [session, setSession] = useState("");
-
   useEffect(() => {
-    const current = Cookies.get("printzy_ac_token");
+    let current = null;
+    if (isClient()) {
+      current = localStorage.getItem("token");
+    }
 
     if (current) setSession(current);
   }, [pathname]);

@@ -3,8 +3,13 @@ import Cookies from "js-cookie";
 import { SCHEMA } from "@/constant/schema";
 import { toast } from "react-toastify";
 import { logout } from "@/api/auth";
+export const isClient = () => typeof window !== "undefined";
 const getBearerToken = () => {
-  return Cookies.get("printzy_ac_token"); // Replace with your actual cookie name
+  if (isClient()) {
+    const sessionToken = localStorage.getItem("token");
+    return sessionToken;
+  }
+  return "";
 };
 
 const axiosInstance = axios.create({
@@ -18,9 +23,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // You can modify the request here
-    // config.headers["Authorization"] = `Bearer ${getBearerToken()}`;
-    config.headers["Authorization"] =
-      `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzM1OTk2ODYsImV4cCI6MTczMzYwMzI4Niwic3ViIjoiMjEifQ._UhHd3igV0OZ5f98WKgDANHlusD4NuYL6ffj2b3zOxo`;
+    config.headers["Authorization"] = `Bearer ${getBearerToken()}`;
     return config;
   },
   (error) => {
@@ -32,7 +35,6 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log(error, "error");
     const response = error?.response;
     if (response?.status === 401) {
       logout();

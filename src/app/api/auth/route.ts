@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   }
   setTokenIntoCookie("printzy_ac_token", accessToken);
   setTokenIntoCookie("printzy_refresh_token", refreshToken);
-  return new Response("Token is valid", {
+  return new NextResponse(JSON.stringify({ accessToken, refreshToken }), {
     status: 200,
   });
 }

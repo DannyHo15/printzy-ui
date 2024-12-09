@@ -24,6 +24,7 @@ export const useUserStore = create<UserState & UserAction>()(
         setUser: (user) => set({ user }),
         setAddressId: (addressId) => set({ addressId }),
         logout: () => {
+          localStorage.removeItem("token");
           logout();
           set({ user: {} as IProfileResponse });
         },

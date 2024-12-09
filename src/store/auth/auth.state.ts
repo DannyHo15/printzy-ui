@@ -29,12 +29,13 @@ export const useAuthStore = create<AuthState & IAuthAction>((set) => ({
       set({ loading: true });
       const res = await loginApi(payload);
       toast.success("Login successful");
-      setCookietsNextServer({
+      const resFormNextServer = await setCookietsNextServer({
         data: {
           token: res.payload.accessToken,
           refreshToken: res.payload.refreshToken,
         },
       });
+      localStorage.setItem("token", resFormNextServer.data.accessToken);
       set({ user: res.user, loading: false, isSuccess: true });
       useUserStore.getState().setUser(res.user);
     } catch (error: any) {
