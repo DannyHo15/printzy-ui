@@ -1,14 +1,8 @@
-import React from "react";
-
-import Head from "next/head";
-// import { motion } from "framer-motion";
+import React from 'react';
 
 function Success() {
   return (
     <>
-      <Head>
-        <title>Payment Success</title>
-      </Head>
       <div className="w-full min-h-screen ">
         <div className="flex min-h-screen place-items-center justify-center">
           <div className="max-w-3xl mx-auto pb-10 w-10/12 md:w-auto">

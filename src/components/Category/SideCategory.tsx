@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import useOptions from "@/hooks/useOptions";
+import React, { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import useOptions from '@/hooks/useOptions';
 
 function SideCategory({ typesData, categories }: any) {
   const router = useRouter();
@@ -24,19 +24,19 @@ function SideCategory({ typesData, categories }: any) {
 
     const currentValues = params.get(lowercaseType);
 
-    if (currentValues && type !== "category" && type !== "price") {
-      const valuesArray = currentValues.split(",");
+    if (currentValues && type !== 'category' && type !== 'price') {
+      const valuesArray = currentValues.split(',');
 
       if (valuesArray.includes(value.toString())) {
         const newValues = valuesArray.filter((v) => v != value);
         if (newValues.length > 0) {
-          params.set(lowercaseType, newValues.join(","));
+          params.set(lowercaseType, newValues.join(','));
         } else {
           params.delete(lowercaseType);
         }
       } else {
         valuesArray.push(value);
-        params.set(lowercaseType, valuesArray.join(","));
+        params.set(lowercaseType, valuesArray.join(','));
       }
     } else {
       params.set(lowercaseType, value);
@@ -66,7 +66,7 @@ function SideCategory({ typesData, categories }: any) {
     setExpandedSections((prevSections) =>
       prevSections.includes(section)
         ? prevSections.filter((s) => s !== section)
-        : [...prevSections, section],
+        : [...prevSections, section]
     );
   };
 
@@ -123,7 +123,7 @@ function SideCategory({ typesData, categories }: any) {
             </>
           )}
         </div>
-        <div className="category-item-rating flex items-center">
+        <div className="category-item-rating flex items-center gap-1">
           <span className="rating-star">⭐</span>
           <span className="rating-star">⭐</span>
           <span className="rating-star">⭐</span>
@@ -133,21 +133,21 @@ function SideCategory({ typesData, categories }: any) {
         <small className="text-gray-600">
           4.9/5 stars (<span className="cate-rating-count">146</span> votes)
         </small>
-        {/* Category Section */}{" "}
+        {/* Category Section */}{' '}
         <div className="border-b border-slate-400 py-6">
           <h3 className="-my-3 flow-root">
             <button
               type="button"
               className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
               aria-controls="filter-section-1"
-              aria-expanded={isSectionExpanded("category")}
-              onClick={() => toggleSection("category")}
+              aria-expanded={isSectionExpanded('category')}
+              onClick={() => toggleSection('category')}
             >
               <span className="font-medium text-cusblack text-base">
                 Category
               </span>
               <span className="ml-6 flex items-center">
-                {isSectionExpanded("category") ? (
+                {isSectionExpanded('category') ? (
                   <svg
                     className="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -167,7 +167,7 @@ function SideCategory({ typesData, categories }: any) {
               </span>
             </button>
           </h3>
-          {isSectionExpanded("category") && (
+          {isSectionExpanded('category') && (
             <div className="pt-6" id="filter-section-1">
               <div className="space-y-4">
                 {categories?.map((category: any, index: any) => (
@@ -181,7 +181,7 @@ function SideCategory({ typesData, categories }: any) {
                       value={category.id}
                       type="radio"
                       onChange={() => {
-                        toggleFilter("category", category.id);
+                        toggleFilter('category', category.id);
                         setSelectedCategory(category);
                       }}
                       className="h-4 w-4 rounded border-gray-300 text-primary"
@@ -206,12 +206,12 @@ function SideCategory({ typesData, categories }: any) {
               type="button"
               className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
               aria-controls="filter-section-0"
-              aria-expanded={isSectionExpanded("price")}
-              onClick={() => toggleSection("price")}
+              aria-expanded={isSectionExpanded('price')}
+              onClick={() => toggleSection('price')}
             >
               <span className="font-medium text-cusblack text-base">Price</span>
               <span className="ml-6 flex items-center">
-                {isSectionExpanded("price") ? (
+                {isSectionExpanded('price') ? (
                   <svg
                     className="h-5 w-5"
                     viewBox="0 0 20 20"
@@ -231,15 +231,21 @@ function SideCategory({ typesData, categories }: any) {
               </span>
             </button>
           </h3>
-          {isSectionExpanded("price") && (
+          {isSectionExpanded('price') && (
             <div className="pt-6" id="filter-section-0">
               <div className="space-y-4">
                 {[
-                  { label: "Under $9", value: "0-9" },
-                  { label: "From $9.00 - $18.00", value: "9-18" },
-                  { label: "From $18.00 - $27.00", value: "18-27" },
-                  { label: "From $27.00 - $36.00", value: "27-36" },
-                  { label: "From $36.00 - $45.00", value: "36-45" },
+                  { label: 'Under 100.000₫', value: '0-100000' },
+                  { label: 'From 100.000₫ - 200.000₫', value: '100000-200000' },
+                  { label: 'From 300.000₫ - 500.000₫', value: '300000-500000' },
+                  {
+                    label: 'From 500.000₫ - 1.000.000₫',
+                    value: '500000-1000000',
+                  },
+                  {
+                    label: 'From 1.000.000₫ - 3.000.000₫',
+                    value: '1000000-3000000',
+                  },
                 ].map((price, index: any) => (
                   <div className="flex items-center" key={price.value}>
                     <input
@@ -247,7 +253,7 @@ function SideCategory({ typesData, categories }: any) {
                       name="price[]"
                       value={price.value}
                       type="radio"
-                      onChange={() => toggleFilter("price", price.value)}
+                      onChange={() => toggleFilter('price', price.value)}
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       ref={(el: any) => (priceRef.current[index] = el!)}
                     />

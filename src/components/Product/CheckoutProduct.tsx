@@ -33,7 +33,7 @@ function CheckoutProduct({
         className="image md:flex cursor-pointer"
         onClick={() =>
           openZoomedImage(
-            item?.customizeUpload?.path || item.variant.product.upload.path
+            item?.customizeUpload?.path || item.variant.upload.path
           )
         }
       >
@@ -42,9 +42,7 @@ function CheckoutProduct({
           animate={{ scale: 1, x: 0, y: 0, opacity: 1 }}
         >
           <Image
-            src={
-              item?.customizeUpload?.path || item.variant.product.upload.path
-            }
+            src={item?.customizeUpload?.path || item.variant.upload.path}
             height={135}
             width={135}
             alt=""

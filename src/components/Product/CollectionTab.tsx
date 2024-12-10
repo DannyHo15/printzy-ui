@@ -1,13 +1,13 @@
-"use client";
-import { Suspense, useState } from "react";
-import Skeleton from "../Skeleton";
-import ProductList from "./ProductList";
-import Link from "next/link";
-import useCollections from "@/hooks/useCollections";
+'use client';
+import { Suspense, useState } from 'react';
+import Skeleton from '../Skeleton';
+import ProductList from './ProductList';
+import Link from 'next/link';
+import useCollections from '@/hooks/useCollections';
 
 export default function CollectionTabs() {
   const collections = useCollections();
-  const [activeTab, setActiveTab] = useState("event-tab-5");
+  const [activeTab, setActiveTab] = useState('event-tab-5');
   const [selectedCollectionId, setSelectedCollectionI] = useState<
     number | null
   >(null);
@@ -25,8 +25,8 @@ export default function CollectionTabs() {
             type="button"
             className={`flex-1 bg-gray-200 rounded-xl p-3 text-lg font-medium text-secondary ${
               activeTab === `event-tab-${index}`
-                ? "bg-secondary text-white"
-                : "bg-slate-100"
+                ? 'bg-secondary text-white'
+                : 'bg-slate-100'
             }`}
             onClick={() => {
               openTabEvent(`event-tab-${index}`);
@@ -44,9 +44,9 @@ export default function CollectionTabs() {
           searchParams={{ collectionId: selectedCollectionId }}
         />
       </Suspense>
-      <div className="flex justify-center w-full">
+      <div className="flex justify-center w-full mt-4">
         <Link
-          href={"/shop"}
+          href={'/shop'}
           className="rounded-lg px-14 py-2 text-lg font-medium bg-secondary text-white"
         >
           See All

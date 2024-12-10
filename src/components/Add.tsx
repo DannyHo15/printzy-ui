@@ -73,10 +73,27 @@ const Add = ({
       <div className="flex w-full gap-4">
         <Button
           variant="secondary"
-          className="flex-1"
+          className="flex-1 gap-2"
           onClick={handleAddToCart}
         >
-          Add to cart
+          <svg
+            fill="currentColor"
+            width="20"
+            height="20"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 14 15.96"
+          >
+            <path
+              className="cls-1"
+              d="M8,7.51A.49.49,0,0,1,8.49,8V9.47H10a.49.49,0,0,1,0,1H8.49v1.47a.49.49,0,0,1-1,0V10.45H6a.49.49,0,0,1,0-1H7.51V8A.49.49,0,0,1,8,7.51Z"
+              transform="translate(-1 -0.02)"
+            ></path>
+            <path
+              d="M11.57,3.94V3.59a3.57,3.57,0,0,0-7.14,0v.35H1v9.93A2.11,2.11,0,0,0,3.11,16h9.78A2.11,2.11,0,0,0,15,13.87V3.94ZM8,1.29a2.31,2.31,0,0,1,2.3,2.3v.35H5.7V3.59A2.31,2.31,0,0,1,8,1.29Zm4.89,13.42H3.11a.85.85,0,0,1-.84-.84V5.21H13.73v8.66A.85.85,0,0,1,12.89,14.71Z"
+              transform="translate(-1 -0.02)"
+            ></path>
+          </svg>
+          <span>Add to cart</span>
         </Button>
         <Button
           variant="ghost"

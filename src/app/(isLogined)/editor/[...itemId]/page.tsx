@@ -31,8 +31,8 @@ const Page = ({ params }: { params: { itemId: string } }) => {
     }
   }, [activeTool]);
   const { init, editor } = useEditor({
-    defaultHeight: 650,
-    defaultWidth: 450,
+    defaultHeight: 1200,
+    defaultWidth: 1000,
     clearSelectionCallback: onClearSelection,
   });
 

@@ -1,6 +1,6 @@
-import wishlistsService from "@/api/wishlists";
-import { toast } from "react-toastify";
-import { create } from "zustand";
+import wishlistsService from '@/api/wishlists';
+import { toast } from 'react-toastify';
+import { create } from 'zustand';
 
 type WishListState = {
   wishlist: any;
@@ -34,7 +34,11 @@ export const useWishlistStore = create<WishListState>((set) => ({
       }));
     } catch (error: any) {
       set((state) => ({ ...state, isLoading: false }));
-      toast.error(error?.message ?? "Something went wrong!");
+      toast.error(
+        error?.message === 'jwt malformed'
+          ? 'Please login to add wishlist'
+          : error?.message
+      );
     }
   },
   removeWishList: async (productId) => {
@@ -43,7 +47,7 @@ export const useWishlistStore = create<WishListState>((set) => ({
 
     set((state) => ({
       wishlist: state.wishlist.filter(
-        (item: any) => item.product.id !== productId,
+        (item: any) => item.product.id !== productId
       ),
       isLoading: false,
     }));

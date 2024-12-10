@@ -1,50 +1,51 @@
-import type { Metadata } from "next";
-import { Inter, Poppins, Roboto } from "next/font/google";
-import localFont from "next/font/local";
-import "./globals.css";
-import Navbar from "@/components/Layout/Navbar";
-import Footer from "@/components/Layout/Footer";
-import QueryProvider from "@/components/Layout/reactQuery/QueryProvider";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, ToastContainerProps } from "react-toastify";
-import { TIME_TO_CLOSE_TOAST } from "@/constant/schema";
-import { Suspense } from "react";
-import Loading from "@/loading";
-import { cookies } from "next/headers";
+import type { Metadata } from 'next';
+import { Inter, Poppins, Roboto } from 'next/font/google';
+import localFont from 'next/font/local';
+import './globals.css';
+import Navbar from '@/components/Layout/Navbar';
+import Footer from '@/components/Layout/Footer';
+import QueryProvider from '@/components/Layout/reactQuery/QueryProvider';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, ToastContainerProps } from 'react-toastify';
+import { TIME_TO_CLOSE_TOAST } from '@/constant/schema';
+import { Suspense } from 'react';
+import Loading from '@/loading';
+import { cookies } from 'next/headers';
+import Chatbot from '@/components/Chatbot/Chatbot';
 
 export const metadata: Metadata = {
-  title: "Printzy",
-  description: "Make your own custom t-shirt, phone case, mug, and more",
+  title: 'Printzy',
+  description: 'Make your own custom t-shirt, phone case, mug, and more',
 };
 
 const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "700", "900"],
-  variable: "--font-roboto",
+  subsets: ['latin'],
+  weight: ['100', '300', '400', '500', '700', '900'],
+  variable: '--font-roboto',
   preload: true,
 });
 const eduArrowFont = localFont({
-  src: "./fonts/EduArrows/EduArrow_wght.ttf",
-  weight: "100 200 300 400 500 600 700 800 900",
-  style: "normal",
-  variable: "--font-edu-arrow",
+  src: './fonts/EduArrows/EduArrow_wght.ttf',
+  weight: '100 200 300 400 500 600 700 800 900',
+  style: 'normal',
+  variable: '--font-edu-arrow',
   preload: true,
 });
 const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
   preload: true,
 });
 
 const inter = Inter({
-  subsets: ["vietnamese", "latin"],
-  variable: "--font-inter",
+  subsets: ['vietnamese', 'latin'],
+  variable: '--font-inter',
   preload: true,
 });
 
 const toastConfig: ToastContainerProps = {
-  position: "bottom-center",
+  position: 'bottom-center',
   autoClose: TIME_TO_CLOSE_TOAST,
   hideProgressBar: false,
   closeOnClick: true,
@@ -58,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = cookies();
-  console.log(cookieStore.get("printzy_ac_token"));
+  console.log(cookieStore.get('printzy_ac_token'));
   return (
     <html
       lang="en"
@@ -76,6 +77,7 @@ export default function RootLayout({
             <main className={`flex-1 mt-24`}>{children}</main>
           </Suspense>
           <Footer />
+          <Chatbot />
           {/* </ThemeProvider> */}
         </QueryProvider>
       </body>

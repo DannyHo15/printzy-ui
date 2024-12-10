@@ -1,25 +1,26 @@
-"use client";
-import reviewsService from "@/api/reviews";
-import useProductReviews from "@/hooks/useProductReviews";
-import React, { useState } from "react";
+'use client';
+import reviewsService from '@/api/reviews';
+import useProductReviews from '@/hooks/useProductReviews';
+import React, { useState } from 'react';
 
 const DetailProductReviews = ({ productId }: { productId: any }) => {
   const [showForm, setShowForm] = useState(false);
   const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  const [reviewText, setReviewText] = useState('');
+  const [reviewTitle, setReviewTitle] = useState('');
   let reviews = useProductReviews(productId);
 
   let reviewsData = [
-    { rating: 5, percentage: "0%", count: 0 },
-    { rating: 4, percentage: "0%", count: 0 },
-    { rating: 3, percentage: "0%", count: 0 },
-    { rating: 2, percentage: "0%", count: 0 },
-    { rating: 1, percentage: "0%", count: 0 },
+    { rating: 5, percentage: '0%', count: 0 },
+    { rating: 4, percentage: '0%', count: 0 },
+    { rating: 3, percentage: '0%', count: 0 },
+    { rating: 2, percentage: '0%', count: 0 },
+    { rating: 1, percentage: '0%', count: 0 },
   ];
 
   reviews.forEach((review: any) => {
     const foundRating = reviewsData.find(
-      (item) => item.rating === review.rating,
+      (item) => item.rating === review.rating
     );
     if (foundRating) {
       foundRating.count += 1;
@@ -29,31 +30,32 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
   reviewsData = reviewsData.map((item) => {
     const percentage =
       totalReviews > 0
-        ? ((item.count / totalReviews) * 100).toFixed(2) + "%"
-        : "0%";
+        ? ((item.count / totalReviews) * 100).toFixed(2) + '%'
+        : '0%';
     return { ...item, percentage };
   });
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   const handleSubmit = async () => {
     setShowForm(false);
     setRating(0);
-    setReviewText("");
+    setReviewText('');
     await reviewsService.create({
       rating,
+      title: reviewTitle,
       review: reviewText,
       productId,
     });
@@ -199,6 +201,23 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
                 ))}
               </select>
             </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="review"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Title
+              </label>
+              <input
+                id="title"
+                value={reviewTitle}
+                onChange={(e) => setReviewTitle(e.target.value)}
+                className="mt-1 block w-full p-2 bg-slate-100 rounded-xl"
+                required
+              />
+            </div>
+
             <div className="mt-4">
               <label
                 htmlFor="review"
@@ -215,17 +234,18 @@ const DetailProductReviews = ({ productId }: { productId: any }) => {
                 required
               />
             </div>
-            <button
-              onClick={handleSubmit}
-              className="mt-4 text-white bg-secondary rounded-full px-4 py-2"
-            >
-              Review
-            </button>
+
             <button
               onClick={() => setShowForm(false)}
-              className="mt-4 text-secondary border border-secondary rounded-full px-4 py-2 ml-2"
+              className="mt-4 text-secondary border border-secondary rounded-full px-4 py-2"
             >
               Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="mt-4 text-white bg-secondary rounded-full px-4 py-2 ml-2"
+            >
+              Review
             </button>
           </div>
         )}

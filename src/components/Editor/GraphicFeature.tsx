@@ -44,7 +44,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
           body: JSON.stringify({
             prompt: prompt,
             n: 1,
-            size: '256x256',
+            size: '1024x1024',
             response_format: 'b64_json',
           }),
         }
@@ -111,7 +111,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
 
     try {
       const response = await fetch(
-        'https://409d-2405-4802-915d-3f40-ec5c-27ee-b0ae-40e3.ngrok-free.app/remove-background',
+        'https://1338-2405-4802-915d-3f40-ed69-5aa6-9cac-74d.ngrok-free.app/remove-background',
         {
           method: 'POST',
           body: formData,

@@ -43,9 +43,13 @@ const ConfirmAndAdd = ({
       if (!customizeUploadData) return;
 
       addItemAction(product.id, +variantId, quantity, customizeUploadData.id);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error('Error adding to cart');
+      toast.error(
+        error.message === 'jwt malformed'
+          ? 'Please login to add item to cart'
+          : 'Error adding to cart'
+      );
     }
   };
 

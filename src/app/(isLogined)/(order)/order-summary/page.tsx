@@ -114,8 +114,10 @@ const OrderSummaryPage = () => {
         paymentId: 1,
         status: 'processing',
         orderItems: orderItems,
+        shippingFee: shippingFee?.fee.fee || 30000,
       };
-      await createOrder(data);
+      const createdOrderData = await createOrder(data);
+      router.push(`/checkout/${createdOrderData.id}`);
     } catch (error) {
       toast.error(
         'There was an issue with your order submission. Please try again.'
@@ -406,7 +408,7 @@ const OrderSummaryPage = () => {
                   }
                   className="bg-secondary-dk w-full"
                 >
-                  <Link href="/checkout">Checkout</Link>
+                  Checkout
                 </Button>
               </div>
             </div>

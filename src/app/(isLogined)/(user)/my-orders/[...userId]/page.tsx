@@ -1,8 +1,9 @@
-import Profile from '@/components/User/Profile';
+import MyOrders from '@/components/User/MyOrders';
+
 import React from 'react';
 
 const page = () => {
-  return <Profile />;
+  return <MyOrders />;
 };
 
 export default page;

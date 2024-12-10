@@ -42,7 +42,7 @@ const layout = ({
       },
       {
         title: 'My orders',
-        href: '/my-orders',
+        href: `/my-orders/${user.id}`,
         icon: 'orders',
         color: 'orange',
       },

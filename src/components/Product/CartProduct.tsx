@@ -34,13 +34,14 @@ function CartProduct({
   const closeZoomedImage = () => {
     setZoomedImage(null);
   };
+  console.log(item);
   return (
     <div className="product md:flex gap-4 justify-between mb-6" key={key}>
       <div
         className="image md:flex cursor-pointer"
         onClick={() =>
           openZoomedImage(
-            item?.customizeUpload?.path || item.product.upload.path
+            item?.customizeUpload?.path || item.variant.upload.path
           )
         }
       >
@@ -50,7 +51,7 @@ function CartProduct({
         >
           <Image
             className="w-full md:w-24 h-24 object-cover rounded-xl"
-            src={item?.customizeUpload?.path || item.product.upload.path}
+            src={item?.customizeUpload?.path || item.variant.upload.path}
             alt="image product"
             width={128}
             height={128}

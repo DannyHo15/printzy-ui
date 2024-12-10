@@ -17,3 +17,12 @@ export const getOrderById = async (id: number) => {
     throw error;
   }
 };
+
+export const getAllOrder = async () => {
+  try {
+    const res = await axiosInstance.get<any>(`/orders`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};

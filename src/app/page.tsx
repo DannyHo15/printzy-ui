@@ -1,11 +1,11 @@
-import CategoryList from "@/components/Category/CategoryList";
-import PerfectFitGuarantee from "@/components/PerfectFitGuarantee";
-import CollectionTabs from "@/components/Product/CollectionTab";
-import ProductList from "@/components/Product/ProductList";
-import ReviewProductList from "@/components/Product/ReviewProductList";
-import Skeleton from "@/components/Skeleton";
-import Slider from "@/components/Slider";
-import { Suspense } from "react";
+import CategoryList from '@/components/Category/CategoryList';
+import PerfectFitGuarantee from '@/components/PerfectFitGuarantee';
+import CollectionTabs from '@/components/Product/CollectionTab';
+import ProductList from '@/components/Product/ProductList';
+import ReviewProductList from '@/components/Product/ReviewProductList';
+import Skeleton from '@/components/Skeleton';
+import Slider from '@/components/Slider';
+import { Suspense } from 'react';
 
 export default function Home() {
   return (

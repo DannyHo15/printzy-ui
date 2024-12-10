@@ -18,8 +18,8 @@ const CheckoutPage = ({ params }: { params: { orderId: string } }) => {
       toast.error('Fail to pay');
     }
     createVnpayUrl({
-      sum: +order.total,
-      orderId: order.id,
+      sum: +order.total + +order.shippingFee,
+      orderId: order.orderNumber,
       clientId: order.client.id,
       tokenId: '123123',
       method: EPaymentMethod.VNPAY,
@@ -60,9 +60,9 @@ const CheckoutPage = ({ params }: { params: { orderId: string } }) => {
             </div>
 
             <div className="rounded-lg border p-6">
-              <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
+              <h2 className="text-xl font-semibold mb-4">Information</h2>
               <address className="not-italic">
-                <div className="font-medium">{order?.fullName}</div>
+                <div className="font-medium">{order?.address?.fullName}</div>
                 <div className="text-gray-500">
                   {order?.address.addressDetail}
                 </div>
@@ -105,12 +105,12 @@ const CheckoutPage = ({ params }: { params: { orderId: string } }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Shipping</span>
-                  <span>30,000 VND</span>
+                  <span>{order?.shippingFee} VND</span>
                 </div>
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
                   <NumericFormat
-                    value={order?.total}
+                    value={+order?.total + +order?.shippingFee}
                     displayType={'text'}
                     thousandSeparator={true}
                     suffix={' VND'}

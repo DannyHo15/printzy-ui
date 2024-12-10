@@ -1,7 +1,7 @@
-import cartService from "@/api/cart";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import { create } from "zustand";
+import cartService from '@/api/cart';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { create } from 'zustand';
 
 type CartState = {
   cart: any;
@@ -13,7 +13,7 @@ type CartState = {
     productId: number,
     variantId: number,
     quantity: number,
-    customizeUploadId: number,
+    customizeUploadId: number
   ) => void;
   clearCart: () => void;
 };
@@ -32,7 +32,7 @@ const useCartStore = create<CartState>((set) => ({
         isLoading: false,
       });
     } catch (error) {
-      console.error("Failed to fetch cart", error);
+      console.error('Failed to fetch cart', error);
     } finally {
       set({ isLoading: false });
     }
@@ -41,11 +41,15 @@ const useCartStore = create<CartState>((set) => ({
     set({ isLoading: true });
     try {
       await cartService.add(productId, variantId, quantity, customizeUploadId);
-      toast.success("Added to cart");
+      toast.success('Added to cart');
       useCartStore.getState().getCart();
       set({ isLoading: false });
     } catch (error: any) {
-      toast.error("Failed to add item to cart - " + error.message);
+      toast.error(
+        error.message === 'jwt malformed'
+          ? 'Please login to add item to cart'
+          : 'Failed to add item to cart - ' + error.message
+      );
       set({ isLoading: false });
     }
   },
@@ -65,7 +69,7 @@ const useCartStore = create<CartState>((set) => ({
           cartService.update(
             updatedItem.productId,
             updatedItem.variant.id,
-            updatedItem.quantity,
+            updatedItem.quantity
           );
 
           return {
@@ -79,7 +83,7 @@ const useCartStore = create<CartState>((set) => ({
         return state;
       });
     } catch {
-      console.error("Failed to update cart");
+      console.error('Failed to update cart');
     }
   },
 
@@ -98,7 +102,7 @@ const useCartStore = create<CartState>((set) => ({
         };
       });
     } catch {
-      console.error("Failed to remove cart");
+      console.error('Failed to remove cart');
     }
   },
 

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useMemo } from 'react';
-import Head from 'next/head';
 
 import Link from 'next/link';
 import useCartStore from '@/store/useCartStore';
@@ -46,8 +45,8 @@ function Cart() {
                     GET FREE SHIPPING WITH MEMBER+ ON EVERY ORDER
                   </h1>
                   <p className="text-xs mb-1 text-gray-100">
-                    Non member receive free-shipping for purchases Rp 1,500,000
-                    or more
+                    Non member receive free-shipping for purchases 1,500,000₫ or
+                    more
                   </p>
                 </div>
                 <div className="rounded-xl bg-white px-5 pt-5 mt-5 shadow-lg min-h-96 overflow-hidden">
