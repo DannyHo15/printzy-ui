@@ -44,7 +44,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
           body: JSON.stringify({
             prompt: prompt,
             n: 1,
-            size: '1024x1024',
+            size: '256x256',
             response_format: 'b64_json',
           }),
         }
@@ -110,13 +110,10 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
     formData.append('file', file);
 
     try {
-      const response = await fetch(
-        'https://1338-2405-4802-915d-3f40-ed69-5aa6-9cac-74d.ngrok-free.app/remove-background',
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      const response = await fetch('http://localhost:5000/remove-background', {
+        method: 'POST',
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error('Failed to remove background');
