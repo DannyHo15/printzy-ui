@@ -5,7 +5,7 @@ WORKDIR /app
 # Install dependencies for sharp
 COPY package*.json yarn.lock* ./
 RUN  \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install ; \
   else npm ci; \
   fi
 
