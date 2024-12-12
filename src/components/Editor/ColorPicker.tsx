@@ -1,3 +1,4 @@
+"use client";
 import {
   ActiveTool,
   colors,
@@ -6,8 +7,8 @@ import {
   STROKE_COLOR,
 } from "@/types/editor";
 import React, { useEffect, useState } from "react";
-import { ChromePicker, ColorResult, CirclePicker } from "react-color";
 import { RgbaObjToString } from "../utils/rgbaObjToString";
+import { ChromePicker, CirclePicker, ColorResult } from "react-color";
 interface IColorpickerProps {
   editor: Editor;
   activeTool: ActiveTool;
@@ -23,7 +24,7 @@ const ColorPicker = ({ editor, activeTool }: IColorpickerProps) => {
 
   useEffect(() => {
     setColor(getInitialColor());
-  }, [activeTool, editor, getInitialColor()]);
+  }, [activeTool, editor]);
   const handleChangeComplete = (color: ColorResult) => {
     const formartedColor = RgbaObjToString(color.rgb);
     if (activeTool === ActiveTool.Fill) {
@@ -34,26 +35,28 @@ const ColorPicker = ({ editor, activeTool }: IColorpickerProps) => {
   };
   return (
     <div className="w-full flex flex-col gap-6">
-      <ChromePicker
-        color={color}
-        onChange={(color) => {
-          const formartedColor = RgbaObjToString(color.rgb);
-          setColor(formartedColor);
-        }}
-        onChangeComplete={handleChangeComplete}
-        className="border rounded-lg overflow-hidden w-full"
-      />
-      <CirclePicker
-        circleSize={30}
-        color={color}
-        colors={colors}
-        onChange={(color) => {
-          const formartedColor = RgbaObjToString(color.rgb);
-          setColor(formartedColor);
-        }}
-        onChangeComplete={handleChangeComplete}
-        className="w-full justify-between"
-      />
+      <div className="border rounded-lg overflow-hidden w-full">
+        <ChromePicker
+          color={color}
+          onChange={(color: ColorResult) => {
+            const formartedColor = RgbaObjToString(color.rgb);
+            setColor(formartedColor);
+          }}
+          onChangeComplete={handleChangeComplete}
+        />
+      </div>
+      <div className="w-full justify-between">
+        <CirclePicker
+          circleSize={30}
+          color={color}
+          colors={colors}
+          onChange={(color: ColorResult) => {
+            const formartedColor = RgbaObjToString(color.rgb);
+            setColor(formartedColor);
+          }}
+          onChangeComplete={handleChangeComplete}
+        />
+      </div>
     </div>
   );
 };

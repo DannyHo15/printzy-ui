@@ -1,12 +1,8 @@
 "use client";
 
-import { redirect, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { login, register, setCookietsNextServer } from "@/api/auth";
-import { useUserStore } from "@/store/user/user.store";
 import { createSelectors } from "@/lib/auto-genarate-selector";
-import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/auth/auth.state";
 
 enum MODE {
