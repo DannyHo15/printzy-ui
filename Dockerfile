@@ -4,7 +4,10 @@ FROM base AS deps
 WORKDIR /app
 # Install dependencies for sharp
 COPY package*.json yarn.lock* ./
-RUN yarn install 
+RUN  \
+  if [ -f yarn.lock ]; then yarn install --fronzen-lockfile; \
+  else npm ci; \
+  fi
 
 FROM base AS builder
 WORKDIR /app
