@@ -1,0 +1,12 @@
+services:
+  printzy-ui:
+    ports:
+      - 3000:3000
+    container_name: printzyui
+    image: printzyui:latest
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env

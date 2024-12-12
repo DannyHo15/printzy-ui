@@ -34,7 +34,7 @@ import { Skeleton } from "../ui/skeleton";
 import { Checkbox } from "../ui/checkbox";
 interface IAddressFormProps {
   setIsOpenModal: (value: boolean) => void;
-  onResetForm: (resetFn: () => void) => void;
+  onResetForm?: (resetFn: () => void) => void;
   onCreateSuccess?: () => void;
 }
 const AddressForm = ({
