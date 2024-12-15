@@ -65,6 +65,7 @@ const buildEditor = ({
       top: top + 2,
     };
   };
+
   const center = (object: fabric.Object) => {
     const workspace = getWorkspace();
     const center = workspace?.getCenterPoint();
@@ -80,8 +81,16 @@ const buildEditor = ({
   };
 
   const saveJson = async () => {
+    const rect = getWorkspace() as fabric.Rect;
+
+    const optionsInWorkspace = canvas.getObjects().filter((obj) => {
+      return obj.type !== 'rect';
+    });
+
     const dataJSON = canvas.toJSON();
+    dataJSON.objects = optionsInWorkspace;
     transformText(dataJSON.objects);
+
     const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(dataJSON, null, '\t')
     )}`;
@@ -151,11 +160,40 @@ const buildEditor = ({
     return new File([blob], fileName, { type: 'image/png' });
   };
 
+  const getCustomizePrint = async (
+    fileName = 'my-print.png'
+  ): Promise<File> => {
+    // Generate the data URL from the canvas
+    const imageDataURL = canvas.toDataURL({
+      format: 'png',
+      multiplier: 1,
+      enableRetinaScaling: true,
+    });
+
+    // Convert the base64 data URL to a Blob
+    const base64 = imageDataURL.split(',')[1]; // Remove the prefix (e.g., "data:image/png;base64,")
+    const binary = atob(base64); // Decode base64 to binary data
+    const array = new Uint8Array(binary.length); // Create a Uint8Array to hold the binary data
+
+    for (let i = 0; i < binary.length; i++) {
+      array[i] = binary.charCodeAt(i);
+    }
+
+    // Create a Blob from the binary data
+    const blob = new Blob([array], { type: 'image/png' });
+
+    // Create a File object from the Blob
+    const file = new File([blob], fileName, { type: 'image/png' });
+
+    return file;
+  };
+
   return {
     saveJson,
     getWorkspace,
     savePng,
     getCustomize,
+    getCustomizePrint,
     canvas,
     autoZoom,
     selectedObjects,
@@ -490,6 +528,7 @@ const buildEditor = ({
 export const useEditor = ({
   defaultHeight,
   defaultWidth,
+  defaultDesignedJSON,
   clearSelectionCallback,
   saveCallback,
 }: EditorHookProps) => {
@@ -561,13 +600,13 @@ export const useEditor = ({
 
       // Create the white stroke rectangle
       const whiteStrokeRectangle = new fabric.Rect({
-        width: initialWidth.current && initialWidth.current - 4, // Adjust to fit inside the black stroke
+        width: initialWidth.current && initialWidth.current - 4,
 
-        height: initialHeight.current && initialHeight.current - 4, // Adjust to fit inside the black stroke
+        height: initialHeight.current && initialHeight.current - 4,
         fill: 'transparent',
         stroke: 'transparent',
         strokeDashArray: [5, 5],
-        strokeWidth: 2, // Adjust the stroke width as needed
+        strokeWidth: 2,
         selectable: false,
         hasControls: false,
         evented: false,
@@ -579,9 +618,65 @@ export const useEditor = ({
       initialCanvas.add(blackStrokeRectangle);
       initialCanvas.centerObject(blackStrokeRectangle);
 
-      // Add and center the white stroke rectangle
       initialCanvas.add(whiteStrokeRectangle);
       initialCanvas.centerObject(whiteStrokeRectangle);
+
+      if (defaultDesignedJSON) {
+        try {
+          const dataJSON = JSON.parse(defaultDesignedJSON);
+          dataJSON.objects.forEach((obj: any) => {
+            let fabricObject;
+            switch (obj.type) {
+              case 'Textbox':
+                fabricObject = new fabric.FabricText(obj.text, obj);
+                break;
+              case 'Image':
+                fabric.FabricImage.fromURL(
+                  obj.src,
+                  {},
+                  {
+                    left: obj.left || 0,
+                    top: obj.top || 0,
+                    width: obj.width || 100,
+                    height: obj.height || 100,
+                    scaleX: obj.scaleX || 1,
+                    scaleY: obj.scaleY || 1,
+                    angle: obj.angle || 0,
+                    flipX: obj.flipX || false,
+                    flipY: obj.flipY || false,
+                    opacity: obj.opacity || 1,
+                    shadow: obj.shadow || null,
+                    visible: obj.visible !== undefined ? obj.visible : true,
+                    skewX: obj.skewX || 0,
+                    skewY: obj.skewY || 0,
+                    originX: obj.originX || 'left',
+                    originY: obj.originY || 'top',
+                    fillRule: obj.fillRule || 'nonzero',
+                    paintFirst: obj.paintFirst || 'stroke',
+                    globalCompositeOperation:
+                      obj.globalCompositeOperation || 'source-over',
+                    backgroundColor: obj.backgroundColor || '',
+                  }
+                )
+                  .then((img) => {
+                    initialCanvas.add(img);
+                    initialCanvas.renderAll();
+                  })
+                  .catch((error) => {
+                    console.error('Error loading image:', error);
+                  });
+                return;
+            }
+            if (fabricObject) {
+              initialCanvas.add(fabricObject);
+            }
+          });
+        } catch (error) {
+          console.error('Failed to load JSON into canvas:', error);
+        }
+      } else {
+        console.log('No JSON data provided. Initializing empty canvas.');
+      }
 
       setCanvas(initialCanvas);
       setContainer(initialContainer);

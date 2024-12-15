@@ -19,7 +19,7 @@ export default function ActionGroup({
         product={product}
         variantId={selectedVariant?.id}
         customUploadId={selectedVariant?.upload?.id}
-        stockNumber={selectedVariant?.stock?.quantity}
+        isInStock={selectedVariant?.isInStock}
       />
       <Link href={`/editor/${slug ?? 'new'}`}>
         <Button

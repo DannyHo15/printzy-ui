@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useAuthStore } from "@/store/auth/auth.state";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useAuthStore } from '@/store/auth/auth.state';
 
 enum MODE {
-  LOGIN = "LOGIN",
-  REGISTER = "REGISTER",
-  RESET_PASSWORD = "RESET_PASSWORD",
-  EMAIL_VERIFICATION = "EMAIL_VERIFICATION",
+  LOGIN = 'LOGIN',
+  REGISTER = 'REGISTER',
+  RESET_PASSWORD = 'RESET_PASSWORD',
+  EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
 }
 
 const LoginPage = () => {
   const authStore = createSelectors(useAuthStore);
   const loginAction = authStore.use.login();
   const registerAction = authStore.use.register();
+  const resetAction = authStore.use.reset();
   const isLoading = authStore.use.loading();
   const isSuccess = authStore.use.isSuccess();
   const resetIsSuccess = authStore.use.setSuccess();
@@ -24,32 +25,30 @@ const LoginPage = () => {
 
   const [mode, setMode] = useState(MODE.LOGIN);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailCode, setEmailCode] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailCode, setEmailCode] = useState('');
 
   let formTitle;
   if (mode === MODE.LOGIN) {
-    formTitle = "Log in";
+    formTitle = 'Log in';
   } else if (mode === MODE.REGISTER) {
-    formTitle = "Register";
+    formTitle = 'Register';
   } else if (mode === MODE.RESET_PASSWORD) {
-    formTitle = "Reset Your Password";
+    formTitle = 'Reset Your Password';
   } else {
-    formTitle = "Verify Your Email";
+    formTitle = 'Verify Your Email';
   }
 
   let buttonTitle;
   if (mode === MODE.LOGIN) {
-    buttonTitle = "Login";
+    buttonTitle = 'Login';
   } else if (mode === MODE.REGISTER) {
-    buttonTitle = "Register";
+    buttonTitle = 'Register';
   } else if (mode === MODE.RESET_PASSWORD) {
-    buttonTitle = "Reset";
-  } else {
-    buttonTitle = "Verify";
+    buttonTitle = 'Reset';
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,6 +69,11 @@ const LoginPage = () => {
             password,
           });
           break;
+        case MODE.RESET_PASSWORD:
+          resetAction({
+            email,
+          });
+          break;
         default:
           break;
       }
@@ -80,7 +84,21 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      router.push("/");
+      switch (mode) {
+        case MODE.LOGIN:
+          router.push('/');
+          break;
+        case MODE.REGISTER:
+          setMode(MODE.LOGIN);
+          router.push('/auth/login');
+          break;
+        case MODE.RESET_PASSWORD:
+          setMode(MODE.LOGIN);
+          router.push('/auth/login');
+          break;
+        default:
+          break;
+      }
       resetIsSuccess(false);
     }
   }, [isSuccess, router]);
@@ -160,7 +178,7 @@ const LoginPage = () => {
           className="bg-lama text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? "Loading..." : buttonTitle}
+          {isLoading ? 'Loading...' : buttonTitle}
         </button>
         {mode === MODE.LOGIN && (
           <div

@@ -51,7 +51,7 @@ const OrderSummaryPage = () => {
   const userStore = createSelectors(useUserStore);
   const setAddressId = userStore.use.setAddressId();
   const addressId = userStore.use.addressId();
-  const { cart, getCart, isLoading: isLoadingCart } = useCartStore();
+  const { cart, isLoading: isLoadingCart, clearCart, getCart } = useCartStore();
   const [productCheckout, setProductCheckout] = useState<any>({});
   const [subTotal, setSubTotal] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -107,16 +107,17 @@ const OrderSummaryPage = () => {
         quantity: item.quantity,
         unitPrice: item.variant.price,
         customizeUploadId: item?.customizeUploadId || null,
+        customizePrintId: item?.customizePrintId || null,
       }));
 
       const data = {
         addressId: selectedAddress?.id,
         paymentId: 1,
-        status: 'processing',
         orderItems: orderItems,
         shippingFee: shippingFee?.fee.fee || 30000,
       };
       const createdOrderData = await createOrder(data);
+      clearCart();
       router.push(`/checkout/${createdOrderData.id}`);
     } catch (error) {
       toast.error(

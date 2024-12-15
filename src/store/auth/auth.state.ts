@@ -1,14 +1,16 @@
-import { create } from "zustand";
-import { IAuthAction } from "./auth.action";
-import { IProfileResponse } from "@/types/user";
+import { create } from 'zustand';
+import { IAuthAction } from './auth.action';
+import { IProfileResponse } from '@/types/user';
 import {
   login as loginApi,
   setCookietsNextServer,
   register as registerApi,
   logoutNextServer,
-} from "@/api/auth";
-import { toast } from "react-toastify";
-import { useUserStore } from "../user/user.store";
+  reset as resetApi,
+  resetConfirm as resetConfirmApi,
+} from '@/api/auth';
+import { toast } from 'react-toastify';
+import { useUserStore } from '../user/user.store';
 
 interface AuthState {
   user?: IProfileResponse;
@@ -28,18 +30,18 @@ export const useAuthStore = create<AuthState & IAuthAction>((set) => ({
     try {
       set({ loading: true });
       const res = await loginApi(payload);
-      toast.success("Login successful");
+      toast.success('Login successful');
       const resFormNextServer = await setCookietsNextServer({
         data: {
           token: res.payload.accessToken,
           refreshToken: res.payload.refreshToken,
         },
       });
-      localStorage.setItem("token", resFormNextServer.data.accessToken);
+      localStorage.setItem('token', resFormNextServer.data.accessToken);
       set({ user: res.user, loading: false, isSuccess: true });
       useUserStore.getState().setUser(res.user);
     } catch (error: any) {
-      set({ error: error?.message ?? "Failed to login", loading: false });
+      set({ error: error?.message ?? 'Failed to login', loading: false });
       toast.error(useAuthStore.getState().error);
     }
   },
@@ -49,9 +51,36 @@ export const useAuthStore = create<AuthState & IAuthAction>((set) => ({
       // Register user
       const res = await registerApi(payload);
       set({ user: res.user, loading: false, isSuccess: true });
-      toast.success("Register successful");
+      toast.success('Register successful');
     } catch (error: any) {
-      set({ error: error?.message ?? "Failed to register", loading: false });
+      set({ error: error?.message ?? 'Failed to register', loading: false });
+      toast.error(useAuthStore.getState().error);
+    }
+  },
+  reset: async (payload) => {
+    set({ loading: true });
+    try {
+      // Register user
+      const res = await resetApi(payload);
+      set({ user: res.user, loading: false, isSuccess: true });
+      toast.success('Have already send mail the link reset password');
+    } catch (error: any) {
+      set({ error: error?.message ?? 'Failed to send mail', loading: false });
+      toast.error(useAuthStore.getState().error);
+    }
+  },
+  resetConfirm: async (payload) => {
+    set({ loading: true });
+    try {
+      // Register user
+      const res = await resetConfirmApi(payload);
+      set({ user: res.user, loading: false, isSuccess: true });
+      toast.success('Password is updated');
+    } catch (error: any) {
+      set({
+        error: error?.message ?? 'Failed to update password',
+        loading: false,
+      });
       toast.error(useAuthStore.getState().error);
     }
   },

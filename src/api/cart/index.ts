@@ -16,11 +16,13 @@ export const add = async (
   productId: number,
   variantId: number,
   quantity: number,
-  customizeUploadId: number
+  customizeUploadId?: number,
+  customizePrintId?: number
 ) => {
   const res = await axiosInstance.post(`${SCHEMA.API_BASE}/cart/add`, {
     productId,
     customizeUploadId,
+    customizePrintId,
     quantity,
     variantId,
   });
@@ -42,19 +44,13 @@ export const update = async (
 
 export const remove = async (productId: number, variantId: number) => {
   const res = await axiosInstance.delete(`${SCHEMA.API_BASE}/cart/remove`, {
-    params: { productId, variantId }, // Add parameters here
+    params: { productId, variantId },
   });
   return res;
 };
 
 export const clear = async () => {
-  const res = await axios({
-    method: 'DELETE',
-    url: `${SCHEMA.API_BASE}/cart/clear`,
-    headers: {
-      Authorization: `Bearer ${getBearerToken()}`,
-    },
-  });
+  const res = await axiosInstance.delete(`${SCHEMA.API_BASE}/cart/clear`);
   return res;
 };
 

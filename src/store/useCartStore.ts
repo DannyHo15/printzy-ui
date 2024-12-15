@@ -13,7 +13,8 @@ type CartState = {
     productId: number,
     variantId: number,
     quantity: number,
-    customizeUploadId: number
+    customizeUploadId?: number,
+    customizePrintId?: number
   ) => void;
   clearCart: () => void;
 };
@@ -37,10 +38,22 @@ const useCartStore = create<CartState>((set) => ({
       set({ isLoading: false });
     }
   },
-  addItem: async (productId, variantId, quantity, customizeUploadId) => {
+  addItem: async (
+    productId,
+    variantId,
+    quantity,
+    customizeUploadId,
+    customizePrintId
+  ) => {
     set({ isLoading: true });
     try {
-      await cartService.add(productId, variantId, quantity, customizeUploadId);
+      await cartService.add(
+        productId,
+        variantId,
+        quantity,
+        customizeUploadId,
+        customizePrintId
+      );
       toast.success('Added to cart');
       useCartStore.getState().getCart();
       set({ isLoading: false });
