@@ -1,13 +1,13 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Skeleton } from "@/components/ui/skeleton";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useAllAddresses } from "@/store/user/useAddress";
-import { useUserStore } from "@/store/user/user.store";
-import { IAddressDataResponse } from "@/types/address";
-import { Plus } from "lucide-react";
-import React, { useCallback } from "react";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useAllAddresses } from '@/store/user/useAddress';
+import { useUserStore } from '@/store/user/user.store';
+import { IAddressDataResponse } from '@/types/address';
+import { Plus } from 'lucide-react';
+import React, { useCallback } from 'react';
 
 type TListAddressProp = {
   setIsCreate: (value: boolean) => void;
@@ -18,11 +18,16 @@ const ListAddress = ({ setIsCreate }: TListAddressProp) => {
   const userStore = createSelectors(useUserStore);
   const setAddressId = userStore.use.setAddressId();
   const addressId = userStore.use.addressId();
-  const getReceiverAddress = useCallback((address: IAddressDataResponse): string => {
-    if (!address) return '';
-    const { addressDetail, ward, district, province } = address;
-    return `${addressDetail ?? ""} - ${ward?.name ?? ""} - ${district?.name ?? ""} - ${province?.name ?? ""}`;
-  }, []);
+  const getReceiverAddress = useCallback(
+    (address: IAddressDataResponse): string => {
+      if (!address) return '';
+      const { addressDetail, ward, district, province } = address;
+      return `${addressDetail ?? ''} - ${ward?.name ?? ''} - ${
+        district?.name ?? ''
+      } - ${province?.name ?? ''}`;
+    },
+    []
+  );
 
   const getReceiverContact = useCallback((address: IAddressDataResponse) => {
     if (!address) return null;
@@ -33,17 +38,14 @@ const ListAddress = ({ setIsCreate }: TListAddressProp) => {
       </div>
     );
   }, []);
-  
+
   const handleCreateAddress = () => {
     setIsCreate(true);
     setAddressId(null);
   };
   return (
     <>
-      <RadioGroup
-        defaultValue={addressId ?? ""}
-        onValueChange={setAddressId}
-      >
+      <RadioGroup defaultValue={addressId ?? ''} onValueChange={setAddressId}>
         {isLoadingAddresses ? (
           <Skeleton className="h-16"></Skeleton>
         ) : (

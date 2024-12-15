@@ -39,10 +39,6 @@ const CustomizeProducts = ({
   }, [selectedOptions]);
 
   useEffect(() => {
-    console.log('variants');
-  }, []);
-
-  useEffect(() => {
     if (
       variants &&
       variants.length > 0 &&

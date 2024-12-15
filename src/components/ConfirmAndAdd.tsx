@@ -58,12 +58,11 @@ const ConfirmAndAdd = ({
       addItemAction(
         product.id,
         +variantId,
-        quantity,
+        +quantity,
         customizeUploadData.id,
         customizePrintData.id
       );
     } catch (error: any) {
-      console.log(error);
       toast.error(
         error.message === 'jwt malformed'
           ? 'Please login to add item to cart'

@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { createSelectors } from "@/lib/auto-genarate-selector";
-import { useUserStore } from "@/store/user/user.store";
-import AddressForm from "@/components/forms/address-form";
+} from '@/components/ui/dialog';
+import { DialogDescription } from '@radix-ui/react-dialog';
+import { createSelectors } from '@/lib/auto-genarate-selector';
+import { useUserStore } from '@/store/user/user.store';
+import AddressForm from '@/components/forms/address-form';
 type TModalProp = {
   isOpen: boolean;
   setIsOpenModal: (value: boolean) => void;
@@ -28,7 +28,7 @@ const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
       }
       setIsOpenModal(value);
     },
-    [resetForm, setAddressId, setIsOpenModal],
+    [resetForm, setAddressId, setIsOpenModal]
   );
   return (
     <Dialog
@@ -37,10 +37,10 @@ const ModalAddAddress = ({ isOpen = false, setIsOpenModal }: TModalProp) => {
       }}
       open={isOpen}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] mt-10">
         <DialogHeader>
           <DialogTitle>
-            {!addressId ? "Add new address" : "Update address"}
+            {!addressId ? 'Add new address' : 'Update address'}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>

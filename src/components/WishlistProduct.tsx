@@ -1,8 +1,8 @@
-import Link from "next/link";
-import React from "react";
-import { NumericFormat } from "react-number-format";
-import { motion } from "framer-motion";
-import { useWishlistStore } from "@/store/useWishList";
+import Link from 'next/link';
+import React from 'react';
+import { NumericFormat } from 'react-number-format';
+import { motion } from 'framer-motion';
+import { useWishlistStore } from '@/store/useWishList';
 
 function WishlistProduct({ item }: any) {
   const { removeWishList } = useWishlistStore();
@@ -23,18 +23,18 @@ function WishlistProduct({ item }: any) {
         <NumericFormat
           value={item.price}
           className="text-sm font-semibold text-cusblack"
-          displayType={"text"}
+          displayType={'text'}
           thousandSeparator={true}
           fixedDecimalScale={true}
           decimalScale={2}
-          suffix={" VND"}
+          suffix={' VND'}
           renderText={(value) => (
             <p className="text-base font-bold text-red-600 uppercase ">
               {value}
             </p>
           )}
         />
-        <Link href={"/" + item.product.slug + "-" + item.product.sku}>
+        <Link href={'/' + item.product.slug}>
           <button className="text-white bg-secondary border border-cusblack py-1 text-xs w-full rounded-lg">
             View product
           </button>

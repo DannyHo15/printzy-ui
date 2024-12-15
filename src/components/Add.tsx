@@ -37,7 +37,7 @@ const Add = ({
 
   const handleAddToCart = () => {
     // Add to cart logic
-    addItemAction(product.id, +variantId, quantity, customUploadId);
+    addItemAction(product.id, +variantId, +quantity, customUploadId);
   };
 
   const handleAddWishList = (id: string) => {

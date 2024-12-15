@@ -125,7 +125,6 @@ const buildEditor = ({
   const createImageBlob = async (): Promise<Blob> => {
     const rect = getWorkspace() as fabric.Rect;
 
-    // Tạm thời thay đổi các thuộc tính canvas để phù hợp với xuất hình ảnh
     rect.set({
       stroke: 'transparent',
     });
@@ -163,7 +162,6 @@ const buildEditor = ({
   const getCustomizePrint = async (
     fileName = 'my-print.png'
   ): Promise<File> => {
-    // Generate the data URL from the canvas
     const imageDataURL = canvas.toDataURL({
       format: 'png',
       multiplier: 1,
@@ -684,7 +682,7 @@ export const useEditor = ({
       //   initialCanvas.toJSON(JSON_KEYS)
       // );
     },
-    [container]
+    [container, defaultDesignedJSON]
   );
 
   useHotkeys({ canvas });
