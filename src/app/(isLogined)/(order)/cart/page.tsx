@@ -145,25 +145,26 @@ function Cart() {
                   />
                 </div>
  */}
-                <Button
-                  disabled={!cart?.cartItems?.length}
-                  // onClick={createCheckoutSession}
-                  className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-secondary hover:bg-secondary/90 "
-                >
-                  {!isLoading ? (
-                    <Link href={'/order-summary'}>
+
+                <Link href={'/order-summary'}>
+                  <Button
+                    disabled={!cart?.cartItems?.length}
+                    // onClick={createCheckoutSession}
+                    className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-secondary hover:bg-secondary/90 "
+                  >
+                    {!isLoading ? (
                       <span className="flex justify-center place-items-center">
                         Place Order
                       </span>
-                    </Link>
-                  ) : (
-                    <img
-                      className="w-6 h-6 mx-auto"
-                      src="https://i.ibb.co/pL1TJSg/Rolling-1s-200px-2.gif"
-                      alt=""
-                    />
-                  )}
-                </Button>
+                    ) : (
+                      <img
+                        className="w-6 h-6 mx-auto"
+                        src="https://i.ibb.co/pL1TJSg/Rolling-1s-200px-2.gif"
+                        alt=""
+                      />
+                    )}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

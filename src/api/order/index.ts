@@ -18,9 +18,15 @@ export const getOrderById = async (id: number) => {
   }
 };
 
-export const getAllOrder = async () => {
+export const getAllOrder = async (filter: any) => {
+  let query: any = {};
+  if (filter.status) {
+    query.status = filter.status;
+  }
   try {
-    const res = await axiosInstance.get<any>(`/orders`);
+    const res = await axiosInstance.get<any>(`/orders`, {
+      params: query,
+    });
     return res.data;
   } catch (error) {
     throw error;

@@ -26,13 +26,15 @@ const MyOrders = () => {
   }, [data]);
 
   const getCurrentOrder = async () => {
-    const orderData = await getAllOrder();
+    const orderData = await getAllOrder({
+      status: statusActive === 'All' ? '' : statusActive.toLowerCase(),
+    });
     setOrders(orderData);
   };
 
   useEffect(() => {
     getCurrentOrder();
-  }, []);
+  }, [statusActive]);
 
   const handleStatusClick = (status: string) => {
     setStatusActive(status);
@@ -43,7 +45,15 @@ const MyOrders = () => {
     return <div>Error loading profile: {error?.message}</div>;
   }
 
-  const statusList = ['All', 'Paid', 'Unpaid', 'Overdue'];
+  const statusList = [
+    'All',
+    'Unpaid',
+    'Processing',
+    'Delivery',
+    'Completed',
+    'Cancelled',
+    'Refunded',
+  ];
 
   return (
     <Card>

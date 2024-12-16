@@ -22,7 +22,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>(ActiveTool.Select);
   const [selectedVariant, setSelectedVariant] = useState<any>({});
   const [color, setColor] = useState<any>({});
-
+  console.log(selectedVariant);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onClearSelection = useCallback(() => {
@@ -30,9 +30,13 @@ const Page = ({ params }: { params: { itemId: string } }) => {
       setActiveTool(ActiveTool.Select);
     }
   }, [activeTool]);
+  const defaultDesignedJSON = JSON.stringify(
+    selectedVariant?.customizeModel?.data
+  );
   const { init, editor } = useEditor({
-    defaultHeight: 1200,
-    defaultWidth: 1000,
+    defaultHeight: 2000,
+    defaultWidth: 1800,
+    defaultDesignedJSON,
     clearSelectionCallback: onClearSelection,
   });
 
@@ -95,11 +99,9 @@ const Page = ({ params }: { params: { itemId: string } }) => {
           />
           <div className="w-full h-full relative">
             <div id="workspace" className="w-full h-full">
-              <Mockup
-                color={color}
-                mockupPath={selectedVariant?.upload?.path}
-              />
-              <canvas ref={canvasRef} className="w-full h-full"></canvas>
+              <Mockup color={color} mockupPath={selectedVariant?.upload?.path}>
+                <canvas ref={canvasRef} className="w-full h-full"></canvas>
+              </Mockup>
             </div>
             <div className="absolute right-6 top-6 z-40">
               {product && (

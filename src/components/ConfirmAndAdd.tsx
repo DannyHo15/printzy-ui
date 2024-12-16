@@ -5,7 +5,10 @@ import useCartStore from '@/store/useCartStore';
 import { TProductDataResponse } from '@/types/product';
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { uploadCustomizeFile } from '@/api/customizeUpload';
+import {
+  uploadCustomizeFile,
+  uploadCustomizePrintFile,
+} from '@/api/customizeUpload';
 import { Editor } from '@/types/editor';
 import { generateRandomName } from '@/lib/utils';
 import { toast } from 'react-toastify';
@@ -39,12 +42,27 @@ const ConfirmAndAdd = ({
       const customizeImage = await editor?.getCustomize(generateRandomName(12));
       if (!customizeImage) return;
 
+      const customizePrintImage = await editor?.getCustomizePrint(
+        generateRandomName(12)
+      );
+      if (!customizePrintImage) return;
+
       const customizeUploadData = await uploadCustomizeFile(customizeImage);
       if (!customizeUploadData) return;
 
-      addItemAction(product.id, +variantId, quantity, customizeUploadData.id);
+      const customizePrintData = await uploadCustomizePrintFile(
+        customizePrintImage
+      );
+      if (!customizePrintData) return;
+
+      addItemAction(
+        product.id,
+        +variantId,
+        +quantity,
+        customizeUploadData.id,
+        customizePrintData.id
+      );
     } catch (error: any) {
-      console.log(error);
       toast.error(
         error.message === 'jwt malformed'
           ? 'Please login to add item to cart'

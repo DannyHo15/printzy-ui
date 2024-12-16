@@ -174,7 +174,11 @@ const OrderCard = ({ order }: { order: any }) => {
 
   const { colorClass, icon } = getStatusAttributes(order?.status);
   const date = new Date(order?.updatedAt);
+  const expectedDate = order?.updatedAt
+    ? new Date(date.getTime() + 5 * 24 * 60 * 60 * 1000)
+    : new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
   const formattedDate = format(date, 'dd MMM yyyy');
+  const formattedExpectedDate = format(expectedDate, 'dd MMM yyyy');
   return (
     <Card>
       <div className="p-4 w-full" key={order?.orderNumber}>
@@ -210,6 +214,12 @@ const OrderCard = ({ order }: { order: any }) => {
                   <span>{order?.status}</span>
                 </span>
               )}
+
+              <span
+                className={`flex items-center gap-1 p-1 rounded-md text-sm uppercase bg-green-200 text-green-800`}
+              >
+                <span>{+order?.total + +order.shippingFee} VND</span>
+              </span>
             </div>
             <div className="flex gap-4">
               <Button variant="outline">
@@ -308,7 +318,7 @@ const OrderCard = ({ order }: { order: any }) => {
                   d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
                 ></path>
               </svg>
-              Expected delivery on Monday 16 Jul 2024
+              Expected delivery on Monday {formattedExpectedDate}
             </span>
           </div>
           {purchase?.status === 'Pending' && (

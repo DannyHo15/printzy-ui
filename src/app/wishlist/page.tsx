@@ -1,8 +1,8 @@
-"use client";
-import React from "react";
-import Head from "next/head";
-import { useWishlistStore } from "@/store/useWishList";
-import WishlistProduct from "@/components/WishlistProduct";
+'use client';
+import React from 'react';
+import Head from 'next/head';
+import { useWishlistStore } from '@/store/useWishList';
+import WishlistProduct from '@/components/WishlistProduct';
 
 function WishList() {
   const { wishlist } = useWishlistStore();
@@ -34,7 +34,7 @@ function WishList() {
                   <h1>WISHLIST</h1>
                 </div>
                 <img
-                  src="https://i.ibb.co/N23Cxhz/8b683a2f7a998bdd6df80046dc1f5292.jpg"
+                  src="https://macorner.co/cdn/shop/files/Personalized_Christmas_Clothing_66d3250c-babb-4c12-8ea5-8d075b310bfe_2000x.png?v=1729584321"
                   className="object-cover rounded-xl w-full"
                   alt=""
                 />

@@ -1,7 +1,5 @@
-"use client";
-import React from "react";
-import EditorSidebar from "@/components/Editor/EditorSidebar";
-import { EditorNavbar } from "@/components/Editor/EditorNavbar";
+'use client';
+import React from 'react';
 interface Props {
   children: React.ReactNode;
 }

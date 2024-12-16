@@ -219,6 +219,7 @@ export interface Editor {
   // saveSvg: () => void;
   saveJson: () => void;
   getCustomize: (name: string) => Promise<File | undefined>;
+  getCustomizePrint: (name: string) => Promise<File | undefined>;
   // loadJson: (json: string) => void;
   // onUndo: () => void;
   // onRedo: () => void;
@@ -279,6 +280,7 @@ export interface EditorHookProps {
   defaultState?: string;
   defaultWidth?: number;
   defaultHeight?: number;
+  defaultDesignedJSON?: string;
   clearSelectionCallback?: () => void;
   saveCallback?: (values: {
     json: string;

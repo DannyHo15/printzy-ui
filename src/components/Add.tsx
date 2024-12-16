@@ -12,12 +12,12 @@ import { useRouter } from 'next/navigation';
 const Add = ({
   product,
   variantId,
-  stockNumber,
+  isInStock,
   customUploadId,
 }: {
   product: TProductDataResponse;
   variantId: number;
-  stockNumber: number;
+  isInStock: boolean;
   customUploadId: number;
 }) => {
   const [quantity, setQuantity] = useState(1);
@@ -30,14 +30,14 @@ const Add = ({
     if (type === 'd' && quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
-    if (type === 'i' && quantity < stockNumber) {
+    if (type === 'i' && isInStock) {
       setQuantity((prev) => prev + 1);
     }
   };
 
   const handleAddToCart = () => {
     // Add to cart logic
-    addItemAction(product.id, +variantId, quantity, customUploadId);
+    addItemAction(product.id, +variantId, +quantity, customUploadId);
   };
 
   const handleAddWishList = (id: string) => {
@@ -62,7 +62,7 @@ const Add = ({
             <Button
               className="cursor-pointer text-xl disabled:bg-transparent disabled:cursor-not-allowed disabled:opacity-70 bg-light-gray"
               onClick={() => handleQuantity('i')}
-              disabled={quantity === stockNumber}
+              disabled={isInStock === false}
               variant="ghost"
             >
               +

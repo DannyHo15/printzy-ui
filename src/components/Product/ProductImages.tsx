@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
 
 const ProductImages = ({
   items,
@@ -10,12 +10,7 @@ const ProductImages = ({
   items: any;
   primaryUpload: any;
 }) => {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    console.log("items", items);
-    console.log("primaryUpload", primaryUpload);
-  }, [items, primaryUpload]);
-
+  const [index, setIndex] = useState(-1);
   return (
     <div className="flex w-full">
       <div className="flex flex-col justify-between w-1/6 mr-4 h-[500px]">
@@ -27,13 +22,13 @@ const ProductImages = ({
             src={
               primaryUpload?.path
                 ? primaryUpload?.path
-                : (items?.[0]?.upload?.path ?? "")
+                : items?.[0]?.upload?.path ?? ''
             }
             alt=""
             fill
             sizes="20vw"
             className={`object-cover rounded-md ${
-              index === -1 ? "border-2 border-primary" : ""
+              index === -1 ? 'border-2 border-primary' : ''
             }`}
           />
         </div>
@@ -49,7 +44,7 @@ const ProductImages = ({
               fill
               sizes="30vw"
               className={`object-cover rounded-md ${
-                index === i ? "border-2 border-primary" : ""
+                index === i ? 'border-2 border-primary' : ''
               }`}
             />
           </div>
