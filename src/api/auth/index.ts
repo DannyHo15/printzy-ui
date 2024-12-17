@@ -21,7 +21,7 @@ export const register = async (data: IRegisterPayload) => {
 
 export const logout = async () => {
   const res = await axiosInstance.post(
-    `${SCHEMA.NEXT_SERVER}/api/auth/logout`,
+    `${SCHEMA.NEXT_SERVER}/auth/logout`,
     {
       force: true,
     }
@@ -53,7 +53,7 @@ export const resetConfirm = async (data: IResetPasswordConfirmPayload) => {
 export const setCookietsNextServer = async (
   payload: IPayloadNextServer<{ token: string; refreshToken: string }>
 ) => {
-  const res = await axiosInstance.post(`${SCHEMA.NEXT_SERVER}/api/auth`, {
+  const res = await axiosInstance.post(`${SCHEMA.NEXT_SERVER}/auth`, {
     token: payload.data.token,
     refreshToken: payload.data.refreshToken,
   });
@@ -64,7 +64,7 @@ export const logoutNextServer = async (
   payload: IPayloadNextServer<{ force: boolean }>
 ) => {
   const res = await axiosInstance.post(
-    `${SCHEMA.NEXT_SERVER}/api/auth/logout`,
+    `${SCHEMA.NEXT_SERVER}/auth/logout`,
     {
       force: payload.data.force,
     }
