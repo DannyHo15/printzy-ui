@@ -9,13 +9,11 @@ interface IVariantManagementProps {
   variant: any;
   editor: Editor | undefined;
   setVariant: (variant: any) => void;
-  setColor: (option: any) => void;
 }
 export default function VariantManagement({
   product,
   productOptions,
   setVariant,
-  setColor,
   variant,
   editor,
 }: IVariantManagementProps) {
@@ -26,7 +24,6 @@ export default function VariantManagement({
         product={product}
         initialOptions={variant}
         setVariant={setVariant}
-        setColor={setColor}
       />
       <ConfirmAndAdd
         product={product}

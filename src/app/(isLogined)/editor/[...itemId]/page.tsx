@@ -21,8 +21,6 @@ const Page = ({ params }: { params: { itemId: string } }) => {
   );
   const [activeTool, setActiveTool] = useState<ActiveTool>(ActiveTool.Select);
   const [selectedVariant, setSelectedVariant] = useState<any>({});
-  const [color, setColor] = useState<any>({});
-  console.log(selectedVariant);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onClearSelection = useCallback(() => {
@@ -30,13 +28,11 @@ const Page = ({ params }: { params: { itemId: string } }) => {
       setActiveTool(ActiveTool.Select);
     }
   }, [activeTool]);
-  const defaultDesignedJSON = JSON.stringify(
-    selectedVariant?.customizeModel?.data
-  );
+  const defaultDesignPath = selectedVariant?.variantDesign?.path;
   const { init, editor } = useEditor({
     defaultHeight: 2000,
     defaultWidth: 1800,
-    defaultDesignedJSON,
+    defaultDesignPath,
     clearSelectionCallback: onClearSelection,
   });
 
@@ -99,7 +95,7 @@ const Page = ({ params }: { params: { itemId: string } }) => {
           />
           <div className="w-full h-full relative">
             <div id="workspace" className="w-full h-full">
-              <Mockup color={color} mockupPath={selectedVariant?.upload?.path}>
+              <Mockup mockupPath={selectedVariant?.variantMockup?.path}>
                 <canvas ref={canvasRef} className="w-full h-full"></canvas>
               </Mockup>
             </div>
@@ -109,7 +105,6 @@ const Page = ({ params }: { params: { itemId: string } }) => {
                   product={product}
                   editor={editor}
                   productOptions={product?.productOptions}
-                  setColor={(color) => setColor(color)}
                   variant={selectedVariant}
                   setVariant={(variant) => setSelectedVariant(variant)}
                 />
