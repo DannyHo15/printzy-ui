@@ -107,19 +107,22 @@ const buildEditor = ({
 
     canvas.discardActiveObject();
     let node = document.getElementById('workspace');
+    if (node) {
+      // Ensure all images inside the node have the 'crossOrigin' attribute
 
-    htmlToImage
-      .toPng(node!)
-      .then(function (dataUrl) {
-        download(dataUrl, 'my-image.png');
-        rect.set({
-          stroke: '#ccc',
+      htmlToImage
+        .toPng(node)
+        .then(function (dataUrl) {
+          download(dataUrl, 'my-image.png');
+          rect.set({
+            stroke: '#ccc',
+          });
+          canvas.renderAll();
+        })
+        .catch(function (error) {
+          console.error('oops, something went wrong!', error);
         });
-        canvas.renderAll();
-      })
-      .catch(function (error) {
-        console.error('oops, something went wrong!', error);
-      });
+    }
   };
 
   const createImageBlob = async (): Promise<Blob> => {
@@ -139,7 +142,6 @@ const buildEditor = ({
 
     try {
       const dataUrl = await htmlToImage.toPng(node);
-
       const blob = await (await fetch(dataUrl)).blob();
 
       rect.set({
@@ -526,7 +528,7 @@ const buildEditor = ({
 export const useEditor = ({
   defaultHeight,
   defaultWidth,
-  defaultDesignedJSON,
+  defaultDesignPath,
   clearSelectionCallback,
   saveCallback,
 }: EditorHookProps) => {
@@ -619,61 +621,23 @@ export const useEditor = ({
       initialCanvas.add(whiteStrokeRectangle);
       initialCanvas.centerObject(whiteStrokeRectangle);
 
-      if (defaultDesignedJSON) {
-        try {
-          const dataJSON = JSON.parse(defaultDesignedJSON);
-          dataJSON.objects.forEach((obj: any) => {
-            let fabricObject;
-            switch (obj.type) {
-              case 'Textbox':
-                fabricObject = new fabric.FabricText(obj.text, obj);
-                break;
-              case 'Image':
-                fabric.FabricImage.fromURL(
-                  obj.src,
-                  {},
-                  {
-                    left: obj.left || 0,
-                    top: obj.top || 0,
-                    width: obj.width || 100,
-                    height: obj.height || 100,
-                    scaleX: obj.scaleX || 1,
-                    scaleY: obj.scaleY || 1,
-                    angle: obj.angle || 0,
-                    flipX: obj.flipX || false,
-                    flipY: obj.flipY || false,
-                    opacity: obj.opacity || 1,
-                    shadow: obj.shadow || null,
-                    visible: obj.visible !== undefined ? obj.visible : true,
-                    skewX: obj.skewX || 0,
-                    skewY: obj.skewY || 0,
-                    originX: obj.originX || 'left',
-                    originY: obj.originY || 'top',
-                    fillRule: obj.fillRule || 'nonzero',
-                    paintFirst: obj.paintFirst || 'stroke',
-                    globalCompositeOperation:
-                      obj.globalCompositeOperation || 'source-over',
-                    backgroundColor: obj.backgroundColor || '',
-                  }
-                )
-                  .then((img) => {
-                    initialCanvas.add(img);
-                    initialCanvas.renderAll();
-                  })
-                  .catch((error) => {
-                    console.error('Error loading image:', error);
-                  });
-                return;
-            }
-            if (fabricObject) {
-              initialCanvas.add(fabricObject);
-            }
-          });
-        } catch (error) {
-          console.error('Failed to load JSON into canvas:', error);
-        }
-      } else {
-        console.log('No JSON data provided. Initializing empty canvas.');
+      if (defaultDesignPath) {
+        fabric.FabricImage.fromURL(defaultDesignPath).then((img) => {
+          if (img) {
+            img.set({
+              selectable: true,
+              evented: true,
+              left: 0,
+              top: 0,
+            });
+
+            img.scaleToWidth((initialWidth.current || 2000) - 10);
+            img.scaleToHeight((initialHeight.current || 1800) - 10);
+            initialCanvas.add(img);
+            initialCanvas.centerObject(img);
+            initialCanvas.renderAll();
+          }
+        });
       }
 
       setCanvas(initialCanvas);
@@ -682,7 +646,7 @@ export const useEditor = ({
       //   initialCanvas.toJSON(JSON_KEYS)
       // );
     },
-    [container, defaultDesignedJSON]
+    [container, defaultDesignPath]
   );
 
   useHotkeys({ canvas });

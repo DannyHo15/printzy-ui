@@ -280,7 +280,7 @@ export interface EditorHookProps {
   defaultState?: string;
   defaultWidth?: number;
   defaultHeight?: number;
-  defaultDesignedJSON?: string;
+  defaultDesignPath?: string;
   clearSelectionCallback?: () => void;
   saveCallback?: (values: {
     json: string;

@@ -3,7 +3,7 @@
 import { createSelectors } from '@/lib/auto-genarate-selector';
 import useCartStore from '@/store/useCartStore';
 import { TProductDataResponse } from '@/types/product';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Heart } from 'lucide-react';
 import { useWishlistStore } from '@/store/useWishList';
@@ -44,6 +44,12 @@ const Add = ({
     addWishList(id);
   };
 
+  useEffect(() => {
+    if (isInStock === false) {
+      setQuantity(0);
+    }
+  }, [isInStock]);
+
   return (
     <div className="flex flex-col gap-4">
       <h4 className="font-medium">Choose a Quantity</h4>
@@ -53,7 +59,7 @@ const Add = ({
             <Button
               className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-70 bg-light-gray disabled:bg-transparent"
               onClick={() => handleQuantity('d')}
-              disabled={quantity === 1}
+              disabled={quantity === 1 || !isInStock}
               variant="ghost"
             >
               -
@@ -75,6 +81,7 @@ const Add = ({
           variant="secondary"
           className="flex-1 gap-2"
           onClick={handleAddToCart}
+          disabled={!isInStock}
         >
           <svg
             fill="currentColor"
@@ -93,7 +100,7 @@ const Add = ({
               transform="translate(-1 -0.02)"
             ></path>
           </svg>
-          <span>Add to cart</span>
+          <span>{isInStock ? 'Add to cart' : 'Out of stock'}</span>
         </Button>
         <Button
           variant="ghost"
