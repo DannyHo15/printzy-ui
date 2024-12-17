@@ -5,7 +5,7 @@ WORKDIR /app
 # Install dependencies for sharp
 COPY package*.json yarn.lock* ./
 RUN  \
-  if [ -f yarn.lock ]; then yarn install --fronzen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install --network-timeout 100000; \
   else npm ci; \
   fi
 

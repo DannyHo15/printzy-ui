@@ -24,11 +24,11 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.TOKEN_GIT }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: printzy/app:latest
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/dannyho15/printzyui:latest . --push # uses: docker/build-push-action@v6
+        # with:
+        #   context: .
+        #   push: true
+        #   tags: printzy/app:latest
