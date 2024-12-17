@@ -1,12 +1,12 @@
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import CartModal from './CartModal';
-import { useWishlistStore } from '@/store/useWishList';
-import { useUserStore } from '@/store/user/user.store';
-import { createSelectors } from '@/lib/auto-genarate-selector';
-import useCartStore from '@/store/useCartStore';
-import { isClient } from '@/lib';
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import CartModal from "./CartModal";
+import { useWishlistStore } from "@/store/useWishList";
+import { useUserStore } from "@/store/user/user.store";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import useCartStore from "@/store/useCartStore";
+import { isClient } from "@/lib";
 
 const NavIcons = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -23,7 +23,7 @@ const NavIcons = () => {
 
   const handleProfile = () => {
     if (!session) {
-      router.push('/auth/login');
+      router.push("/auth/login");
     } else setIsProfileOpen((prev) => !prev);
   };
 
@@ -31,23 +31,23 @@ const NavIcons = () => {
     logoutAction();
     setIsProfileOpen(false);
     setSession(null);
-    router.push('/auth/login');
+    router.push("/auth/login");
   };
 
   const { wishlist, getWishList } = useWishlistStore();
   const { cart, getCart } = useCartStore();
 
   useEffect(() => {
-    if (localStorage.getItem('token') && isClient()) {
+    if (!!session && isClient()) {
       getWishList();
       getCart();
     }
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     let current = null;
     if (isClient()) {
-      current = localStorage.getItem('token');
+      current = localStorage.getItem("token");
     }
 
     if (current) setSession(current);
@@ -187,7 +187,7 @@ const NavIcons = () => {
           )}
         </div>
         <span className="text-xs text-gray-600 font-semibold">
-          {!session ? 'SignIn' : 'Account'}
+          {!session ? "SignIn" : "Account"}
         </span>
       </button>
       {/* Profile Dropdown */}
@@ -259,7 +259,7 @@ const NavIcons = () => {
                 </svg>
               </div>
               <span className="text-primary">
-                {isLoading ? 'Logging out' : 'Logout'}
+                {isLoading ? "Logging out" : "Logout"}
               </span>
             </div>
           </div>
