@@ -2,6 +2,8 @@
 
 import { useState, ChangeEvent } from 'react';
 import axios from 'axios';
+import { Button } from '../ui/button';
+import { LoaderCircle } from 'lucide-react';
 
 interface Message {
   sender: 'user' | 'bot';
@@ -13,20 +15,23 @@ export default function Chatbot() {
   const [input, setInput] = useState<string>('');
 
   const [isOpen, setIsOpen] = useState(false); // State to manage toggle
+  const [loading, setLoading] = useState(false);
 
   const toggleChatbot = () => {
     setIsOpen(!isOpen);
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (e: any) => {
+    e.preventDefault();
     if (!input.trim()) return;
 
     const userMessage: Message = { sender: 'user', text: input };
     setMessages((prev) => [...prev, userMessage]);
 
     try {
+      setLoading(true);
       const response = await axios.post<{ answer: string }>(
-        'http://localhost:5001/api/chatbot',
+        'https://8076-2405-4802-9010-a1a0-c078-9606-163e-1593.ngrok-free.app/api/chatbot',
         {
           question: input,
         }
@@ -42,6 +47,7 @@ export default function Chatbot() {
     }
 
     setInput('');
+    setLoading(false);
   };
 
   return (
@@ -107,13 +113,14 @@ export default function Chatbot() {
                       ? 'bg-blue-500 text-white'
                       : 'bg-gray-300 text-gray-800'
                   }`}
-                >
-                  {msg.text}
-                </div>
+                  dangerouslySetInnerHTML={{
+                    __html: msg.text,
+                  }}
+                ></div>
               </div>
             ))}
           </div>
-          <div className="flex items-center">
+          <form className="flex items-center">
             <input
               type="text"
               value={input}
@@ -123,13 +130,19 @@ export default function Chatbot() {
               placeholder="Type your message..."
               className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
-            <button
+            <Button
+              type="submit"
               onClick={sendMessage}
               className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              disabled={loading}
             >
-              Send
-            </button>
-          </div>
+              {loading ? (
+                <LoaderCircle className="animate-spin"></LoaderCircle>
+              ) : (
+                'Send'
+              )}
+            </Button>
+          </form>
         </div>
       )}
     </div>

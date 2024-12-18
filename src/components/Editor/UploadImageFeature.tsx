@@ -77,10 +77,13 @@ export default function UploadImageFeature({
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5000/remove-background', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        'https://https://8076-2405-4802-9010-a1a0-c078-9606-163e-1593.ngrok-free.app/remove-background',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to remove background');
