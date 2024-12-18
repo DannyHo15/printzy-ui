@@ -1,44 +1,48 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useUserProfile } from '@/store/user/useUser';
-import { useParams } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { createSelectors } from '@/lib/auto-genarate-selector';
-import { useUserStore } from '@/store/user/user.store';
-import OrderCard from '@/components/Order/myOrder/OrderCard';
-import { getAllOrder } from '@/api/order';
+"use client";
+import React, { useEffect, useState } from "react";
+import { useUserProfile } from "@/store/user/useUser";
+import { useParams } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createSelectors } from "@/lib/auto-genarate-selector";
+import { useUserStore } from "@/store/user/user.store";
+import OrderCard from "@/components/Order/myOrder/OrderCard";
+import { getAllOrder } from "@/api/order";
+import { useOrder } from "@/store/order/useOrder";
 
 const MyOrders = () => {
   const { userId: paramUserId } = useParams();
   const userId = Array.isArray(paramUserId)
     ? paramUserId[0]
-    : paramUserId ?? '';
+    : (paramUserId ?? "");
 
   const userStore = createSelectors(useUserStore);
+  const [orders, setOrders] = useState<any>();
+  const [statusActive, setStatusActive] = useState("All");
   const setUser = userStore.use.setUser();
   const { data, isLoading, isError, error } = useUserProfile(userId);
-  const [orders, setOrders] = useState<any>();
-  const [statusActive, setStatusActive] = useState('All');
+  const { getOrders, requestCancelMutate } = useOrder(statusActive);
 
   useEffect(() => {
     if (data) setUser(data);
   }, [data]);
 
   const getCurrentOrder = async () => {
-    const orderData = await getAllOrder({
-      status: statusActive === 'All' ? '' : statusActive.toLowerCase(),
-    });
-    setOrders(orderData);
+    setOrders(getOrders);
   };
 
   useEffect(() => {
     getCurrentOrder();
-  }, [statusActive]);
+  }, [getOrders]);
 
   const handleStatusClick = (status: string) => {
     setStatusActive(status);
     // Filter logic for orders based on status can be added here
+  };
+  const handleRequestCancel = (id: string) => {
+    if (!id) return;
+    requestCancelMutate(id);
+    // Request cancel logic can be added here
   };
 
   if (isError) {
@@ -46,13 +50,14 @@ const MyOrders = () => {
   }
 
   const statusList = [
-    'All',
-    'Unpaid',
-    'Processing',
-    'Delivery',
-    'Completed',
-    'Cancelled',
-    'Refunded',
+    "All",
+    "Unpaid",
+    "Processing",
+    "Delivery",
+    "Completed",
+    "Request-cancel",
+    "Cancelled",
+    "Refunded",
   ];
 
   return (
@@ -69,8 +74,8 @@ const MyOrders = () => {
                 onClick={() => handleStatusClick(status)}
                 className={`inline-flex items-center justify-center px-3 py-1 text-sm font-medium leading-5 transition rounded-full shadow-sm ${
                   statusActive === status
-                    ? 'bg-primary text-white border-blue-500'
-                    : 'bg-white text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? "bg-primary text-white border-blue-500"
+                    : "bg-white text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 {status}
@@ -81,7 +86,11 @@ const MyOrders = () => {
       </div>
       <CardContent className="py-4">
         {orders?.data?.map((order: any) => (
-          <OrderCard key={order.id} order={order} />
+          <OrderCard
+            handleRequestCancel={(id: string) => handleRequestCancel(id)}
+            key={order.id}
+            order={order}
+          />
         ))}
       </CardContent>
     </Card>

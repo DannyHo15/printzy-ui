@@ -13,7 +13,8 @@ const Stepper = () => {
   ];
 
   const isActive = (path: string) => {
-    if (pathname === path) return true;
+    console.log(pathname);
+    if (pathname === path || pathname === "/success") return true;
     if (
       path === "/cart" &&
       (pathname === "/checkout" || pathname === "/order-summary")
