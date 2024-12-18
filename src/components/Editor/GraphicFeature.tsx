@@ -1,30 +1,30 @@
-import { Editor } from '@/types/editor';
-import { useState } from 'react';
-import { Button } from '../ui/button';
+import { Editor } from "@/types/editor";
+import { useState } from "react";
+import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { Input } from '../ui/input';
-import usePrintzyImageGenerateHistory from '@/store/generateImageHistory/generateImageHistory';
+} from "../ui/select";
+import { Input } from "../ui/input";
+import usePrintzyImageGenerateHistory from "@/store/generateImageHistory/generateImageHistory";
 
 interface IUploadImageFeatureProps {
   editor: Editor;
 }
 
 const uploadOptions = [
-  { key: 'None', value: 'none' },
-  { key: 'Remove background', value: 'remove-background' },
+  { key: "None", value: "none" },
+  { key: "Remove background", value: "remove-background" },
 ];
 
 export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
-  const [option, setOption] = useState('none');
+  const [option, setOption] = useState("none");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>("");
 
   const { images, addImage } = usePrintzyImageGenerateHistory();
 
@@ -34,24 +34,24 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
 
     try {
       const response = await fetch(
-        'https://api.openai.com/v1/images/generations',
+        "https://api.openai.com/v1/images/generations",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
           },
           body: JSON.stringify({
             prompt: prompt,
             n: 1,
-            size: '256x256',
-            response_format: 'b64_json',
+            size: "256x256",
+            response_format: "b64_json",
           }),
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error('Failed to generate graphic');
+        throw new Error("Failed to generate graphic");
       }
 
       const data = await response.json();
@@ -61,17 +61,17 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
       const byteCharacters = atob(base64Image);
       const byteNumbers = Array.from(
         { length: byteCharacters.length },
-        (_, i) => byteCharacters.charCodeAt(i)
+        (_, i) => byteCharacters.charCodeAt(i),
       );
       const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/png' });
+      const blob = new Blob([byteArray], { type: "image/png" });
 
       // Create a File object
-      const generatedFile = new File([blob], 'generated-image.png', {
+      const generatedFile = new File([blob], "generated-image.png", {
         type: blob.type,
       });
 
-      if (option === 'none') {
+      if (option === "none") {
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64 = reader.result as string;
@@ -92,7 +92,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
       }
       // Add the generated image to the editor
     } catch (err: any) {
-      setError(err.message || 'An error occurred while generating the graphic');
+      setError(err.message || "An error occurred while generating the graphic");
     } finally {
       setLoading(false);
     }
@@ -107,23 +107,23 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
     setError(null);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
       const response = await fetch(
-        'https://https://8076-2405-4802-9010-a1a0-c078-9606-163e-1593.ngrok-free.app/remove-background',
+        "https://8076-2405-4802-9010-a1a0-c078-9606-163e-1593.ngrok-free.app/remove-background",
         {
-          method: 'POST',
+          method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error('Failed to remove background');
+        throw new Error("Failed to remove background");
       }
 
       const blob = await response.blob();
-      const processedFile = new File([blob], 'processed-image.png', {
+      const processedFile = new File([blob], "processed-image.png", {
         type: blob.type,
       });
 
@@ -144,7 +144,7 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
       };
       reader.readAsDataURL(blob); // Đọc blob dưới dạng base64
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -154,14 +154,14 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
     let blob;
 
     // Nếu image.url là base64, chuyển thành Blob
-    if (image.url.startsWith('data:image')) {
-      const base64 = image.url.split(',')[1]; // Loại bỏ header base64
+    if (image.url.startsWith("data:image")) {
+      const base64 = image.url.split(",")[1]; // Loại bỏ header base64
       const binary = atob(base64); // Giải mã base64
       const array = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) {
         array[i] = binary.charCodeAt(i);
       }
-      blob = new Blob([array], { type: 'image/png' }); // Tạo Blob
+      blob = new Blob([array], { type: "image/png" }); // Tạo Blob
     } else {
       // Nếu image.url là URL, tải về và chuyển thành Blob
       const response = await fetch(image.url);
@@ -201,9 +201,9 @@ export default function GraphicFeature({ editor }: IUploadImageFeatureProps) {
           <Button
             className="w-full text-base"
             onClick={handleButtonClick}
-            disabled={loading || (option === 'generate-graphic' && !prompt)}
+            disabled={loading || (option === "generate-graphic" && !prompt)}
           >
-            {loading ? 'Processing...' : 'Generate Graphic'}
+            {loading ? "Processing..." : "Generate Graphic"}
           </Button>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
